@@ -21,7 +21,6 @@ Recorder::~Recorder()
 void Recorder::startRecording()
 {
 	history.clear();
-	current_step = 0;
 	recording = true;
 
 }
@@ -40,7 +39,6 @@ void Recorder::recordStep(Cell* modifiedCell)
 	temp.push_back(new Cell(*modifiedCell));
 
 	history.push_back(temp);
-	current_step++;
 }
 
 void Recorder::saveLastFrame(vector<Cell*> LastList)
@@ -52,12 +50,14 @@ void Recorder::saveLastFrame(vector<Cell*> LastList)
 
 }
 
+//########################################################################################################################################
+
 void Recorder::startPlaying()
 {
-	if (!playing) {
+	if (!isplaying && islooping) {
 
 		current_step = 0;
-		playing = true;
+		isplaying = true;
 
 		for (auto cell : initialState) {
 			cell->drawCell();
@@ -65,23 +65,52 @@ void Recorder::startPlaying()
 	}
 }
 
-void Recorder::stepForward()
+bool Recorder::stopPlaying()
 {
-	if (playing)
+	return isplaying = false;
+}
+
+bool Recorder::getPlaystate()
+{
+	return isplaying;
+}
+
+void Recorder::setLooping(bool state)
+{
+	islooping = state;
+}
+
+bool Recorder::playRecording()
+{
+	startPlaying();
+	setLooping(false);
+	return stepForward();
+}
+
+void Recorder::loopRecording()
+{
+	bool stillPlaying = stepForward();
+
+	setLooping(true);
+
+	if (not stillPlaying) {
+		startPlaying();
+	}
+}
+
+bool Recorder::stepForward()
+{
+	if (current_step >= history.size()) {
+		return stopPlaying();
+	}
+	if (isplaying)
 	{
 		for (auto cell : history[current_step]) {
 			cell->drawCell();
 		}
 		current_step++;
+		return true;
 	}
-	if (current_step >= history.size()) {
-		playing = false;
-		return;
-	}
-}
-
-void Recorder::stopPlaying()
-{
 
 }
 

@@ -24,7 +24,9 @@ class Maze
 
 		void drawMaze();
 
-		void playRecording();
+		bool playRecording();
+		void loopRecording();
+		void stopRecording();
 
 	private:
 

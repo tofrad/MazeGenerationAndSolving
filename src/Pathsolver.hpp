@@ -15,7 +15,9 @@ class Pathsolver
 
 		void solveMaze(Cell* start);
 
-		void playRecording();
+		bool playRecording();
+		void loopRecording();
+		void stopRecording();
 
 	private:
 

@@ -21,9 +21,15 @@ public:
 	void saveLastFrame(vector<Cell*> LastList);
 
 	void startPlaying();
-	void stepForward();
+	bool stopPlaying();
 
-	void stopPlaying();
+	bool getPlaystate();
+	void setLooping(bool state);
+
+	bool playRecording();
+	void loopRecording();
+
+	bool stepForward();
 	void playLastFrame();
 
 private:
@@ -33,10 +39,13 @@ private:
 
 	vector<vector<Cell*>> history;
 
-
 	int current_step = 0;
 	bool recording = false;
-	bool playing = false;
+	bool isplaying = false;
+	bool islooping = true;
+
+
+
 
 };
 

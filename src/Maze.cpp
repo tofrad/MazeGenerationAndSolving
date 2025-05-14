@@ -116,8 +116,8 @@ void Maze::generateMaze()
 	createConnectedMaze();
 	deleteConnections();
 
-	int rand = 0;// GetRandomValue(0, Cell_List.size() - 1);
-	int rand2 = (height*width) - 1;//GetRandomValue(0, Cell_List.size() - 1);
+	int rand = GetRandomValue(0, Cell_List.size() - 1);
+	int rand2 = GetRandomValue(0, Cell_List.size() - 1); //(height*width) - 1;
 
 	Cell_List[rand]->isStart = true;
 	Start = Cell_List[rand];
@@ -148,10 +148,19 @@ void Maze::drawMaze()
 	record.playLastFrame();
 }
 
-void Maze::playRecording()
+bool Maze::playRecording()
 {
-	record.startPlaying();
-	record.stepForward();
+	return record.playRecording();
+}
+
+void Maze::loopRecording()
+{
+	record.loopRecording();
+}
+
+void Maze::stopRecording()
+{
+	record.stopPlaying();
 }
 
 void Maze::saveLastState()

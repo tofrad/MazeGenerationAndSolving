@@ -18,13 +18,13 @@ int main()
     //SetConfigFlags(FLAG_VSYNC_HINT);
     InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
 
-    SetTargetFPS(120);           
+    SetTargetFPS(160);           
 
     //--------------------------------------------------------------------------------------
 
     //Test stuff ###############################################################
 
-    Maze M = Maze(100, 100, screenWidth, screenHeight);
+    Maze M = Maze(20, 20, screenWidth, screenHeight);
     M.generateMaze();
 
     Pathsolver S = Pathsolver(M.getGeneratedMaze());
@@ -41,10 +41,15 @@ int main()
     // Main game loop
     while (!WindowShouldClose()) 
     {
-        int i = 0;
         BeginTextureMode(buffer);
+
         //write changes into buffer
-        S.playRecording();
+        if (M.playRecording()){
+            
+        }
+        else {
+            S.loopRecording();
+        }
 
         EndTextureMode();
 

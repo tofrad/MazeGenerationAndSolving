@@ -28,10 +28,19 @@ void Pathsolver::solveMaze(Cell* start)
 	path_record.stopRecording(); 
 }
 
-void Pathsolver::playRecording()
+bool Pathsolver::playRecording()
 {
-	path_record.startPlaying();
-	path_record.stepForward();
+	return path_record.playRecording();
+}
+
+void Pathsolver::loopRecording()
+{
+	path_record.loopRecording();
+}
+
+void Pathsolver::stopRecording()
+{
+	path_record.stopPlaying();
 }
 
 bool Pathsolver::DFS(Cell* start)
