@@ -41,7 +41,7 @@ int main()
     // Main game loop
     while (!WindowShouldClose()) 
     {
-
+        int i = 0;
         BeginTextureMode(buffer);
         //write changes into buffer
         S.playRecording();
