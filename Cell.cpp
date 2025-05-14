@@ -1,0 +1,164 @@
+#include "Cell.hpp"
+
+Cell::Cell() {
+	this->p = Point();
+	this->weight = 0;
+}
+
+Cell::Cell(Point p1) {
+
+	this->p = p1;
+	this->weight = 0;
+	setId();
+}
+
+Cell::Cell(Point p1, int cellsize, float offset) : Cell(p1)
+{
+	this->cellsize = cellsize;
+	this->offset = offset;
+}
+
+Cell::Cell(Point p1, int w) {
+
+	this->p = p1;
+	this->weight = w;
+	setId();
+}
+
+Cell::~Cell() {
+
+}
+
+Point Cell::getPosition()
+{
+	return this->p;
+}
+
+void Cell::setNorth(Cell* cellptr)
+{
+	this->North = cellptr;
+}
+
+void Cell::setEast(Cell* cellptr)
+{
+	this->East = cellptr;
+}
+
+void Cell::setSouth(Cell* cellptr)
+{
+	this->South = cellptr;
+}
+
+void Cell::setWest(Cell* cellptr)
+{
+	this->West = cellptr;
+}
+
+Cell* Cell::getNorth()
+{
+	return North;
+}
+
+Cell* Cell::getEast()
+{
+	return East;
+}
+
+Cell* Cell::getSouth()
+{
+	return South;
+}
+
+Cell* Cell::getWest()
+{
+	return West;
+}
+
+void Cell::setColor(Color color)
+{
+	this->color = color;
+}
+
+Color Cell::getColor()
+{
+	return this->color;
+}
+
+void Cell::updateColor()
+{
+
+	if (isActive) {
+		this->color = LIME;
+	}
+	else if (isStart) {
+		this->color = BLUE;
+	}
+	else if(isTarget){
+		this->color = RED;
+	}
+	else if (isfinishedPath) {
+		this->color = VIOLET;
+	}
+	else if (isPath) {
+		this->color = GOLD;
+	}
+	else if (pathVisited) {
+		this->color = BEIGE;
+	}
+	else if (wasVisited){
+		this->color = DARKGRAY;
+	}
+	else {
+		this->color = LIGHTGRAY;
+	}
+}
+
+void Cell::drawCell()
+{
+	updateColor();
+
+	Vector2 offset_vec = Vector2{ offset / 2, offset / 2 };
+
+	Point P = getPosition();
+
+	float left = (float)P.getX() * cellsize;
+	float right = left + cellsize;
+
+	float top = (float)P.getY() * cellsize;
+	float bottom = top + cellsize;
+
+	Vector2 topleft = Vector2Add(Vector2{ left, top }, offset_vec);
+	Vector2 topright = Vector2Add(Vector2{ right, top }, offset_vec);
+	Vector2 bottomleft = Vector2Add(Vector2{ left, bottom }, offset_vec);
+	Vector2 bottomright = Vector2Add(Vector2{ right, bottom }, offset_vec);
+
+	Vector2 size = Vector2{ (float)cellsize, (float)cellsize };
+
+	DrawRectangleV(topleft, size, getColor());
+
+	if (getSouth() == nullptr) {
+		DrawLineV(bottomleft, bottomright, BLACK);
+	}
+
+	if (getEast() == nullptr) {
+		DrawLineV(topright, bottomright, BLACK);
+	}
+
+	if (getNorth() == nullptr) {
+		DrawLineV(topleft, topright, BLACK);
+	}
+
+	if (getWest() == nullptr) {
+		DrawLineV(topleft, bottomleft, BLACK);
+	}
+}
+
+uint64_t Cell::getCellID()
+{
+	return cell_id;
+}
+
+void Cell::setId()
+{
+	cell_id = (uint64_t) (p.getX()	<< 32) | (uint64_t)p.getY();	
+}
