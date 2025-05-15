@@ -41,6 +41,20 @@ void Recorder::recordStep(Cell* modifiedCell)
 	history.push_back(temp);
 }
 
+void Recorder::recordStep(vector<Cell*> modifiedCells)
+{
+	if (!recording)return;
+
+	vector<Cell*> temp;
+
+	for (auto cell : modifiedCells) {
+
+		temp.push_back(new Cell(*cell));
+	}	
+
+	history.push_back(temp);
+}
+
 void Recorder::saveLastFrame(vector<Cell*> LastList)
 {
 	for (auto cell : LastList)

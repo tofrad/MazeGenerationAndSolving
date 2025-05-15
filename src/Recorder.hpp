@@ -18,6 +18,7 @@ public:
 	void stopRecording();
 
 	void recordStep(Cell* modifiedCell);
+	void recordStep(vector<Cell*> modifiedCells);
 	void saveLastFrame(vector<Cell*> LastList);
 
 	void startPlaying();

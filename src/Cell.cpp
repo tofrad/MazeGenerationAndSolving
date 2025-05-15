@@ -54,6 +54,11 @@ void Cell::setWest(Cell* cellptr)
 	this->West = cellptr;
 }
 
+void Cell::setParent(Cell* parent)
+{
+	this->Parent = parent;
+}
+
 Cell* Cell::getNorth()
 {
 	return North;
@@ -72,6 +77,11 @@ Cell* Cell::getSouth()
 Cell* Cell::getWest()
 {
 	return West;
+}
+
+Cell* Cell::getParent()
+{
+	return Parent;
 }
 
 void Cell::setColor(Color color)

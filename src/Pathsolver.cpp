@@ -1,4 +1,5 @@
 #include "Pathsolver.hpp"
+#include <queue>
 
 Pathsolver::Pathsolver()
 {
@@ -22,7 +23,7 @@ void Pathsolver::solveMaze(Cell* start)
 	path_record.startRecording();
 
 	//solve Maze
-	DFS(start);
+	BFS(start);
 
 	//stop Recording
 	path_record.stopRecording(); 
@@ -41,6 +42,16 @@ void Pathsolver::loopRecording()
 void Pathsolver::stopRecording()
 {
 	path_record.stopPlaying();
+}
+
+bool Pathsolver::isVisitable(Cell* cell)
+{
+	if (cell != nullptr && !cell->pathVisited) {
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
 bool Pathsolver::DFS(Cell* start)
@@ -119,4 +130,78 @@ bool Pathsolver::DFS(Cell* start)
 	path_record.recordStep(start);
 
 	return false;
+}
+
+bool Pathsolver::BFS(Cell* start)
+{
+	queue<vector<Cell*>> tobevisited;
+
+	tobevisited.push(vector<Cell*>{start});
+
+	bool wasTargetFound = false;
+	Cell* foundTarget = nullptr;
+
+	vector<Cell*> next_cells;
+
+	while (!tobevisited.empty()) {
+
+		vector<Cell*> current_cells = tobevisited.front();
+		tobevisited.pop();
+
+		next_cells.clear();
+
+		if (current_cells.size() > 0) {
+
+			for (auto cell : current_cells) {
+
+				if (cell->isTarget) {
+					wasTargetFound = true;
+					foundTarget = cell;
+					break;
+				}
+
+				cell->pathVisited = true;
+		
+				if (isVisitable(cell->getNorth())) {
+
+					cell->getNorth()->setParent(cell);
+					next_cells.push_back(cell->getNorth());
+				}
+				if (isVisitable(cell->getEast())) {
+
+					cell->getEast()->setParent(cell);
+					next_cells.push_back(cell->getEast());
+				}
+				if (isVisitable(cell->getSouth())) {
+
+					cell->getSouth()->setParent(cell);
+					next_cells.push_back(cell->getSouth());
+				}
+				if (isVisitable(cell->getWest())) {
+
+					cell->getWest()->setParent(cell);
+					next_cells.push_back(cell->getWest());
+				}
+			}
+			// record current cells here###############################################################
+			path_record.recordStep(current_cells);
+			tobevisited.push(vector<Cell*>(next_cells));
+		}
+		
+	}
+
+	if (wasTargetFound) {
+		Cell* backtrack = foundTarget;
+
+		while (!backtrack->isStart) {
+
+			backtrack->isfinishedPath = true;
+			//record here####################################################################
+			path_record.recordStep(backtrack);
+
+			backtrack = backtrack->getParent();
+		}
+	}
+
+	return wasTargetFound;
 }

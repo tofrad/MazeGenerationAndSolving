@@ -29,7 +29,13 @@ class Pathsolver
 
 		Recorder path_record;
 
+		bool isVisitable(Cell* cell);
+
 		bool DFS(Cell* start);
+
+		bool BFS(Cell* start);
+
+		
 
 };
 

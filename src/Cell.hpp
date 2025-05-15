@@ -23,11 +23,13 @@ class Cell
 		void setEast(Cell* east);
 		void setSouth(Cell* south);
 		void setWest(Cell* west);
+		void setParent(Cell* parent);
 
 		Cell* getNorth();
 		Cell* getEast();
 		Cell* getSouth();
 		Cell* getWest();
+		Cell* getParent();
 
 		void setColor(Color color);
 		Color getColor();
@@ -53,6 +55,8 @@ class Cell
 		Cell* East = nullptr;
 		Cell* South = nullptr;
 		Cell* West = nullptr;
+
+		Cell* Parent = nullptr;
 
 		Color color = LIGHTGRAY;
 		int cellsize;
