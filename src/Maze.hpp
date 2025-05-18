@@ -52,5 +52,7 @@ class Maze
 		void deleteConnections();
 
 		void RecursiveBacktracking(Cell& cell);
+
+		void Kruskal();
 };
 

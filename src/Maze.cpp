@@ -300,3 +300,35 @@ void Maze::RecursiveBacktracking(Cell& cell)
 		}
 	}
 }
+
+void Maze::Kruskal()
+{
+	//take all Connections by interating through cell grid after fully connected generation
+	// set Parent Cell to itslef in every Cell
+	// add only existing connections to South and East to prevent duplicates
+	//------>>> vector<pair<Cell*,Cell*>> Walls -> currentCell, Cell.East
+	//											-> currentCell, Cell.South
+	// shuffle the Wall List
+	//  
+	// do a union fnd by checking Parents
+	// if same parents -> do nothing 
+	// if different parents -> overwrite Parent from one Cell with other Parent to join the Sets
+	// check if its South Connecting or East Connecting, by using th Cell Grid or Coordinates 
+	// if Cell.x == Cell2.x --> X cord. same --> Cells above each other 
+	//												-> Cell1.South = Cell2;
+	//												-> Cell2.North = Cell1;
+	// if Cell.y == Cell2.y --> Y Cord. same --> Cells next to each other
+	//												-> Cell1.East = cell2;
+	//												-> Cell2.west = cell1
+	// For  Recording highlight Cells as Active and record 273 times
+	// Delete active flag and record once
+	// 
+	// Delete Pair from Walls and repeat with for loop through walls
+	// 
+	// 
+	// 
+	// Delete all Parent Cells to Null
+	//
+
+
+}
