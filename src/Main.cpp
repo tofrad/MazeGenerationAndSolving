@@ -16,14 +16,14 @@ int main()
     const int screenHeight = 1080;
 
     //SetConfigFlags(FLAG_VSYNC_HINT);
-    InitWindow(screenWidth, screenHeight, "raylib Maze Generator with raylib");
+    InitWindow(screenWidth, screenHeight, "Maze Generator with raylib");
 
     SetTargetFPS(200);           
 
     //--------------------------------------------------------------------------------------
 
     //Test stuff ###############################################################
-    int size_x = 20;
+    int size_x = 40;
     int size_y = (size_x * 9) / 16;
 
     Maze M = Maze(size_x, size_y, screenWidth, screenHeight);
@@ -49,11 +49,11 @@ int main()
         BeginTextureMode(buffer);
                 
         if (M.playRecording()){
-            SetTargetFPS(8000);
+            SetTargetFPS(250);
         }
         else {
             S.playRecording();
-            SetTargetFPS(100);
+            SetTargetFPS(90);
         }
 
         EndTextureMode();

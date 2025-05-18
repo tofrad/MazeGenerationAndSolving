@@ -1,6 +1,8 @@
 #pragma once
 
+#include <random>
 #include <vector>
+
 #include "Cell.hpp"
 #include "Recorder.hpp"
 
@@ -45,6 +47,8 @@ class Maze
 
 		Recorder record;
 
+		std::mt19937 rand_gen;
+
 		void saveLastState();
 
 		void drawCells();
@@ -54,5 +58,12 @@ class Maze
 		void RecursiveBacktracking(Cell& cell);
 
 		void Kruskal();
+
+		void HuntAndKill();
+
+		void uniteGroupByParents(Cell* start);
+
+		pair<int, vector<Cell*>> getUnvisitedNeighbors(Cell* cell);
+		pair<int, vector<Cell*>> getVisitedNeighbors(Cell* cell);
 };
 

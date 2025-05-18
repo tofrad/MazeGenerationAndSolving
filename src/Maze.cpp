@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <random>
+#include <ctime>
 
 #define MAX_HEIGHT 100
 #define MAX_WIDTH 100
@@ -21,6 +22,7 @@ Maze::Maze()
 {
 	this->height = MIN_HEIGHT;
 	this->width = MIN_WIDTH;
+	rand_gen.seed(time(0));
 	createConnectedMaze();
 }
 
@@ -53,6 +55,7 @@ Maze::Maze(int width, int height, int screenwidth, int screenheight)
 	this->height = (int)(usable_height / this->cellsize);
 	/*this->width = (int)(usable_width / this->cellsize);*/
 
+	rand_gen.seed(time(0));
 	createConnectedMaze();
 }
 
@@ -129,8 +132,8 @@ void Maze::generateMaze()
 	createConnectedMaze();
 	deleteConnections();
 
-	int rand = GetRandomValue(0, Cell_List.size() - 1);
-	int rand2 = GetRandomValue(0, Cell_List.size() - 1); //(height*width) - 1;
+	int rand = 0; // GetRandomValue(0, Cell_List.size() - 1);
+	int rand2 = (height * width) - 1;// GetRandomValue(0, Cell_List.size() - 1); //(height*width) - 1;
 
 	Cell_List[rand]->isStart = true;
 	Start = Cell_List[rand];
@@ -142,6 +145,7 @@ void Maze::generateMaze()
 
 	record.startRecording();
 
+	//Kruskal();
 	RecursiveBacktracking(*Cell_List[rand]);
 
 	record.stopRecording();
@@ -204,101 +208,71 @@ void Maze::deleteConnections()
 
 void Maze::RecursiveBacktracking(Cell& cell)
 {
-	vector<int> directions;
+	vector<Cell*> directions;
 	Point pos = cell.getPosition();
 
 	cell.isActive = true;
 
 	if (!cell.wasVisited) {
-
-		//check for boundaries
-		//create possible directions
-
-		if (pos.getY() < this->height - 1) {
-			//south possible -> 0
-			directions.push_back(0);
-		}
-		if (pos.getY() > 0) {
-			//north possible -> 1
-			directions.push_back(1);
-		}
-		if (pos.getX() > 0) {
-			//West possible -> 2
-			directions.push_back(2);
-		}
-		if (pos.getX() < this->width - 1) {
-			//East possible -> 3
-			directions.push_back(3);
-		}
+		auto result = getUnvisitedNeighbors(&cell);
+		directions = result.second;
 	}
-
 	// //mark as visited
 	cell.wasVisited = true;
 
-	while(!directions.empty()){
+	vector<int> dir_idx{ 0,1,2,3 };
 
-		//choose randomly and delete from list
+	shuffle(dir_idx.begin(), dir_idx.end(), rand_gen);
+	
+	for (auto idx : dir_idx) {
 
-		int r = GetRandomValue(0, directions.size() - 1);		
-		int dir = directions.at(r);
-		directions.erase(directions.begin()+ r);
+		//int idx = dir_idx[i];
+		Cell* target = directions.at(idx);
 
-		//set Pointer to choosen Cell
-		//call function from new Cell again
-		Cell* target_cell = nullptr;
+		if (target != nullptr) {
 
-		switch (dir) {
-			case 0: //south
-				target_cell = Cell_Grid[pos.getX()][pos.getY()+1];
+			//target could have been visited by prev funtion call in between
+			if (!target->wasVisited) {
+				switch (idx) {
+					case 0: //north
+						cell.setNorth(target);
+						target->setSouth(&cell);
+						break;
 
-				if (!target_cell->wasVisited) {
-					cell.setSouth(target_cell);
-					target_cell->setNorth(&cell);		
+					case 1: //east
+						cell.setEast(target);
+						target->setWest(&cell);
+						break;
+
+					case 2: //south
+						cell.setSouth(target);
+						target->setNorth(&cell);
+						break;
+
+					case 3: //west
+						cell.setWest(target);
+						target->setEast(&cell);
+						break;
+
+					default:
+						break;
 				}
-				break;
-
-			case 1: //north
-				target_cell = Cell_Grid[pos.getX()][pos.getY()-1];
-
-				if (!target_cell->wasVisited) {
-					cell.setNorth(target_cell);
-					target_cell->setSouth(&cell);					
+				for (int i = 0; i < 5; i++) {
+					record.recordStep(&cell);
 				}
-				break;
+				cell.isActive = false;
+				record.recordStep(&cell);		
 
-			case 2: //west
-				target_cell = Cell_Grid[pos.getX()-1][pos.getY()];
-
-				if (!target_cell->wasVisited) {
-					cell.setWest(target_cell);
-					target_cell->setEast(&cell);					
-				}
-				break;
-
-			case 3: //east
-				target_cell = Cell_Grid[pos.getX()+1][pos.getY()];
-
-				if (!target_cell->wasVisited) {
-					cell.setEast(target_cell);
-					target_cell->setWest(&cell);					
-				}
-				break;
-
-			default:				
-				break;
-				
+				RecursiveBacktracking(*target);
+			}
 		}
-
-		
-
-		if (target_cell) {
-			record.recordStep(&cell);
-			record.recordStep(&cell);
-			cell.isActive = false;
-			record.recordStep(&cell);
-			RecursiveBacktracking(*target_cell);
+		else {
+			//target is null do nothing
 		}
 	}
+	cell.isActive = false;
+	record.recordStep(&cell);
+	
 }
 
 void Maze::Kruskal()
@@ -308,9 +282,33 @@ void Maze::Kruskal()
 	// add only existing connections to South and East to prevent duplicates
 	//------>>> vector<pair<Cell*,Cell*>> Walls -> currentCell, Cell.East
 	//											-> currentCell, Cell.South
+	vector<pair<Cell*, Cell*>> Walls;
+
+	for (int x = 0; x < width; x++) {
+
+		for (int y = 0; y < height; y++) {
+
+			Cell* currentCell = Cell_Grid[x][y];
+			currentCell->setParent(currentCell);
+
+			//add East Wall if not border
+			if (x < width - 1) {
+				Cell* EastCell = Cell_Grid[x+1][y];
+				EastCell->setParent(EastCell);
+				Walls.push_back(make_pair(currentCell, EastCell));
+			}
+			//add South Wall if not border
+			if (y < height - 1) {
+				Cell* WestCell = Cell_Grid[x][y+1];
+				WestCell->setParent(WestCell);
+				Walls.push_back(make_pair(currentCell, WestCell));
+			}
+		}
+	}
 	// shuffle the Wall List
-	//  
-	// do a union fnd by checking Parents
+	shuffle(Walls.begin(), Walls.end(), rand_gen);
+	
+	// do a union find by checking Parents
 	// if same parents -> do nothing 
 	// if different parents -> overwrite Parent from one Cell with other Parent to join the Sets
 	// check if its South Connecting or East Connecting, by using th Cell Grid or Coordinates 
@@ -320,15 +318,197 @@ void Maze::Kruskal()
 	// if Cell.y == Cell2.y --> Y Cord. same --> Cells next to each other
 	//												-> Cell1.East = cell2;
 	//												-> Cell2.west = cell1
+	for (auto wall : Walls) {
+		Cell* firstCell = wall.first;
+		Cell* secondCell = wall.second;
+
+		if (firstCell->getParent() != secondCell->getParent()) {
+
+			secondCell->setParent(firstCell->getParent());
+
+			uniteGroupByParents(secondCell);
+
+			firstCell->isActive = true;
+			secondCell->isActive = true;
+
+			for (int i = 0; i < 7; i++) {
+				record.recordStep(vector<Cell*>{firstCell, secondCell});
+			}
+			if (firstCell->getPosition().getX() == secondCell->getPosition().getX()) {
+				firstCell->setSouth(secondCell);
+				secondCell->setNorth(firstCell);
+			}
+			if (firstCell->getPosition().getY() == secondCell->getPosition().getY()) {
+				firstCell->setEast(secondCell);
+				secondCell->setWest(firstCell);
+			}
+			firstCell->isActive = false;
+			secondCell->isActive = false;
+			firstCell->wasVisited = true;
+			secondCell->wasVisited = true;
+			record.recordStep(vector<Cell*>{firstCell, secondCell});
+		}
+		else {
+			// do nothing, cells already in same union
+		}
+	}
+
+	// Delete all Parent Cells to Null
+	for (auto cell : Cell_List) {
+		cell->setParent(nullptr);
+	}
+	
 	// For  Recording highlight Cells as Active and record 273 times
 	// Delete active flag and record once
 	// 
 	// Delete Pair from Walls and repeat with for loop through walls
 	// 
-	// 
-	// 
-	// Delete all Parent Cells to Null
-	//
+}
+
+void Maze::HuntAndKill()
+{
+
+	for (auto cell : Cell_List) {
+
+		if (cell->wasVisited == false) {
 
 
+		}
+	}
+
+}
+
+void Maze::uniteGroupByParents(Cell* start)
+{
+	vector<Cell*> neighbors;
+	if (start->getSouth() != nullptr) {
+		neighbors.push_back(start->getSouth());
+	}
+	if (start->getNorth() != nullptr) {
+		neighbors.push_back(start->getNorth());
+	}
+	if (start->getWest() != nullptr) {
+		neighbors.push_back(start->getWest());
+	}
+	if (start->getEast() != nullptr) {
+		neighbors.push_back(start->getEast());
+	}
+	for (auto neighbor : neighbors) {
+
+		if (neighbor->getParent() != start->getParent()) {
+
+			neighbor->setParent(start->getParent());
+			uniteGroupByParents(neighbor);
+		}
+	}
+}
+
+pair<int, vector<Cell*>> Maze::getUnvisitedNeighbors(Cell* cell) {
+
+	vector<Cell*> directions{4, nullptr};
+	int cnt = 0;
+
+	Point pos = cell->getPosition();
+	int X = pos.getX();
+	int Y = pos.getY();
+
+	Cell* target_cell = nullptr;
+	
+	//north possible
+	if (pos.getY() > 0) {
+		target_cell = Cell_Grid[X][Y - 1];
+
+		if (target_cell->wasVisited == false) {
+			directions[0] = target_cell;
+			cnt++;
+		}
+	}
+
+	//East possible
+	if (pos.getX() < this->width - 1) {
+		target_cell = Cell_Grid[X + 1][Y];
+
+		if (target_cell->wasVisited == false) {
+			directions[1] = target_cell;
+			cnt++;
+		}
+	}
+
+	//south possible
+	if (pos.getY() < this->height - 1) {
+		target_cell = Cell_Grid[X][Y + 1];
+
+		if (target_cell->wasVisited == false) {
+			directions[2] = target_cell;
+			cnt++;
+		}	
+	}
+
+	//West possible
+	if (pos.getX() > 0) {
+		target_cell = Cell_Grid[X - 1][Y];
+
+		if (target_cell->wasVisited == false) {
+			directions[3] = target_cell;
+			cnt++;
+		}
+	}
+
+
+	return make_pair(cnt ,directions);
+}
+
+pair<int, vector<Cell*>> Maze::getVisitedNeighbors(Cell* cell) {
+
+	vector<Cell*> directions{ 4, nullptr };
+	int cnt = 0;
+
+	Point pos = cell->getPosition();
+	int X = pos.getX();
+	int Y = pos.getY();
+
+	Cell* target_cell = nullptr;
+
+	//north possible
+	if (pos.getY() > 0) {
+		target_cell = Cell_Grid[X][Y - 1];
+
+		if (target_cell->wasVisited) {
+			directions[0] = target_cell;
+			cnt++;
+		}
+	}
+
+	//East possible
+	if (pos.getX() < this->width - 1) {
+		target_cell = Cell_Grid[X + 1][Y];
+
+		if (target_cell->wasVisited) {
+			directions[1] = target_cell;
+			cnt++;
+		}
+	}
+
+	//south possible
+	if (pos.getY() < this->height - 1) {
+		target_cell = Cell_Grid[X][Y + 1];
+
+		if (target_cell->wasVisited) {
+			directions[2] = target_cell;
+			cnt++;
+		}
+	}
+
+	//West possible
+	if (pos.getX() > 0) {
+		target_cell = Cell_Grid[X - 1][Y];
+
+		if (target_cell->wasVisited) {
+			directions[3] = target_cell;
+			cnt++;
+		}
+	}
+
+
+	return make_pair(cnt, directions);
 }

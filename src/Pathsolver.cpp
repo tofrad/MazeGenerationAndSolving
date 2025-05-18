@@ -143,7 +143,7 @@ bool Pathsolver::BFS(Cell* start)
 
 	vector<Cell*> next_cells;
 
-	while (!tobevisited.empty()) {
+	while (!tobevisited.empty() && wasTargetFound == false) {
 
 		vector<Cell*> current_cells = tobevisited.front();
 		tobevisited.pop();
