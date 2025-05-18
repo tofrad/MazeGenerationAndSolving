@@ -12,7 +12,7 @@ class Cell
 	public:
 		Cell();
 		Cell(Point p1);
-		Cell(Point p1, int cellsize, float offset);
+		Cell(Point p1, int cellsize, Vector2 offset);
 		Cell(Point p1, int weight);
 
 		~Cell();
@@ -39,6 +39,8 @@ class Cell
 
 		uint64_t getCellID();
 
+		bool isWall = false;
+
 		bool isStart = false;
 		bool isTarget = false;
 
@@ -46,7 +48,7 @@ class Cell
 		bool isActive = false;
 
 		bool pathVisited = false;
-		bool isPath = false;
+		bool isPath = false;  //marker for dfs recursion when deadend was found
 		bool isfinishedPath = false;
 
 
@@ -60,7 +62,7 @@ class Cell
 
 		Color color = LIGHTGRAY;
 		int cellsize;
-		float offset;
+		Vector2 offset;
 
 		uint64_t cell_id = 0;
 

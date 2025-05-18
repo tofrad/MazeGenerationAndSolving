@@ -4,13 +4,18 @@
 #include <algorithm>
 #include <random>
 
-#define MAX_HEIGHT 150
-#define MAX_WIDTH 150
+#define MAX_HEIGHT 100
+#define MAX_WIDTH 100
 
 #define MIN_HEIGHT 3
 #define MIN_WIDTH 3
 
 #define OFFSET 10
+int usable_height;
+int usable_width;
+
+int start_x;
+int start_y;
 
 Maze::Maze()
 {
@@ -19,7 +24,7 @@ Maze::Maze()
 	createConnectedMaze();
 }
 
-Maze::Maze(int height, int width, int screenwidth, int screenheight)
+Maze::Maze(int width, int height, int screenwidth, int screenheight)
 {
 	if (height > MAX_HEIGHT) {
 		this->height = MAX_HEIGHT;
@@ -40,8 +45,13 @@ Maze::Maze(int height, int width, int screenwidth, int screenheight)
 	else {
 		this->width = width;
 	}
+	usable_height = screenheight - (OFFSET);
+	usable_width = screenwidth - (OFFSET);
 
-	this->cellsize = min((screenwidth - OFFSET) / this->width, (screenheight - OFFSET) / this->height);
+	this->cellsize = min(usable_width / this->width, usable_height / this->height);
+
+	this->height = (int)(usable_height / this->cellsize);
+	/*this->width = (int)(usable_width / this->cellsize);*/
 
 	createConnectedMaze();
 }
@@ -71,7 +81,10 @@ void Maze::createConnectedMaze()
 
 		for (int y = 0; y < height; y++) {
 
-			Cell* C = new Cell(Point(x, y), this->cellsize, OFFSET);
+			start_x = OFFSET + (usable_width - (width * cellsize)) / 2;
+			start_y = OFFSET + (usable_height - (height * cellsize)) / 2;
+			Vector2 Offset{start_x, start_y};
+			Cell* C = new Cell(Point(x, y), cellsize, Offset);
 
 			Cell_List.push_back(C);
 			Cell_Grid[x][y] = C;

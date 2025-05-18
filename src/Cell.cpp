@@ -12,7 +12,7 @@ Cell::Cell(Point p1) {
 	setId();
 }
 
-Cell::Cell(Point p1, int cellsize, float offset) : Cell(p1)
+Cell::Cell(Point p1, int cellsize, Vector2 offset) : Cell(p1)
 {
 	this->cellsize = cellsize;
 	this->offset = offset;
@@ -96,8 +96,10 @@ Color Cell::getColor()
 
 void Cell::updateColor()
 {
-
-	if (isActive) {
+	if (isWall) {
+		this->color = BLACK;
+	}
+	else if (isActive) {
 		this->color = LIME;
 	}
 	else if (isStart) {
@@ -107,7 +109,7 @@ void Cell::updateColor()
 		this->color = RED;
 	}
 	else if (isfinishedPath) {
-		this->color = VIOLET;
+		this->color = MAGENTA;
 	}
 	else if (isPath) {
 		this->color = GOLD;
@@ -127,7 +129,7 @@ void Cell::drawCell()
 {
 	updateColor();
 
-	Vector2 offset_vec = Vector2{ offset / 2, offset / 2 };
+	//Vector2 offset_vec = Vector2{ 0, 0 };
 
 	Point P = getPosition();
 
@@ -137,29 +139,29 @@ void Cell::drawCell()
 	float top = (float)P.getY() * cellsize;
 	float bottom = top + cellsize;
 
-	Vector2 topleft = Vector2Add(Vector2{ left, top }, offset_vec);
-	Vector2 topright = Vector2Add(Vector2{ right, top }, offset_vec);
-	Vector2 bottomleft = Vector2Add(Vector2{ left, bottom }, offset_vec);
-	Vector2 bottomright = Vector2Add(Vector2{ right, bottom }, offset_vec);
+	Vector2 topleft = Vector2Add(Vector2{ left, top }, offset);
+	Vector2 topright = Vector2Add(Vector2{ right, top }, offset);
+	Vector2 bottomleft = Vector2Add(Vector2{ left, bottom }, offset);
+	Vector2 bottomright = Vector2Add(Vector2{ right, bottom }, offset);
 
 	Vector2 size = Vector2{ (float)cellsize, (float)cellsize };
 
 	DrawRectangleV(topleft, size, getColor());
 
 	if (getSouth() == nullptr) {
-		DrawLineV(bottomleft, bottomright, BLACK);
+		DrawLineEx(bottomleft, bottomright,3, BLACK);
 	}
 
 	if (getEast() == nullptr) {
-		DrawLineV(topright, bottomright, BLACK);
+		DrawLineEx(topright, bottomright,3, BLACK);
 	}
 
 	if (getNorth() == nullptr) {
-		DrawLineV(topleft, topright, BLACK);
+		DrawLineEx(topleft, topright,3, BLACK);
 	}
 
 	if (getWest() == nullptr) {
-		DrawLineV(topleft, bottomleft, BLACK);
+		DrawLineEx(topleft, bottomleft,3, BLACK);
 	}
 }
 

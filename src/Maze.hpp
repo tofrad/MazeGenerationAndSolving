@@ -10,7 +10,7 @@ class Maze
 {
 	public:
 		Maze();
-		Maze(int height, int width, int screenwidth, int screenheight);
+		Maze(int width, int height, int screenwidth, int screenheight);
 		~Maze();
 
 		Cell* getStart();

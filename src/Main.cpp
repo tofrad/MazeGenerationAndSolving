@@ -12,8 +12,8 @@ int main()
 {
     // Initialization
     //--------------------------------------------------------------------------------------
-    const int screenWidth = 1300;
-    const int screenHeight = 1300;
+    const int screenWidth = 1920;
+    const int screenHeight = 1080;
 
     //SetConfigFlags(FLAG_VSYNC_HINT);
     InitWindow(screenWidth, screenHeight, "raylib Maze Generator with raylib");
@@ -23,8 +23,11 @@ int main()
     //--------------------------------------------------------------------------------------
 
     //Test stuff ###############################################################
+    int size_x = 20;
+    int size_y = (size_x * 9) / 16;
 
-    Maze M = Maze(80, 80, screenWidth, screenHeight);
+    Maze M = Maze(size_x, size_y, screenWidth, screenHeight);
+
     M.generateMaze();
 
     Pathsolver S = Pathsolver(M.getGeneratedMaze());
@@ -38,18 +41,19 @@ int main()
     //M.drawMaze();
     //EndTextureMode();
     //------##########################################################################
+
     // Main game loop
     while (!WindowShouldClose()) 
     {
-        BeginTextureMode(buffer);
-
         //write changes into buffer
+        BeginTextureMode(buffer);
+                
         if (M.playRecording()){
-            SetTargetFPS(2500);
+            SetTargetFPS(8000);
         }
         else {
             S.playRecording();
-            SetTargetFPS(50);
+            SetTargetFPS(100);
         }
 
         EndTextureMode();
@@ -58,7 +62,7 @@ int main()
         //----------------------------------------------------------------------------------
         BeginDrawing();
 
-        ClearBackground(RAYWHITE);
+        ClearBackground(WHITE);
 
         //display buffer
         
