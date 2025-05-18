@@ -151,17 +151,29 @@ void Cell::drawCell()
 	if (getSouth() == nullptr) {
 		DrawLineEx(bottomleft, bottomright,3, BLACK);
 	}
+	else {
+		DrawLineEx(bottomleft, bottomright, 3, getColor());
+	}
 
 	if (getEast() == nullptr) {
 		DrawLineEx(topright, bottomright,3, BLACK);
+	}
+	else {
+		DrawLineEx(topright, bottomright, 3, getColor());
 	}
 
 	if (getNorth() == nullptr) {
 		DrawLineEx(topleft, topright,3, BLACK);
 	}
+	else {
+		DrawLineEx(topleft, topright, 3, getColor());
+	}
 
 	if (getWest() == nullptr) {
 		DrawLineEx(topleft, bottomleft,3, BLACK);
+	}
+	else {
+		DrawLineEx(topleft, bottomleft, 3, getColor());
 	}
 }
 

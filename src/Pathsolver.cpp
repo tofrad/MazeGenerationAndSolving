@@ -23,7 +23,7 @@ void Pathsolver::solveMaze(Cell* start)
 	path_record.startRecording();
 
 	//solve Maze
-	DFS(start);
+	BFS(start);
 
 	//stop Recording
 	path_record.stopRecording(); 

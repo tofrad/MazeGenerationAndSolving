@@ -63,7 +63,9 @@ class Maze
 
 		void uniteGroupByParents(Cell* start);
 
-		pair<int, vector<Cell*>> getUnvisitedNeighbors(Cell* cell);
-		pair<int, vector<Cell*>> getVisitedNeighbors(Cell* cell);
+		vector<Cell*> getUnvisitedNeighbors(Cell* cell);
+		vector<Cell*> getVisitedNeighbors(Cell* cell);
+
+		void connectCells(Cell* first, Cell* second);
 };
 

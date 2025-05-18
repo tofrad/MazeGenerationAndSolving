@@ -146,7 +146,8 @@ void Maze::generateMaze()
 	record.startRecording();
 
 	//Kruskal();
-	RecursiveBacktracking(*Cell_List[rand]);
+	//RecursiveBacktracking(*Cell_List[rand]);
+	HuntAndKill();
 
 	record.stopRecording();
 
@@ -214,61 +215,28 @@ void Maze::RecursiveBacktracking(Cell& cell)
 	cell.isActive = true;
 
 	if (!cell.wasVisited) {
-		auto result = getUnvisitedNeighbors(&cell);
-		directions = result.second;
+		directions = getUnvisitedNeighbors(&cell);
+		
 	}
 	// //mark as visited
 	cell.wasVisited = true;
 
-	vector<int> dir_idx{ 0,1,2,3 };
-
-	shuffle(dir_idx.begin(), dir_idx.end(), rand_gen);
+	shuffle(directions.begin(), directions.end(), rand_gen);
 	
-	for (auto idx : dir_idx) {
+	for (auto target : directions) {
 
-		//int idx = dir_idx[i];
-		Cell* target = directions.at(idx);
+		if (!target->wasVisited) {
 
-		if (target != nullptr) {
+			connectCells(&cell, target);
 
-			//target could have been visited by prev funtion call in between
-			if (!target->wasVisited) {
-				switch (idx) {
-					case 0: //north
-						cell.setNorth(target);
-						target->setSouth(&cell);
-						break;
-
-					case 1: //east
-						cell.setEast(target);
-						target->setWest(&cell);
-						break;
-
-					case 2: //south
-						cell.setSouth(target);
-						target->setNorth(&cell);
-						break;
-
-					case 3: //west
-						cell.setWest(target);
-						target->setEast(&cell);
-						break;
-
-					default:
-						break;
-				}
-				for (int i = 0; i < 5; i++) {
-					record.recordStep(&cell);
-				}
-				cell.isActive = false;
-				record.recordStep(&cell);		
-
-				RecursiveBacktracking(*target);
+			for (int i = 0; i < 5; i++) {
+				record.recordStep(&cell);
 			}
-		}
-		else {
-			//target is null do nothing
-		}
+
+			cell.isActive = false;
+			record.recordStep(&cell);
+			RecursiveBacktracking(*target);
+	}
 	}
 	cell.isActive = false;
 	record.recordStep(&cell);
@@ -367,12 +335,71 @@ void Maze::Kruskal()
 
 void Maze::HuntAndKill()
 {
+	Cell* current_cell = Start;
+	current_cell->wasVisited = true;
 
-	for (auto cell : Cell_List) {
+	while(true){
 
-		if (cell->wasVisited == false) {
+		vector<Cell*> neighbor_list = getUnvisitedNeighbors(current_cell);
+		shuffle(neighbor_list.begin(), neighbor_list.end(), rand_gen);
 
+		Cell* next_cell = nullptr;
 
+		//counter for iterating cell list in search for new cell
+		int cell_cnt = 0;
+
+		//get next cell
+		if (!neighbor_list.empty()) {
+			
+			next_cell = neighbor_list[0];
+
+			current_cell->isActive = true;
+			for (int i = 0; i < 5; i++) {
+				record.recordStep(current_cell);
+			}
+
+			connectCells(current_cell, next_cell);
+
+			current_cell->isActive = false;
+			current_cell->wasVisited = true;
+			record.recordStep(current_cell);
+
+			current_cell = next_cell;
+		}
+		else {
+			for (auto cell : Cell_List) {
+
+				if(cell->wasVisited == false){
+
+					vector<Cell*> VisitedNeighbors = getVisitedNeighbors(cell);
+
+					if (!VisitedNeighbors.empty()) {
+
+						shuffle(VisitedNeighbors.begin(), VisitedNeighbors.end(), rand_gen);
+
+						next_cell = VisitedNeighbors[0];
+
+						cell->isActive = true;
+						cell->wasVisited = true;
+						for (int i = 0; i < 5; i++) {
+							record.recordStep(cell);
+						}
+
+						connectCells(cell, next_cell);
+						current_cell = next_cell;
+
+						cell->isActive = false;
+						record.recordStep(cell);
+
+						break;
+
+					}
+				}
+			}
+		}
+
+		if (next_cell == nullptr) {
+			break;
 		}
 	}
 
@@ -403,10 +430,10 @@ void Maze::uniteGroupByParents(Cell* start)
 	}
 }
 
-pair<int, vector<Cell*>> Maze::getUnvisitedNeighbors(Cell* cell) {
+vector<Cell*> Maze::getUnvisitedNeighbors(Cell* cell) {
 
-	vector<Cell*> directions{4, nullptr};
-	int cnt = 0;
+	vector<Cell*> directions;
+	
 
 	Point pos = cell->getPosition();
 	int X = pos.getX();
@@ -419,8 +446,7 @@ pair<int, vector<Cell*>> Maze::getUnvisitedNeighbors(Cell* cell) {
 		target_cell = Cell_Grid[X][Y - 1];
 
 		if (target_cell->wasVisited == false) {
-			directions[0] = target_cell;
-			cnt++;
+			directions.push_back(target_cell);
 		}
 	}
 
@@ -429,8 +455,7 @@ pair<int, vector<Cell*>> Maze::getUnvisitedNeighbors(Cell* cell) {
 		target_cell = Cell_Grid[X + 1][Y];
 
 		if (target_cell->wasVisited == false) {
-			directions[1] = target_cell;
-			cnt++;
+			directions.push_back(target_cell);
 		}
 	}
 
@@ -439,8 +464,7 @@ pair<int, vector<Cell*>> Maze::getUnvisitedNeighbors(Cell* cell) {
 		target_cell = Cell_Grid[X][Y + 1];
 
 		if (target_cell->wasVisited == false) {
-			directions[2] = target_cell;
-			cnt++;
+			directions.push_back(target_cell);
 		}	
 	}
 
@@ -449,19 +473,16 @@ pair<int, vector<Cell*>> Maze::getUnvisitedNeighbors(Cell* cell) {
 		target_cell = Cell_Grid[X - 1][Y];
 
 		if (target_cell->wasVisited == false) {
-			directions[3] = target_cell;
-			cnt++;
+			directions.push_back(target_cell);
 		}
 	}
 
-
-	return make_pair(cnt ,directions);
+	return directions;
 }
 
-pair<int, vector<Cell*>> Maze::getVisitedNeighbors(Cell* cell) {
+vector<Cell*> Maze::getVisitedNeighbors(Cell* cell) {
 
-	vector<Cell*> directions{ 4, nullptr };
-	int cnt = 0;
+	vector<Cell*> directions;
 
 	Point pos = cell->getPosition();
 	int X = pos.getX();
@@ -474,8 +495,7 @@ pair<int, vector<Cell*>> Maze::getVisitedNeighbors(Cell* cell) {
 		target_cell = Cell_Grid[X][Y - 1];
 
 		if (target_cell->wasVisited) {
-			directions[0] = target_cell;
-			cnt++;
+			directions.push_back(target_cell);
 		}
 	}
 
@@ -484,8 +504,7 @@ pair<int, vector<Cell*>> Maze::getVisitedNeighbors(Cell* cell) {
 		target_cell = Cell_Grid[X + 1][Y];
 
 		if (target_cell->wasVisited) {
-			directions[1] = target_cell;
-			cnt++;
+			directions.push_back(target_cell);
 		}
 	}
 
@@ -494,8 +513,7 @@ pair<int, vector<Cell*>> Maze::getVisitedNeighbors(Cell* cell) {
 		target_cell = Cell_Grid[X][Y + 1];
 
 		if (target_cell->wasVisited) {
-			directions[2] = target_cell;
-			cnt++;
+			directions.push_back(target_cell);
 		}
 	}
 
@@ -504,11 +522,43 @@ pair<int, vector<Cell*>> Maze::getVisitedNeighbors(Cell* cell) {
 		target_cell = Cell_Grid[X - 1][Y];
 
 		if (target_cell->wasVisited) {
-			directions[3] = target_cell;
-			cnt++;
+			directions.push_back(target_cell);
 		}
 	}
 
 
-	return make_pair(cnt, directions);
+	return directions;
 }
+
+void Maze::connectCells(Cell* first, Cell* second)
+{
+	int diff_x = first->getPosition().getX() - second->getPosition().getX();
+	int diff_y = first->getPosition().getY() - second->getPosition().getY();
+
+	if (diff_x == 0) {
+		//North
+		if (diff_y == 1) {
+			first->setNorth(second);
+			second->setSouth(first);
+		}
+		//South
+		if (diff_y == -1) {
+			first->setSouth(second);
+			second->setNorth(first);
+		}
+	}
+	else {
+		//West
+		if (diff_x == 1) {
+			first->setWest(second);
+			second->setEast(first);
+		}
+		//East
+		if (diff_x == -1) {
+			first->setEast(second);
+			second->setWest(first);
+		}
+
+	}
+}
+
