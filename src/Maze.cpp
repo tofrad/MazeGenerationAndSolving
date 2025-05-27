@@ -161,6 +161,14 @@ void Maze::generateMaze()
 	saveLastState();
 }
 
+void Maze::resetMaze()
+{
+	for (auto cell : GeneratedMaze) {
+		cell->resetCell();
+	}
+
+}
+
 void Maze::drawMaze()
 {
 	record.playLastFrame();
@@ -392,12 +400,11 @@ void Maze::HuntAndKill()
 						record.recordStep(cell);
 
 						break;
-
 					}
 				}
 			}
 		}
-
+		//no valid cell is left , abort
 		if (next_cell == nullptr) {
 			break;
 		}

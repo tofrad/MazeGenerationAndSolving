@@ -36,10 +36,9 @@ class Cell
 		void updateColor();
 
 		void drawCell();
+		void resetCell();
 
 		uint64_t getCellID();
-
-		bool isWall = false;
 
 		bool isStart = false;
 		bool isTarget = false;

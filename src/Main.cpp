@@ -23,7 +23,7 @@ int main()
     //--------------------------------------------------------------------------------------
 
     //Test stuff ###############################################################
-    int size_x = 70;
+    int size_x = 50;
     int size_y = (size_x * 9) / 16;
 
     Maze M = Maze(size_x, size_y, screenWidth, screenHeight);
@@ -49,11 +49,11 @@ int main()
         BeginTextureMode(buffer);
                 
         if (M.playRecording()){
-            SetTargetFPS(550);
+            SetTargetFPS(1450);
         }
         else {
             S.playRecording();
-            SetTargetFPS(90);
+            SetTargetFPS(170);
         }
 
         EndTextureMode();

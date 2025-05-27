@@ -24,6 +24,8 @@ class Maze
 
 		void generateMaze();
 
+		void resetMaze();
+
 		void drawMaze();
 
 		bool playRecording();

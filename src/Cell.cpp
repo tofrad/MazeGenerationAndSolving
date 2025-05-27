@@ -96,10 +96,7 @@ Color Cell::getColor()
 
 void Cell::updateColor()
 {
-	if (isWall) {
-		this->color = BLACK;
-	}
-	else if (isActive) {
+	if (isActive) {
 		this->color = LIME;
 	}
 	else if (isStart) {
@@ -177,6 +174,16 @@ void Cell::drawCell()
 	}
 }
 
+void Cell::resetCell()
+{
+	this->Parent = nullptr;
+	this->pathVisited = false;
+	this->isPath = false;
+	this->isfinishedPath = false;
+	this->isActive = false;
+	this->color = LIGHTGRAY;
+}
+
 uint64_t Cell::getCellID()
 {
 	return cell_id;
@@ -184,5 +191,5 @@ uint64_t Cell::getCellID()
 
 void Cell::setId()
 {
-	cell_id = (uint64_t) (p.getX()	<< 32) | (uint64_t)p.getY();	
+	cell_id = (uint64_t) ((uint64_t)p.getX()	<< 32) | (uint64_t)p.getY();	
 }
