@@ -6,7 +6,31 @@ Goal is to create a connected Graph and giving the solving Algorithm only the st
 
 This is a work in progress.
 
-Maze generated with Recursive Backtracking and solved with Depth-First-Search(DFS)
+To be added:
+  - Generators: Prims
+  
+  - Algorithms: A-Star, Dijkstra
+  
+  - UI to choose Generation and Pathfinding Algorithms
+    
 
-https://github.com/user-attachments/assets/f93d4c48-f155-492f-a1ab-c1fb7865d84b
+# Some Examples from Current Implementation
+
+<table>
+  <tr>
+    <th colspan="1" style="text-align: center">Generator: Kruskal - Solved with BFS(Breadth-First-Search)</th>
+  </tr>
+  <tr>
+    <td><video src= https://github.com/user-attachments/assets/060f7dcd-f001-45ad-b0ce-d833dfa6f828 /></td>
+  </tr>
+</table>
+      
+<table>
+  <tr>
+    <th colspan="1" style="text-align: center">Generator: Hunt&Kill - Solved with DFS(Depth-First-Search)</th>
+  </tr>
+  <tr>
+    <td><video src= https://github.com/user-attachments/assets/169c30e4-8b7c-4955-9676-6abe275ff9f1 /></td>
+  </tr>
+</table>
 
