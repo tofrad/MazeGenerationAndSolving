@@ -117,6 +117,9 @@ void Cell::updateColor()
 	else if (wasVisited){
 		this->color = DARKGRAY;
 	}
+	else if (isWall) {
+		this->color = BLACK;
+	}
 	else {
 		this->color = LIGHTGRAY;
 	}
@@ -182,6 +185,36 @@ void Cell::resetCell()
 	this->isfinishedPath = false;
 	this->isActive = false;
 	this->color = LIGHTGRAY;
+}
+
+void Cell::makeWall()
+{
+	if(this->getNorth() != nullptr){
+
+		this->getNorth()->setSouth(nullptr);
+		this->setNorth(nullptr);
+	}
+
+	if (this->getEast() != nullptr) {
+
+		this->getEast()->setWest(nullptr);
+		this->setEast(nullptr);
+	}
+
+	if (this->getSouth() != nullptr) {
+
+		this->getSouth()->setNorth(nullptr);
+		this->setSouth(nullptr);
+	}
+
+	if (this->getWest() != nullptr) {
+
+		this->getWest()->setEast(nullptr);
+		this->setWest(nullptr);
+	}
+
+	this->isWall = true;
+
 }
 
 uint64_t Cell::getCellID()

@@ -5,13 +5,14 @@
 #include <random>
 #include <ctime>
 
-#define MAX_HEIGHT 100
-#define MAX_WIDTH 100
+#define MAX_HEIGHT 150
+#define MAX_WIDTH 150
 
 #define MIN_HEIGHT 3
 #define MIN_WIDTH 3
 
-#define OFFSET 10
+#define OFFSET 30
+
 int usable_height;
 int usable_width;
 
@@ -26,17 +27,8 @@ Maze::Maze()
 	createConnectedMaze();
 }
 
-Maze::Maze(int width, int height, int screenwidth, int screenheight)
+Maze::Maze(int width, int screenwidth, int screenheight, GenerationMethod method)
 {
-	if (height > MAX_HEIGHT) {
-		this->height = MAX_HEIGHT;
-	}
-	else if (height < MIN_HEIGHT) {
-		this->height = MIN_HEIGHT;
-	}
-	else {
-		this->height = height;
-	}
 
 	if (width > MAX_WIDTH) {
 		this->width = MAX_WIDTH;
@@ -47,6 +39,19 @@ Maze::Maze(int width, int height, int screenwidth, int screenheight)
 	else {
 		this->width = width;
 	}
+
+	int height = (width * 9) / 16;
+
+	if (height > MAX_HEIGHT) {
+		this->height = MAX_HEIGHT;
+	}
+	else if (height < MIN_HEIGHT) {
+		this->height = MIN_HEIGHT;
+	}
+	else {
+		this->height = height;
+	}
+
 	usable_height = screenheight - (OFFSET);
 	usable_width = screenwidth - (OFFSET);
 
@@ -56,7 +61,8 @@ Maze::Maze(int width, int height, int screenwidth, int screenheight)
 	/*this->width = (int)(usable_width / this->cellsize);*/
 
 	rand_gen.seed(time(0));
-	createConnectedMaze();
+	generateMaze(method);
+	
 }
 
 Maze::~Maze()
@@ -84,8 +90,8 @@ void Maze::createConnectedMaze()
 
 		for (int y = 0; y < height; y++) {
 
-			start_x = OFFSET + (usable_width - (width * cellsize)) / 2;
-			start_y = OFFSET + (usable_height - (height * cellsize)) / 2;
+			start_x = OFFSET / 2 + (usable_width - (width * cellsize)) / 2;
+			start_y = OFFSET / 2+ (usable_height - (height * cellsize)) / 2;
 			Vector2 Offset{start_x, start_y};
 			Cell* C = new Cell(Point(x, y), cellsize, Offset);
 
@@ -127,9 +133,11 @@ void Maze::createEmptyMaze()
 	}
 }
 
-void Maze::generateMaze()
+void Maze::generateMaze(GenerationMethod method)
 {
 	createConnectedMaze();
+
+
 	deleteConnections();
 
 	int rand = 0; // GetRandomValue(0, Cell_List.size() - 1);

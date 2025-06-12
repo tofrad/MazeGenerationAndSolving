@@ -1,6 +1,3 @@
-// Maze.cpp : Diese Datei enthält die Funktion "main". Hier beginnt und endet die Ausführung des Programms.
-//
-
 #include <iostream>
 #include "raylib.h"
 
@@ -12,23 +9,25 @@ int main()
 {
     // Initialization
     //--------------------------------------------------------------------------------------
-    const int screenWidth = 1920;
-    const int screenHeight = 1080;
+    int screenWidth = 1920;
+    int screenHeight = 1080;
 
     //SetConfigFlags(FLAG_VSYNC_HINT);
-    InitWindow(screenWidth, screenHeight, "Maze Generator with raylib");
+    InitWindow(GetScreenWidth(), GetScreenHeight(), "Maze Generator with raylib");
+
+    screenWidth = GetScreenWidth();
+    screenHeight = GetScreenHeight();
+
+    ToggleBorderlessWindowed();
 
     SetTargetFPS(200);           
 
     //--------------------------------------------------------------------------------------
 
-    //Test stuff ###############################################################
-    int size_x = 50;
-    int size_y = (size_x * 9) / 16;
+    //Test stuff ---------------------------------------------------------------------------
+    int size_x = 100;
 
-    Maze M = Maze(size_x, size_y, screenWidth, screenHeight);
-
-    M.generateMaze();
+    Maze M = Maze(size_x, screenWidth, screenHeight, HUNTANDKILL);
 
     Pathsolver S = Pathsolver(M.getGeneratedMaze());
 
@@ -37,10 +36,12 @@ int main()
     //create buffer for drawing
     RenderTexture2D buffer = LoadRenderTexture(screenWidth, screenHeight);
     Rectangle source = { 0, 0, buffer.texture.width, -buffer.texture.height };
+
     //BeginTextureMode(buffer);
     //M.drawMaze();
     //EndTextureMode();
-    //------##########################################################################
+    // 
+    //--------------------------------------------------------------------------------------
 
     // Main game loop
     while (!WindowShouldClose()) 
@@ -62,10 +63,9 @@ int main()
         //----------------------------------------------------------------------------------
         BeginDrawing();
 
-        ClearBackground(WHITE);
+        ClearBackground(RAYWHITE);
 
         //display buffer
-        
         DrawTextureRec(buffer.texture, source, Vector2{0, 0}, WHITE);
         //DrawTexture(buffer.texture, 0, 0, WHITE);
 

@@ -5,6 +5,11 @@
 #include "Cell.hpp"
 #include "Recorder.hpp"
 
+typedef enum {
+	DFS,
+	BFS
+
+} SolvingMethod;
 
 class Pathsolver
 {

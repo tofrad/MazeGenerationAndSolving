@@ -37,6 +37,7 @@ class Cell
 
 		void drawCell();
 		void resetCell();
+		void makeWall();
 
 		uint64_t getCellID();
 
@@ -45,6 +46,8 @@ class Cell
 
 		bool wasVisited = false;
 		bool isActive = false;
+
+		bool isWall = false;
 
 		bool pathVisited = false;
 		bool isPath = false;  //marker for dfs recursion when deadend was found

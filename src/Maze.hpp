@@ -8,11 +8,19 @@
 
 using namespace std;
 
+typedef enum {
+	REC_BACKTRACKING,
+	KRUSKAL,
+	HUNTANDKILL,
+	CUSTOM
+
+} GenerationMethod;
+
 class Maze
 {
 	public:
 		Maze();
-		Maze(int width, int height, int screenwidth, int screenheight);
+		Maze(int width, int screenwidth, int screenheight, GenerationMethod method);
 		~Maze();
 
 		Cell* getStart();
@@ -21,8 +29,6 @@ class Maze
 		void createEmptyMaze();
 
 		void createConnectedMaze();
-
-		void generateMaze();
 
 		void resetMaze();
 
@@ -50,6 +56,8 @@ class Maze
 		Recorder record;
 
 		std::mt19937 rand_gen;
+
+		void generateMaze(GenerationMethod method);
 
 		void saveLastState();
 
