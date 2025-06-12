@@ -136,26 +136,45 @@ void Maze::createEmptyMaze()
 void Maze::generateMaze(GenerationMethod method)
 {
 	createConnectedMaze();
-
-
 	deleteConnections();
 
-	int rand = 0; // GetRandomValue(0, Cell_List.size() - 1);
-	int rand2 = (height * width) - 1;// GetRandomValue(0, Cell_List.size() - 1); //(height*width) - 1;
+	int rand = 0; // GetRandomValue(0, Cell_List.size() - 1); 
+	int rand2 = (height * width) - 1;// GetRandomValue(0, Cell_List.size() - 1); //(height*width) - 1; 
 
-	Cell_List[rand]->isStart = true;
-	Start = Cell_List[rand];
+	Cell_List[rand]->isStart = true; 
+	Start = Cell_List[rand]; 
 
-	Cell_List[rand2]->isTarget = true;
+	Cell_List[rand2]->isTarget = true; 
 	Target = Cell_List[rand2];
+
 
 	record = Recorder(Cell_List);
 
 	record.startRecording();
 
-	//Kruskal();
-	//RecursiveBacktracking(*Cell_List[rand]);
-	HuntAndKill();
+	switch (method) {
+
+		case REC_BACKTRACKING:
+			RecursiveBacktracking(*Start);
+			break;
+
+		case KRUSKAL:
+			Kruskal();
+			break;
+
+		case HUNTANDKILL:
+			HuntAndKill();
+			break;
+
+		case CUSTOM:
+
+			break;
+
+		default:
+			HuntAndKill();
+			break;
+
+	}
 
 	record.stopRecording();
 
