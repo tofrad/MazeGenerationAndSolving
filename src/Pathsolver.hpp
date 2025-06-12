@@ -6,8 +6,8 @@
 #include "Recorder.hpp"
 
 typedef enum {
-	DFS,
-	BFS
+	SM_DFS,
+	SM_BFS
 
 } SolvingMethod;
 
@@ -15,10 +15,8 @@ class Pathsolver
 {
 	public:
 		Pathsolver();
-		Pathsolver(vector<Cell*> Initial);
+		Pathsolver(vector<Cell*> Initial, Cell* start, SolvingMethod method);
 		~Pathsolver();
-
-		void solveMaze(Cell* start);
 
 		bool playRecording();
 		void loopRecording();
@@ -35,6 +33,8 @@ class Pathsolver
 		Recorder path_record;
 
 		bool isVisitable(Cell* cell);
+
+		void solveMaze(Cell* start, SolvingMethod method);
 
 		bool DFS(Cell* start);
 

@@ -29,9 +29,7 @@ int main()
 
     Maze M = Maze(size_x, screenWidth, screenHeight, HUNTANDKILL);
 
-    Pathsolver S = Pathsolver(M.getGeneratedMaze());
-
-    S.solveMaze(M.getStart());
+    Pathsolver S = Pathsolver(M.getGeneratedMaze(), M.getStart(), SM_BFS);
 
     //create buffer for drawing
     RenderTexture2D buffer = LoadRenderTexture(screenWidth, screenHeight);

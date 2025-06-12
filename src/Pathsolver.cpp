@@ -6,9 +6,12 @@ Pathsolver::Pathsolver()
 
 }
 
-Pathsolver::Pathsolver(vector<Cell*> Initial)
+Pathsolver::Pathsolver(vector<Cell*> Initial, Cell* start, SolvingMethod method)
 {
 	path_record = Recorder(Initial);
+
+	solveMaze(start, method);
+
 }
 
 Pathsolver::~Pathsolver()
@@ -16,17 +19,27 @@ Pathsolver::~Pathsolver()
 
 }
 
-void Pathsolver::solveMaze(Cell* start)
+void Pathsolver::solveMaze(Cell* start, SolvingMethod method)
 {
 	
 	//start recording
 	path_record.startRecording();
 
 	//solve Maze
-	BFS(start);
+	switch (method) {
+
+		case SM_DFS:
+			DFS(start);
+			break;
+		case SM_BFS:
+			BFS(start);
+			break;
+
+	}
 
 	//stop Recording
-	path_record.stopRecording(); 
+	path_record.stopRecording();
+
 }
 
 bool Pathsolver::playRecording()
@@ -82,16 +95,16 @@ bool Pathsolver::DFS(Cell* start)
 	Cell* South = start->getSouth();
 	Cell* West = start->getWest();
 
-	if (North != nullptr && North->pathVisited == false) {
+	if (isVisitable(North)) {
 		adjCells.push_back(North);
 	}
-	if (East != nullptr && East->pathVisited == false) {
+	if (isVisitable(East)) {
 		adjCells.push_back(East);
 	}
-	if (South != nullptr && South->pathVisited == false) {
+	if (isVisitable(South)) {
 		adjCells.push_back(South);
 	}
-	if (West != nullptr && West->pathVisited == false) {
+	if (isVisitable(West)) {
 		adjCells.push_back(West);
 	}
 
