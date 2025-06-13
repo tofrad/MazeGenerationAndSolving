@@ -40,7 +40,7 @@ Maze::Maze(int width, int screenwidth, int screenheight, GenerationMethod method
 		this->width = width;
 	}
 
-	int height = (width * 9) / 16;
+	int height = (this->width * 9) / 16;
 
 	if (height > MAX_HEIGHT) {
 		this->height = MAX_HEIGHT;
@@ -58,7 +58,7 @@ Maze::Maze(int width, int screenwidth, int screenheight, GenerationMethod method
 	this->cellsize = min(usable_width / this->width, usable_height / this->height);
 
 	this->height = (int)(usable_height / this->cellsize);
-	/*this->width = (int)(usable_width / this->cellsize);*/
+	this->width = (int)(usable_width / this->cellsize);
 
 	rand_gen.seed(time(0));
 	generateMaze(method);

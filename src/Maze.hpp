@@ -43,6 +43,7 @@ class Maze
 		int height;
 		int width;
 		int cellsize;
+		Vector2 Offset;
 
 		vector<vector<Cell*>> Cell_Grid;
 

@@ -23,14 +23,29 @@ class Program
 		void InitProgram();
 		int Run();
 
+		ProgramState State = STOPPED;
+
 
 	private:
+
+		int screenWidth = 1920;
+		int screenHeight = 1080;
+
+		int MazeSize = 100;
 
 		Maze M;
 
 		Pathsolver S;
 
-		ProgramState state = STOPPED;
+		int FrameRate = 60;
+
+		float scale = 1.0f;
+
+		//buffer for displaying program to window
+		RenderTexture2D buffer;
+
+		//source to save the displayed maze in 
+		Rectangle source;
 
 };
 
