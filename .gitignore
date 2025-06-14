@@ -366,3 +366,7 @@ MigrationBackup/
 FodyWeavers.xsd
 Tile_Sprite.png
 Warrior_Blue.png
+style_cyber.h
+sunny.h
+*.rgs
+.gitignore
