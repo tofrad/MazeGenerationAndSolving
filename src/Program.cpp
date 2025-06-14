@@ -2,11 +2,6 @@
 #include <iostream>
 #include "Program.hpp"
 
-#define RAYGUI_IMPLEMENTATION
-#include "raygui.h"
-
-#include "style_cyber.h"
-
 Program::Program()
 {
 	InitProgram();
@@ -27,7 +22,7 @@ void Program::InitProgram()
 
     InitWindow(screenWidth, screenHeight, "Maze Generator with raylib");
 
-    GuiLoadStyleCyber();
+    
 
     screenWidth = GetScreenWidth();
     screenHeight = GetScreenHeight();
@@ -57,17 +52,6 @@ void Program::InitProgram()
 
 int Program::Run()
 {
-
-    float dropdown_height = 40;
-    float dropdown_length = 250;
-    float dropdown_thick = 30;
-
-    int Maze_GUI = 0;
-    int Path_GUI = 0;
-
-    bool MazeEdit = false;
-    bool PathEdit = false;
-
     // Main program loop
     while (!WindowShouldClose() && State != STOPPED)
     {
@@ -79,9 +63,7 @@ int Program::Run()
                 setState(IDLE);
             }
             else {
-                setState(MENU);
-                menu.open(*this);
-                int i = 0;
+                setState(MENU);               
             }  
         }
 
@@ -98,18 +80,24 @@ int Program::Run()
         //write changes into buffer
         BeginTextureMode(buffer);
         switch (State) {
+
+            case IDLE:
+                break;
+
             case PLAY_MAZE:
                 if (!M.playRecording()) {
                     setState(IDLE);
                 }
                 break;
+
             case PLAY_PATH:
                 if (!S.playRecording()) {
                     setState(IDLE);
                 }
                 break;
-            case MENU:
 
+            case MENU:
+                menu.open(*this);
                 break;
         }
 
@@ -139,7 +127,6 @@ int Program::Run()
         //    0.0f,
         //    WHITE);
 
-
         DrawTexturePro(
             buffer.texture,
             source,
@@ -149,21 +136,6 @@ int Program::Run()
             WHITE);
 
         //DrawTexture(buffer.texture, 0, 0, WHITE);
-
-        GuiLabel(Rectangle{ 1000, 10, 200, 24 }, "Maze Generator");
-        if (GuiDropdownBox(Rectangle{ 1000, 35, dropdown_length, dropdown_thick }, "REC_BACKTRACKING;KRUSKAL;HUNTANDKILL;CUSTOM", &Maze_GUI, MazeEdit)) {
-
-            std::cout << Maze_GUI << std::endl;
-            MazeEdit = !MazeEdit;
-        }
-
-        GuiLabel(Rectangle{ 1300, 10, 200, 24 }, "Path Solver");
-        if (GuiDropdownBox(Rectangle{ 1300, 35, dropdown_length, dropdown_thick }, "BFS;DFS", &Path_GUI, PathEdit)) {
-
-            std::cout << Path_GUI << std::endl;
-            PathEdit = !PathEdit;
-
-        }
 
         EndDrawing();
         //----------------------------------------------------------------------------------
