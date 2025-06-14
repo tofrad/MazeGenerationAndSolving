@@ -2,6 +2,7 @@
 
 #include "Maze.hpp"
 #include "Pathsolver.hpp"
+#include "Menu.hpp"
 
 #include "raylib.h"
 
@@ -38,6 +39,8 @@ class Program
 		Maze M;
 
 		Pathsolver S;
+
+		Menu menu;  
 
 		int FrameRate = 60;
 

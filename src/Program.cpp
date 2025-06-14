@@ -25,14 +25,17 @@ void Program::InitProgram()
     // Initialization
     //--------------------------------------------------------------------------------------
 
-    InitWindow(GetScreenWidth(), GetScreenHeight(), "Maze Generator with raylib");
+    InitWindow(screenWidth, screenHeight, "Maze Generator with raylib");
 
     GuiLoadStyleCyber();
 
     screenWidth = GetScreenWidth();
     screenHeight = GetScreenHeight();
 
-    ToggleBorderlessWindowed();
+    //ToggleBorderlessWindowed();
+
+    //SetWindowState(FLAG_WINDOW_UNDECORATED);
+    SetWindowState(FLAG_WINDOW_RESIZABLE);
 
     SetTargetFPS(FrameRate);
 
@@ -62,12 +65,14 @@ int Program::Run()
     int Maze_GUI = 0;
     int Path_GUI = 0;
 
-    bool MazeEditMode = false;
-    bool PathEditMode = false;
+    bool MazeEdit = false;
+    bool PathEdit = false;
 
     // Main program loop
     while (!WindowShouldClose() && State != STOPPED)
     {
+        screenWidth = GetScreenWidth();
+        screenHeight = GetScreenHeight();
         //check Keys
         if (IsKeyPressed(KEY_M)) {
             if (State == MENU) {
@@ -75,6 +80,8 @@ int Program::Run()
             }
             else {
                 setState(MENU);
+                menu.open(*this);
+                int i = 0;
             }  
         }
 
@@ -120,31 +127,42 @@ int Program::Run()
         //----------------------------------------------------------------------------------
         BeginDrawing();
 
-        ClearBackground(BLACK);
+        ClearBackground(LIGHTGRAY);
 
         //display buffer
         //DrawTextureRec(buffer.texture, source, Vector2{0, 0}, WHITE);
 
-        DrawTexturePro(buffer.texture,
+        //DrawTexturePro(buffer.texture,
+        //    source,
+        //    Rectangle{ (GetScreenWidth() - ((float)screenWidth * scale)) * 0.5f, (GetScreenHeight() - ((float)screenHeight * scale)) * 0.5f,(float)screenWidth * scale, (float)screenHeight * scale },
+        //    Vector2{ 0, 0 },
+        //    0.0f,
+        //    WHITE);
+
+
+        DrawTexturePro(
+            buffer.texture,
             source,
-            Rectangle{ (GetScreenWidth() - ((float)screenWidth * scale)) * 0.5f, (GetScreenHeight() - ((float)screenHeight * scale)) * 0.5f,(float)screenWidth * scale, (float)screenHeight * scale },
+            Rectangle{ 0, 0, static_cast<float>(screenWidth), static_cast<float>(screenHeight) },
             Vector2{ 0, 0 },
-            0.0f,
+            0,
             WHITE);
+
         //DrawTexture(buffer.texture, 0, 0, WHITE);
 
-        GuiLabel(Rectangle{ 10, 10, 200, 24 }, "Maze Generator");
-        if (GuiDropdownBox(Rectangle{ 10, 35, dropdown_length, dropdown_thick }, "REC_BACKTRACKING;KRUSKAL;HUNTANDKILL;CUSTOM", &Maze_GUI, MazeEditMode)) {
+        GuiLabel(Rectangle{ 1000, 10, 200, 24 }, "Maze Generator");
+        if (GuiDropdownBox(Rectangle{ 1000, 35, dropdown_length, dropdown_thick }, "REC_BACKTRACKING;KRUSKAL;HUNTANDKILL;CUSTOM", &Maze_GUI, MazeEdit)) {
 
             std::cout << Maze_GUI << std::endl;
-            MazeEditMode = !MazeEditMode;
+            MazeEdit = !MazeEdit;
         }
 
-        GuiLabel(Rectangle{ 270, 10, 400, 24 }, "Path Solver");
-        if (GuiDropdownBox(Rectangle{ 270, 35, dropdown_length, dropdown_thick }, "BFS;DFS", &Path_GUI, PathEditMode)) {
+        GuiLabel(Rectangle{ 1300, 10, 200, 24 }, "Path Solver");
+        if (GuiDropdownBox(Rectangle{ 1300, 35, dropdown_length, dropdown_thick }, "BFS;DFS", &Path_GUI, PathEdit)) {
 
             std::cout << Path_GUI << std::endl;
-            PathEditMode = !PathEditMode;
+            PathEdit = !PathEdit;
+
         }
 
         EndDrawing();
