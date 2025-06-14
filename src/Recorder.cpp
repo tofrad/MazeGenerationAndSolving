@@ -28,7 +28,7 @@ void Recorder::startRecording()
 void Recorder::stopRecording()
 {
 	recording = false;
-
+	size = history.size() - 1;
 }
 
 void Recorder::recordStep(Cell* modifiedCell)
@@ -63,8 +63,6 @@ void Recorder::saveLastFrame(vector<Cell*> LastList)
 	}
 
 }
-
-//########################################################################################################################################
 
 void Recorder::startPlaying()
 {
@@ -133,4 +131,10 @@ void Recorder::playLastFrame()
 	for (auto cell : LastState) {
 		cell->drawCell();
 	}
+}
+
+void Recorder::playStep(int step)
+{
+	current_step = step;
+
 }

@@ -33,7 +33,12 @@ public:
 	bool stepForward();
 	void playLastFrame();
 
+	void playStep(int step);
+
 private:
+
+	int size = 0;
+
 	vector<Cell*> initialState;
 
 	vector<Cell*> LastState;

@@ -6,10 +6,12 @@
 #include "raylib.h"
 
 typedef enum {
-	RUNNING,
+	IDLE,
 	STOPPED,
 	MENU,
-	EDITING
+	EDITING,
+	PLAY_MAZE,
+	PLAY_PATH
 
 } ProgramState;
 
@@ -31,7 +33,7 @@ class Program
 		int screenWidth = 1920;
 		int screenHeight = 1080;
 
-		int MazeSize = 100;
+		int MazeSize = 50;
 
 		Maze M;
 
@@ -44,8 +46,9 @@ class Program
 		//buffer for displaying program to window
 		RenderTexture2D buffer;
 
-		//source to save the displayed maze in 
 		Rectangle source;
+
+		void setState(ProgramState next_state);
 
 };
 

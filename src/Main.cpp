@@ -1,16 +1,16 @@
+#pragma once
 #include "Program.hpp"
-
 
 int main()
 {
-    // Initialization
-    //--------------------------------------------------------------------------------------
     Program P;
+
+    int error = 0;
 
     // Main game loop
     while (P.State != STOPPED) 
     {
-        P.Run();
+        error = P.Run();
     }
-    return 0;
+    return error;
 }
