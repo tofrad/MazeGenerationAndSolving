@@ -4,7 +4,7 @@
 #define RAYGUI_IMPLEMENTATION
 #include "raygui.h"
 
-#include "style_cyber.h"
+#include "../style_cyber.h"
 
 Menu::Menu()
 {
