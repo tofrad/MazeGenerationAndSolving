@@ -58,17 +58,14 @@ int Program::Run()
     // Main program loop
     while (!WindowShouldClose() && State != STOPPED)
     {
-
-        //write changes into buffer
-        BeginTextureMode(buffer);
-
+        //update Screen Variables
         screenWidth = GetScreenWidth();
         screenHeight = GetScreenHeight();
+
         //check Keys
         if (IsKeyPressed(KEY_M)) {
             if (State == MENU) {
                 menu.close();
-                setState(IDLE);
             }
             else {
                 setState(MENU);
@@ -85,21 +82,20 @@ int Program::Run()
             setState(PLAY_PATH);
         }
 
+        //write changes into buffer
+        //just write recorder stuff - no setStates to preserve TextureMode
+        BeginTextureMode(buffer);
         switch (State) {
-
-            case IDLE:
-                ClearBackground(LIGHTGRAY);
-                break;
 
             case PLAY_MAZE:
                 if (!M.playRecording()) {
-                    setState(IDLE);
+                    //Recorder finished
                 }
                 break;
 
             case PLAY_PATH:
                 if (!S.playRecording()) {
-                    setState(IDLE);
+                    //Recorder finished
                 }
                 break;
 
@@ -157,18 +153,14 @@ int Program::Run()
 
 void Program::setState(ProgramState next_state)
 {
-    saveLastFrame();
     switch (next_state) {
-        case IDLE:
-
-            break;
 
         case STOPPED:
 
             break;
 
         case MENU:
-            
+            saveLastFrame();
             menu.open();
             break;
 
@@ -177,15 +169,17 @@ void Program::setState(ProgramState next_state)
             break;
 
         case PLAY_MAZE:
+            saveLastFrame();
             getLastMazeFrame();
             break;
 
         case PLAY_PATH:
+            saveLastFrame();
             getLastPathFrame();
             break;
 
         default:
-            setState(IDLE);
+            setState(MENU);
             break;
     }
 
@@ -195,13 +189,14 @@ void Program::setState(ProgramState next_state)
 
 void Program::saveLastFrame()
 {  
+    //Checks old states before new state is set
     if (State == PLAY_MAZE) {
         BeginTextureMode(last_maze_buffer);
         ClearBackground(LIGHTGRAY);
         DrawTextureRec(buffer.texture, source, Vector2{ 0, 0 }, WHITE);
         EndTextureMode();
 
-    }else if (State == PLAY_MAZE) {
+    }else if (State == PLAY_PATH) {
         BeginTextureMode(last_path_buffer);
         ClearBackground(LIGHTGRAY);
         DrawTextureRec(buffer.texture, source, Vector2{ 0, 0 }, WHITE);
@@ -215,12 +210,14 @@ void Program::saveLastFrame()
 
 void Program::getLastMazeFrame()
 {
+    BeginTextureMode(buffer);
     ClearBackground(LIGHTGRAY);
     DrawTextureRec(last_maze_buffer.texture, source, Vector2{ 0, 0 }, WHITE);
 }
 
 void Program::getLastPathFrame()
 {
+    BeginTextureMode(buffer);
     ClearBackground(LIGHTGRAY);
     DrawTextureRec(last_path_buffer.texture, source, Vector2{ 0, 0 }, WHITE);
 }

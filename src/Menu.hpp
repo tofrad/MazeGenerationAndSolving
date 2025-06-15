@@ -1,5 +1,5 @@
 #pragma once
-
+#include "State_Definitions.hpp"
 
 class Program;
 
@@ -24,12 +24,24 @@ class Menu
 		void close();
 
 		void displayGUI();
+		 
 
 	private:
 
-		Program* program;
+		Program* program = nullptr;
+
+		void requestStateChange(ProgramState newState);
+
+		void generatorRequest();
+
+		void solverRequest();
 
 		MenuState state = CLOSED;
+
+		//GUI Variables-------------------------------------------------------
+
+		/*TODO Dynamic GUI Size with Start and GetScreen Coords*/
+		Vector2 GUI_Start; 
 
 		float dropdown_height = 40;
 		float dropdown_length = 250;
@@ -41,6 +53,14 @@ class Menu
 		bool MazeEdit = false;
 		bool PathEdit = false;
 
+		//Values from GUI Input-----------------------------------------------
+
+		//Maze-------------------------------------
+		int MazeSize;
+		GenerationMethod MazeMethod;
+
+		//Solver-----------------------------------
+		SolvingMethod SolveMethod;
 		
 		
 

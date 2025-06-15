@@ -18,9 +18,7 @@ Menu::~Menu()
 
 void Menu::open()
 {
-    state = OPEN; 
-    
-   
+    state = OPEN;    
 }
 
 void Menu::init(Program& P)
@@ -53,4 +51,13 @@ void Menu::displayGUI()
             PathEdit = !PathEdit;
         }
     }
+}
+
+void Menu::requestStateChange(ProgramState newState)
+{
+    if (program != nullptr) {
+
+        program->setState(newState);
+    }
+
 }

@@ -6,15 +6,9 @@
 #include "Cell.hpp"
 #include "Recorder.hpp"
 
+#include "State_Definitions.hpp"
+
 using namespace std;
-
-typedef enum {
-	REC_BACKTRACKING,
-	KRUSKAL,
-	HUNTANDKILL,
-	CUSTOM
-
-} GenerationMethod;
 
 class Maze
 {

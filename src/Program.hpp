@@ -6,15 +6,7 @@
 
 #include "raylib.h"
 
-typedef enum {
-	IDLE,
-	STOPPED,
-	MENU,
-	EDITING,
-	PLAY_MAZE,
-	PLAY_PATH
-
-} ProgramState;
+#include "State_Definitions.hpp"
 
 class Program
 {
