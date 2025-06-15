@@ -5,7 +5,7 @@
 Program::Program()
 {
 	InitProgram();
-    State = IDLE;
+    setState(MENU);
 }
 
 Program::~Program()
@@ -22,7 +22,7 @@ void Program::InitProgram()
 
     InitWindow(screenWidth, screenHeight, "Maze Generator with raylib");
 
-    
+    menu.init(*this);
 
     screenWidth = GetScreenWidth();
     screenHeight = GetScreenHeight();
@@ -44,6 +44,9 @@ void Program::InitProgram()
     buffer = LoadRenderTexture(screenWidth, screenHeight);
     source = { 0, 0, (float)buffer.texture.width, (float) - buffer.texture.height};
 
+    last_maze_buffer = LoadRenderTexture(screenWidth, screenHeight);
+    last_path_buffer = LoadRenderTexture(screenWidth, screenHeight);
+
     //--------------------------------------------------------------------------------------
 
     scale = min((float)GetScreenWidth() / screenWidth, (float)GetScreenHeight() / screenHeight);
@@ -55,16 +58,21 @@ int Program::Run()
     // Main program loop
     while (!WindowShouldClose() && State != STOPPED)
     {
+
+        //write changes into buffer
+        BeginTextureMode(buffer);
+
         screenWidth = GetScreenWidth();
         screenHeight = GetScreenHeight();
         //check Keys
         if (IsKeyPressed(KEY_M)) {
             if (State == MENU) {
+                menu.close();
                 setState(IDLE);
             }
             else {
-                setState(MENU);               
-            }  
+                setState(MENU);
+            }
         }
 
         if (IsKeyPressed(KEY_ONE)) {
@@ -77,11 +85,10 @@ int Program::Run()
             setState(PLAY_PATH);
         }
 
-        //write changes into buffer
-        BeginTextureMode(buffer);
         switch (State) {
 
             case IDLE:
+                ClearBackground(LIGHTGRAY);
                 break;
 
             case PLAY_MAZE:
@@ -97,7 +104,7 @@ int Program::Run()
                 break;
 
             case MENU:
-                menu.open(*this);
+                menu.displayGUI();
                 break;
         }
 
@@ -150,25 +157,33 @@ int Program::Run()
 
 void Program::setState(ProgramState next_state)
 {
+    saveLastFrame();
     switch (next_state) {
         case IDLE:
 
             break;
+
         case STOPPED:
 
             break;
-        case MENU:
 
+        case MENU:
+            
+            menu.open();
             break;
+
         case EDITING:
 
             break;
+
         case PLAY_MAZE:
-
+            getLastMazeFrame();
             break;
+
         case PLAY_PATH:
-
+            getLastPathFrame();
             break;
+
         default:
             setState(IDLE);
             break;
@@ -176,4 +191,36 @@ void Program::setState(ProgramState next_state)
 
     State = next_state;
 
+}
+
+void Program::saveLastFrame()
+{  
+    if (State == PLAY_MAZE) {
+        BeginTextureMode(last_maze_buffer);
+        ClearBackground(LIGHTGRAY);
+        DrawTextureRec(buffer.texture, source, Vector2{ 0, 0 }, WHITE);
+        EndTextureMode();
+
+    }else if (State == PLAY_MAZE) {
+        BeginTextureMode(last_path_buffer);
+        ClearBackground(LIGHTGRAY);
+        DrawTextureRec(buffer.texture, source, Vector2{ 0, 0 }, WHITE);
+        EndTextureMode();
+    }
+    else {
+        //no relevant case yet
+    }
+     
+}
+
+void Program::getLastMazeFrame()
+{
+    ClearBackground(LIGHTGRAY);
+    DrawTextureRec(last_maze_buffer.texture, source, Vector2{ 0, 0 }, WHITE);
+}
+
+void Program::getLastPathFrame()
+{
+    ClearBackground(LIGHTGRAY);
+    DrawTextureRec(last_path_buffer.texture, source, Vector2{ 0, 0 }, WHITE);
 }

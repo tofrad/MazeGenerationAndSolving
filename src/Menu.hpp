@@ -3,6 +3,13 @@
 
 class Program;
 
+typedef enum {
+	OPEN,
+	CLOSED,
+	HOLD
+
+} MenuState;
+
 class Menu
 {
 
@@ -11,9 +18,18 @@ class Menu
 		Menu();
 		~Menu();
 
-		void open(Program& P);
+		void init(Program& P);
+
+		void open();
+		void close();
+
+		void displayGUI();
 
 	private:
+
+		Program* program;
+
+		MenuState state = CLOSED;
 
 		float dropdown_height = 40;
 		float dropdown_length = 250;
@@ -25,8 +41,8 @@ class Menu
 		bool MazeEdit = false;
 		bool PathEdit = false;
 
-		void close();
-		void displayGUI();
+		
+		
 
 };
 

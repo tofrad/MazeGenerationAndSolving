@@ -26,6 +26,7 @@ class Program
 		void InitProgram();
 		int Run();
 
+		void setState(ProgramState next_state);
 		ProgramState State = STOPPED;
 
 
@@ -49,9 +50,19 @@ class Program
 		//buffer for displaying program to window
 		RenderTexture2D buffer;
 
+		//buffer to save last maze frame
+		RenderTexture2D last_maze_buffer;
+
+		//buffer to save last path frame
+		RenderTexture2D last_path_buffer;
+
 		Rectangle source;
 
-		void setState(ProgramState next_state);
+		void saveLastFrame();
+		void getLastMazeFrame();
+		void getLastPathFrame();
+
+		
 
 };
 
