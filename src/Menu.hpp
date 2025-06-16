@@ -1,4 +1,7 @@
 #pragma once
+
+#include "raylib.h"
+
 #include "State_Definitions.hpp"
 
 class Program;
@@ -41,7 +44,8 @@ class Menu
 		//GUI Variables-------------------------------------------------------
 
 		/*TODO Dynamic GUI Size with Start and GetScreen Coords*/
-		Vector2 GUI_Start; 
+		Vector2 GUI_Start;
+		
 
 		float dropdown_height = 40;
 		float dropdown_length = 250;
@@ -60,9 +64,7 @@ class Menu
 		GenerationMethod MazeMethod;
 
 		//Solver-----------------------------------
-		SolvingMethod SolveMethod;
-		
-		
+		SolvingMethod PathMethod;		
 
 };
 

@@ -96,33 +96,18 @@ Color Cell::getColor()
 
 void Cell::updateColor()
 {
-	if (isActive) {
-		this->color = LIME;
-	}
-	else if (isStart) {
-		this->color = BLUE;
-	}
-	else if(isTarget){
-		this->color = RED;
-	}
-	else if (isfinishedPath) {
-		this->color = MAGENTA;
-	}
-	else if (isPath) {
-		this->color = GOLD;
-	}
-	else if (pathVisited) {
-		this->color = BEIGE;
-	}
-	else if (wasVisited){
-		this->color = DARKGRAY;
-	}
-	else if (isWall) {
-		this->color = BLACK;
-	}
-	else {
-		this->color = LIGHTGRAY;
-	}
+	if (isActive)		{ color = LIME;      return; }
+	if (isStart)		{ color = BLUE;      return; }
+	if (isTarget)		{ color = RED;       return; }
+	if (isfinishedPath) { color = MAGENTA;   return; }
+	if (isPath)			{ color = GOLD;      return; }
+
+	if (pathVisited)	{ color = BEIGE;     return; }
+	if (wasVisited)		{ color = DARKGRAY;  return; }
+	if (isWall)			{ color = BLACK;     return; }
+
+	// Default
+	color = LIGHTGRAY;
 }
 
 void Cell::drawCell()

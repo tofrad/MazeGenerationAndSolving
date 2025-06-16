@@ -66,6 +66,7 @@ int Program::Run()
         if (IsKeyPressed(KEY_M)) {
             if (State == MENU) {
                 menu.close();
+                setState(LastState);
             }
             else {
                 setState(MENU);
@@ -162,6 +163,11 @@ void Program::setState(ProgramState next_state)
         case MENU:
             saveLastFrame();
             menu.open();
+
+            if (State != STOPPED) {
+                LastState = State; 
+            }
+
             break;
 
         case EDITING:
@@ -184,6 +190,23 @@ void Program::setState(ProgramState next_state)
     }
 
     State = next_state;
+
+}
+
+ProgramState Program::getState()
+{
+    return State;
+}
+
+void Program::updateMaze(int size, GenerationMethod method)
+{
+
+
+}
+
+void Program::updatePath(SolvingMethod method)
+{
+
 
 }
 

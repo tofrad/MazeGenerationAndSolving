@@ -126,7 +126,7 @@ void Maze::createEmptyMaze()
 
 		for (int y = 0; y < height; y++) {
 
-			Cell* C = new Cell(Point(x, y));
+			Cell* C = new Cell(Point(x, y));  
 
 			Cell_List.push_back(C);
 		}

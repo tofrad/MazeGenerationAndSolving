@@ -8,7 +8,7 @@ int main()
     int error = 0;
 
     // Main game loop
-    while (P.State != STOPPED) 
+    while (P.getState() != STOPPED) 
     {
         error = P.Run();
     }

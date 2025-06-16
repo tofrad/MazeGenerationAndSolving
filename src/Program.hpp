@@ -1,10 +1,10 @@
 #pragma once
 
+#include "raylib.h"
+
 #include "Maze.hpp"
 #include "Pathsolver.hpp"
 #include "Menu.hpp"
-
-#include "raylib.h"
 
 #include "State_Definitions.hpp"
 
@@ -19,10 +19,19 @@ class Program
 		int Run();
 
 		void setState(ProgramState next_state);
-		ProgramState State = STOPPED;
+		ProgramState getState();
+
+		void updateMaze(int size, GenerationMethod method);
+		void updatePath(SolvingMethod method);
+
+		
 
 
 	private:
+
+		ProgramState State = STOPPED;
+
+		ProgramState LastState = MENU;
 
 		int screenWidth = 1920;
 		int screenHeight = 1080;

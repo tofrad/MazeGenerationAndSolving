@@ -23,7 +23,7 @@ void Menu::open()
 
 void Menu::init(Program& P)
 {
-    GuiLoadStyleCyber();
+    //GuiLoadStyleCyber();
     program = &P;
 }
 
@@ -60,4 +60,24 @@ void Menu::requestStateChange(ProgramState newState)
         program->setState(newState);
     }
 
+}
+
+void Menu::generatorRequest()
+{
+    if (program != nullptr) {
+
+        program->updateMaze(MazeSize, MazeMethod); 
+    }
+    
+
+}
+
+void Menu::solverRequest()
+{
+    if (program != nullptr) {
+
+        program->updatePath(PathMethod); 
+    }
+
+    
 }
