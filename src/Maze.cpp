@@ -82,23 +82,8 @@ vector<Cell*> Maze::getGeneratedMaze()
 
 void Maze::createConnectedMaze()
 {
-	Cell_List.clear();
+	createEmptyMaze();
 
-	Cell_Grid = vector<vector<Cell*>>(width, vector<Cell*>(height, nullptr));
-
-	for (int x = 0; x < width; x++) {
-
-		for (int y = 0; y < height; y++) {
-
-			start_x = OFFSET / 2 + (usable_width - (width * cellsize)) / 2;
-			start_y = OFFSET / 2+ (usable_height - (height * cellsize)) / 2;
-			Vector2 Offset{start_x, start_y};
-			Cell* C = new Cell(Point(x, y), cellsize, Offset);
-
-			Cell_List.push_back(C);
-			Cell_Grid[x][y] = C;
-		}
-	}
 	//connect with neighbors
 
 	for (int x = 0; x < width; x++) {
@@ -122,21 +107,28 @@ void Maze::createEmptyMaze()
 {
 	Cell_List.clear();
 
+	Cell_Grid = vector<vector<Cell*>>(width, vector<Cell*>(height, nullptr));
+
 	for (int x = 0; x < width; x++) {
 
 		for (int y = 0; y < height; y++) {
 
-			Cell* C = new Cell(Point(x, y));  
+			start_x = OFFSET / 2 + (usable_width - (width * cellsize)) / 2;
+			start_y = OFFSET / 2 + (usable_height - (height * cellsize)) / 2;
+			Vector2 Offset{ start_x, start_y };
+			Cell* C = new Cell(Point(x, y), cellsize, Offset);
 
 			Cell_List.push_back(C);
+			Cell_Grid[x][y] = C;
 		}
 	}
+
+
 }
 
 void Maze::generateMaze(GenerationMethod method)
 {
-	createConnectedMaze();
-	deleteConnections();
+	createEmptyMaze();
 
 	int rand = 0; // GetRandomValue(0, Cell_List.size() - 1); 
 	int rand2 = (height * width) - 1;// GetRandomValue(0, Cell_List.size() - 1); //(height*width) - 1; 

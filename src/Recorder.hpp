@@ -39,11 +39,11 @@ private:
 
 	int size = 0;
 
-	vector<Cell*> initialState;
+	vector<Base_Cell> initialState;
 
-	vector<Cell*> LastState;
+	vector<Base_Cell> LastState;
 
-	vector<vector<Cell*>> history;
+	vector<vector<Base_Cell>> history;
 
 	int current_step = 0;
 	bool recording = false;

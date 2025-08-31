@@ -9,7 +9,7 @@ Recorder::Recorder(const vector<Cell*> cell_list)
 {
 	for (auto cell : cell_list)
 	{
-		initialState.push_back(new Cell(*cell));
+		initialState.push_back(cell->get_Base_copy()); 
 	}
 }
 
@@ -35,8 +35,9 @@ void Recorder::recordStep(Cell* modifiedCell)
 {
 	if (!recording)return;
 
-	vector<Cell*> temp;
-	temp.push_back(new Cell(*modifiedCell));
+	vector<Base_Cell> temp;
+	modifiedCell->updateColor();
+	temp.push_back(modifiedCell->get_Base_copy());
 
 	history.push_back(temp);
 }
@@ -45,11 +46,12 @@ void Recorder::recordStep(vector<Cell*> modifiedCells)
 {
 	if (!recording)return;
 
-	vector<Cell*> temp;
+	vector<Base_Cell> temp;
 
 	for (auto cell : modifiedCells) {
 
-		temp.push_back(new Cell(*cell));
+		cell->updateColor();
+		temp.push_back(cell->get_Base_copy()); 
 	}	
 
 	history.push_back(temp);
@@ -59,7 +61,7 @@ void Recorder::saveLastFrame(vector<Cell*> LastList)
 {
 	for (auto cell : LastList)
 	{
-		LastState.push_back(new Cell(*cell));
+		LastState.push_back(cell->get_Base_copy());
 	}
 
 }
@@ -72,8 +74,8 @@ void Recorder::startPlaying()
 		isplaying = true;
 
 		for (auto cell : initialState) {
-			cell->drawCell();
-		}
+			cell.drawCell(); 
+		} 
 	}
 }
 
@@ -118,18 +120,20 @@ bool Recorder::stepForward()
 	if (isplaying)
 	{
 		for (auto cell : history[current_step]) {
-			cell->drawCell();
+			cell.drawCell(); 
 		}
 		current_step++;
 		return true;
 	}
+
+	return true;
 
 }
 
 void Recorder::playLastFrame()
 {
 	for (auto cell : LastState) {
-		cell->drawCell();
+		cell.drawCell(); 
 	}
 }
 

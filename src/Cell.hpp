@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Base_Cell.hpp"
+
 #include <cstdint>
 
 #include "raylib.h"
@@ -7,7 +9,7 @@
 
 #include "Point.hpp"
 
-class Cell
+class Cell : public Base_Cell
 {
 	public:
 		Cell();
@@ -16,8 +18,6 @@ class Cell
 		Cell(Point p1, int weight);
 
 		~Cell();
-
-		Point getPosition();
 
 		void setNorth(Cell* north);
 		void setEast(Cell* east);
@@ -31,11 +31,9 @@ class Cell
 		Cell* getWest();
 		Cell* getParent();
 
-		void setColor(Color color);
-		Color getColor();
 		void updateColor();
 
-		void drawCell();
+		void drawCell() {};
 		void resetCell();
 		void makeWall();
 
@@ -62,13 +60,8 @@ class Cell
 
 		Cell* Parent = nullptr;
 
-		Color color = LIGHTGRAY;
-		int cellsize;
-		Vector2 offset;
-
 		uint64_t cell_id = 0;
-
-		Point p;
+		
 		int weight;
 
 		void setId();

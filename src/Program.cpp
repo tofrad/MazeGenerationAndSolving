@@ -36,7 +36,7 @@ void Program::InitProgram()
 
     //--------------------------------------------------------------------------------------
 
-    M = Maze(MazeSize, screenWidth, screenHeight, HUNTANDKILL);
+    M = Maze(MazeSize, screenWidth, screenHeight, KRUSKAL);
 
     S = Pathsolver(M.getGeneratedMaze(), M.getStart(), SM_BFS);
 
