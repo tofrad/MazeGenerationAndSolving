@@ -37,6 +37,8 @@ class Cell : public Base_Cell
 		void resetCell();
 		void makeWall();
 
+		void setWallbits();
+
 		uint64_t getCellID();
 
 		bool isStart = false;

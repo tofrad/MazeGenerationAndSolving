@@ -32,6 +32,8 @@ class Base_Cell
 
 		Color color = LIGHTGRAY;
 
+		short wallbits = 0b1111;
+
 	private:
 
 		Color prev_color = LIGHTGRAY;

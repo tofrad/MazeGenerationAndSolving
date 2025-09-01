@@ -51,6 +51,7 @@ void Recorder::recordStep(vector<Cell*> modifiedCells)
 	for (auto cell : modifiedCells) {
 
 		cell->updateColor();
+		cell->setWallbits();
 		temp.push_back(cell->get_Base_copy()); 
 	}	
 

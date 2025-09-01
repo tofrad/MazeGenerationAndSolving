@@ -94,58 +94,6 @@ void Cell::updateColor()
 	color = LIGHTGRAY;
 }
 
-//void Cell::drawCell()
-//{
-//	updateColor();
-//
-//	//Vector2 offset_vec = Vector2{ 0, 0 };
-//
-//	Point P = getPosition();
-//
-//	float left = (float)P.getX() * cellsize;
-//	float right = left + cellsize;
-//
-//	float top = (float)P.getY() * cellsize;
-//	float bottom = top + cellsize;
-//
-//	Vector2 topleft = Vector2Add(Vector2{ left, top }, offset);
-//	Vector2 topright = Vector2Add(Vector2{ right, top }, offset);
-//	Vector2 bottomleft = Vector2Add(Vector2{ left, bottom }, offset);
-//	Vector2 bottomright = Vector2Add(Vector2{ right, bottom }, offset);
-//
-//	Vector2 size = Vector2{ (float)cellsize, (float)cellsize };
-//
-//	DrawRectangleV(topleft, size, getColor());
-//
-//	if (getSouth() == nullptr) {
-//		DrawLineEx(bottomleft, bottomright,3, BLACK);
-//	}
-//	else {
-//		DrawLineEx(bottomleft, bottomright, 3, getColor());
-//	}
-//
-//	if (getEast() == nullptr) {
-//		DrawLineEx(topright, bottomright,3, BLACK);
-//	}
-//	else {
-//		DrawLineEx(topright, bottomright, 3, getColor());
-//	}
-//
-//	if (getNorth() == nullptr) {
-//		DrawLineEx(topleft, topright,3, BLACK);
-//	}
-//	else {
-//		DrawLineEx(topleft, topright, 3, getColor());
-//	}
-//
-//	if (getWest() == nullptr) {
-//		DrawLineEx(topleft, bottomleft,3, BLACK);
-//	}
-//	else {
-//		DrawLineEx(topleft, bottomleft, 3, getColor());
-//	}
-//}
-
 void Cell::resetCell()
 {
 	this->Parent = nullptr;
@@ -183,6 +131,25 @@ void Cell::makeWall()
 	}
 
 	this->isWall = true;
+
+}
+
+void Cell::setWallbits()
+{
+	wallbits &= 0b0000;
+
+	if (this->getNorth() == nullptr) {
+		wallbits |= 0b1000;
+	}
+	if (this->getEast() == nullptr) {
+		wallbits |= 0b0100;
+	}
+	if (this->getSouth() == nullptr) {
+		wallbits |= 0b0010;
+	}
+	if (this->getWest() == nullptr) {
+		wallbits |= 0b0001;
+	}
 
 }
 

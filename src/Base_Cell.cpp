@@ -71,6 +71,34 @@ void Base_Cell::drawCell()
 
 	DrawRectangleV(topleft, size, getColor());
 
+	if (wallbits & 0b1000) {
+		DrawLineEx(topleft, topright, 3, BLACK);
+	}
+	else {
+		DrawLineEx(topleft, topright, 3, getColor());
+	}
+
+	if (wallbits & 0b0100) {
+		DrawLineEx(topright, bottomright,3, BLACK);
+	}
+	else {
+		DrawLineEx(topright, bottomright, 3, getColor());
+	}
+
+	if (wallbits & 0b0010) {
+		DrawLineEx(bottomleft, bottomright, 3, BLACK);
+	}
+	else {
+		DrawLineEx(bottomleft, bottomright, 3, getColor());
+	}
+
+	if (wallbits & 0b0001) {
+		DrawLineEx(topleft, bottomleft,3, BLACK);
+	}s
+	else {
+		DrawLineEx(topleft, bottomleft, 3, getColor());
+	}
+
 }
 
 
