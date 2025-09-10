@@ -21,27 +21,25 @@ void Program::InitProgram()
     //--------------------------------------------------------------------------------------
 
     InitWindow(screenWidth, screenHeight, "Maze Generator with raylib");
+    
+    //ToggleFullscreen();
 
     menu.init(*this);
 
-    screenWidth = GetScreenWidth();
-    screenHeight = GetScreenHeight();
+    //SetWindowState(FLAG_WINDOW_RESIZABLE);
 
-    //ToggleBorderlessWindowed();
-
-    //SetWindowState(FLAG_WINDOW_UNDECORATED);
-    SetWindowState(FLAG_WINDOW_RESIZABLE);
+    ClearWindowState(FLAG_WINDOW_RESIZABLE);
 
     SetTargetFPS(FrameRate);
 
     //--------------------------------------------------------------------------------------
 
-    M = Maze(MazeSize, screenWidth, screenHeight, KRUSKAL);
+    M = Maze(MazeSize, buffer_width, buffer_height, KRUSKAL);
 
     S = Pathsolver(M.getGeneratedMaze(), M.getStart(), SM_BFS);
 
     //create buffer for drawing
-    buffer = LoadRenderTexture(screenWidth, screenHeight);
+    buffer = LoadRenderTexture(buffer_width, buffer_height);
     source = { 0, 0, (float)buffer.texture.width, (float) - buffer.texture.height};
 
     last_maze_buffer = LoadRenderTexture(screenWidth, screenHeight);
@@ -198,15 +196,19 @@ ProgramState Program::getState()
     return State;
 }
 
-void Program::updateMaze(int size, GenerationMethod method)
+void Program::updateMaze(int size, int method)
 {
+    GenerationMethod m = (GenerationMethod)method;
 
+    M = Maze(MazeSize, buffer_width, buffer_height, m);
 
 }
 
-void Program::updatePath(SolvingMethod method)
+void Program::updatePath(int method)
 {
-
+    SolvingMethod m = (SolvingMethod)method;
+    M.resetMaze();
+    S = Pathsolver(M.getGeneratedMaze(), M.getStart(), m);
 
 }
 
@@ -244,3 +246,4 @@ void Program::getLastPathFrame()
     ClearBackground(LIGHTGRAY);
     DrawTextureRec(last_path_buffer.texture, source, Vector2{ 0, 0 }, WHITE);
 }
+

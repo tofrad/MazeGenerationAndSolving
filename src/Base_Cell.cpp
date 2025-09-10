@@ -94,7 +94,7 @@ void Base_Cell::drawCell()
 
 	if (wallbits & 0b0001) {
 		DrawLineEx(topleft, bottomleft,3, BLACK);
-	}s
+	}
 	else {
 		DrawLineEx(topleft, bottomleft, 3, getColor());
 	}

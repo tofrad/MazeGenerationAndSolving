@@ -35,21 +35,99 @@ void Menu::close()
 
 void Menu::displayGUI()
 {
+    int window_height = 600;
+    int window_width = 800;
+
+    Screensize size = program->Windowsize;
+    switch (size) {
+        case UHD:
+            window_height = 1440;
+            window_width = 2560;
+            break;
+        case FHD:
+            window_height = 1080;
+            window_width = 1920;
+            break;
+        case WSXGA:
+            window_height = 900;
+            window_width = 1600;
+            break;
+        case SMALL:
+            window_height = 540;
+            window_width = 960;
+            break;
+    }
+
+    
+    float Labelpos_y = 10;
+
+    float Labelwidth = window_width / 3;
+    float Label_height = 24;
+
+    float Label_offset = 10;
+
     if (state == OPEN) {
 
         ClearBackground(DARKGRAY);
+        float x = Label_offset;
+        float y = Labelpos_y;
+        
+        //GuiListView(Rectangle{ x, y + Label_height + 1, Labelwidth, dropdown_thick}, "BACKTRACKING;KRUSKAL;HUNTANDKILL;CUSTOM", &test , &Maze_GUI);
 
-        GuiLabel(Rectangle{ 1000, 10, 200, 24 }, "Maze Generator");
-        if (GuiDropdownBox(Rectangle{ 1000, 35, dropdown_length, dropdown_thick }, "BACKTRACKING;KRUSKAL;HUNTANDKILL;CUSTOM", &Maze_GUI, MazeEdit)) {
+        //Generator Section ##############################################################################################################################################################
+
+        if (GuiButton(Rectangle{ x, y + 3 * Label_height, Labelwidth, Label_height }, "Generate")) {
+
+            Generate_Button = true;
+        }
+
+        GuiLabel(Rectangle{ x, y, Labelwidth, Label_height }, "Maze Generator");
+        if (GuiDropdownBox(Rectangle{ x, y + Label_height + 1, Labelwidth, dropdown_thick }, "BACKTRACKING;KRUSKAL;HUNTANDKILL;CUSTOM", &Maze_GUI, MazeEdit)) {
 
             MazeEdit = !MazeEdit;
         }
 
-        GuiLabel(Rectangle{ 1300, 10, 200, 24 }, "Path Solver");
-        if (GuiDropdownBox(Rectangle{ 1300, 35, dropdown_length, dropdown_thick }, "BFS;DFS", &Path_GUI, PathEdit)) {
+        //Solver Section #################################################################################################################################################################
+
+        x = x + Labelwidth + Label_offset;
+
+        if (GuiButton(Rectangle{ x, y + 3 * Label_height, Labelwidth, Label_height }, "Solve")) {
+
+            Solve_Button = true;
+        }
+        
+        GuiLabel(Rectangle{ x , y, Labelwidth, Label_height }, "Path Solver");
+        if (GuiDropdownBox(Rectangle{ x, y + Label_height + 1, Labelwidth, dropdown_thick }, "BFS;DFS", &Path_GUI, PathEdit)) {
 
             PathEdit = !PathEdit;
         }
+
+        //Window Section ################################################################################################################################################################
+
+        x = x + Labelwidth + Label_offset;
+
+        GuiLabel(Rectangle{ x , y, Labelwidth, Label_height }, "Window Size");
+        if (GuiDropdownBox(Rectangle{ x, y + Label_height + 1, Labelwidth, dropdown_thick }, "UHD;FHD;WSXGA;SMALL", &Window_GUI, WindowEdit)) {
+
+            WindowEdit = !WindowEdit;
+        }
+
+        //Resolve Actions here
+        if (Generate_Button) {
+
+            generatorRequest();
+            solverRequest();
+
+            Generate_Button = false;
+        }
+
+        if (Solve_Button) {
+
+            solverRequest();
+
+            Solve_Button = false;
+        }
+
     }
 }
 
@@ -66,7 +144,7 @@ void Menu::generatorRequest()
 {
     if (program != nullptr) {
 
-        program->updateMaze(MazeSize, MazeMethod); 
+        program->updateMaze(MazeSize, Maze_GUI); 
     }
     
 
@@ -76,7 +154,7 @@ void Menu::solverRequest()
 {
     if (program != nullptr) {
 
-        program->updatePath(PathMethod); 
+        program->updatePath(Path_GUI); 
     }
 
     

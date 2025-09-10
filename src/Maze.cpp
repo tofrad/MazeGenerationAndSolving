@@ -182,7 +182,7 @@ void Maze::generateMaze(GenerationMethod method)
 
 void Maze::resetMaze()
 {
-	for (auto cell : GeneratedMaze) {
+	for (auto cell : this->Cell_List) {
 		cell->resetCell();
 	}
 

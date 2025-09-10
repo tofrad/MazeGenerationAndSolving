@@ -21,11 +21,11 @@ class Program
 		void setState(ProgramState next_state);
 		ProgramState getState();
 
-		void updateMaze(int size, GenerationMethod method);
-		void updatePath(SolvingMethod method);
+		void updateMaze(int size, int method);
+		void updatePath(int method);
 
 		
-
+		Screensize Windowsize = FHD;
 
 	private:
 
@@ -36,6 +36,9 @@ class Program
 		int screenWidth = 1920;
 		int screenHeight = 1080;
 
+		int buffer_width = 1920;
+		int buffer_height = 1080;
+
 		int MazeSize = 50;
 
 		Maze M;
@@ -44,7 +47,7 @@ class Program
 
 		Menu menu;  
 
-		int FrameRate = 60;
+		int FrameRate = 20;
 
 		float scale = 1.0f;
 

@@ -53,14 +53,19 @@ class Menu
 
 		int Maze_GUI = 0;
 		int Path_GUI = 0;
+		int Window_GUI = 0;
 
 		bool MazeEdit = false;
 		bool PathEdit = false;
+		bool WindowEdit = false;
+
+		bool Generate_Button = false;
+		bool Solve_Button = false;
 
 		//Values from GUI Input-----------------------------------------------
 
 		//Maze-------------------------------------
-		int MazeSize;
+		int MazeSize = 50;
 		GenerationMethod MazeMethod;
 
 		//Solver-----------------------------------
