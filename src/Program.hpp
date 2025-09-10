@@ -23,9 +23,15 @@ class Program
 
 		void updateMaze(int size, int method);
 		void updatePath(int method);
+		void updateWindow(int size);
 
+		void centerWindow();
 		
 		Screensize Windowsize = FHD;
+
+		GenerationMethod Generator = REC_BACKTRACKING;
+
+		SolvingMethod Solver = SM_BFS;
 
 	private:
 
@@ -51,6 +57,7 @@ class Program
 
 		float scale = 1.0f;
 
+
 		//buffer for displaying program to window
 		RenderTexture2D buffer;
 
@@ -61,6 +68,7 @@ class Program
 		RenderTexture2D last_path_buffer;
 
 		Rectangle source;
+
 
 		void saveLastFrame();
 		void getLastMazeFrame();

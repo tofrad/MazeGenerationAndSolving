@@ -33,11 +33,15 @@ class Menu
 
 		Program* program = nullptr;
 
+		void syncToProgram();
+
 		void requestStateChange(ProgramState newState);
 
 		void generatorRequest();
 
 		void solverRequest();
+
+		void WindowRequest();
 
 		MenuState state = CLOSED;
 
@@ -46,6 +50,7 @@ class Menu
 		/*TODO Dynamic GUI Size with Start and GetScreen Coords*/
 		Vector2 GUI_Start;
 		
+		RenderTexture2D buffer;
 
 		float dropdown_height = 40;
 		float dropdown_length = 250;
@@ -61,6 +66,7 @@ class Menu
 
 		bool Generate_Button = false;
 		bool Solve_Button = false;
+		bool Exit_Button = false;
 
 		//Values from GUI Input-----------------------------------------------
 

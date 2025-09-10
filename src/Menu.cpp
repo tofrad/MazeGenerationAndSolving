@@ -18,13 +18,16 @@ Menu::~Menu()
 
 void Menu::open()
 {
-    state = OPEN;    
+    state = OPEN;
+    syncToProgram();
 }
 
 void Menu::init(Program& P)
 {
-    //GuiLoadStyleCyber();
+
+    GuiLoadStyle("src//GUI_Style.rgs");
     program = &P;
+    syncToProgram();
 }
 
 void Menu::close()
@@ -35,8 +38,9 @@ void Menu::close()
 
 void Menu::displayGUI()
 {
-    int window_height = 600;
-    int window_width = 800;
+
+    int window_height = 1080;
+    int window_width = 1920;
 
     Screensize size = program->Windowsize;
     switch (size) {
@@ -56,23 +60,34 @@ void Menu::displayGUI()
             window_height = 540;
             window_width = 960;
             break;
+        default:
+            window_height = 540;
+            window_width = 960;
+            break;
     }
 
-    
     float Labelpos_y = 10;
-
-    float Labelwidth = window_width / 3;
-    float Label_height = 24;
 
     float Label_offset = 10;
 
+    float Labelwidth = (window_width - (4*Label_offset)) / 3;
+    float Label_height = 24;
+
+    //Center Label
+    GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
+
     if (state == OPEN) {
 
-        ClearBackground(DARKGRAY);
         float x = Label_offset;
         float y = Labelpos_y;
         
         //GuiListView(Rectangle{ x, y + Label_height + 1, Labelwidth, dropdown_thick}, "BACKTRACKING;KRUSKAL;HUNTANDKILL;CUSTOM", &test , &Maze_GUI);
+        // 
+        //Terminate Section ##############################################################################################################################################################
+        if (GuiButton(Rectangle{window_width - Label_offset - Labelwidth, window_height - Label_offset - 2*Label_height, Labelwidth, Label_height }, "Exit Program")) {
+
+            Exit_Button = true;
+        }
 
         //Generator Section ##############################################################################################################################################################
 
@@ -110,6 +125,7 @@ void Menu::displayGUI()
         if (GuiDropdownBox(Rectangle{ x, y + Label_height + 1, Labelwidth, dropdown_thick }, "UHD;FHD;WSXGA;SMALL", &Window_GUI, WindowEdit)) {
 
             WindowEdit = !WindowEdit;
+            WindowRequest();
         }
 
         //Resolve Actions here
@@ -128,7 +144,21 @@ void Menu::displayGUI()
             Solve_Button = false;
         }
 
+        if (Exit_Button) {
+
+            requestStateChange(STOPPED);
+
+            Exit_Button = false;
+        }
+
     }
+}
+
+void Menu::syncToProgram()
+{
+    Maze_GUI = program->Generator;
+    Path_GUI = program->Solver;
+    Window_GUI = program->Windowsize;
 }
 
 void Menu::requestStateChange(ProgramState newState)
@@ -137,7 +167,6 @@ void Menu::requestStateChange(ProgramState newState)
 
         program->setState(newState);
     }
-
 }
 
 void Menu::generatorRequest()
@@ -146,8 +175,6 @@ void Menu::generatorRequest()
 
         program->updateMaze(MazeSize, Maze_GUI); 
     }
-    
-
 }
 
 void Menu::solverRequest()
@@ -155,7 +182,13 @@ void Menu::solverRequest()
     if (program != nullptr) {
 
         program->updatePath(Path_GUI); 
-    }
+    } 
+}
 
-    
+void Menu::WindowRequest()
+{
+    if (program != nullptr) {
+
+        program->updateWindow(Window_GUI);
+    }
 }

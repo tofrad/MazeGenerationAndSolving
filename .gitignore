@@ -370,3 +370,4 @@ style_cyber.h
 sunny.h
 *.rgs
 .gitignore
+GUI_Style.h

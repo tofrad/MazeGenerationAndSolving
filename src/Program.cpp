@@ -21,10 +21,10 @@ void Program::InitProgram()
     //--------------------------------------------------------------------------------------
 
     InitWindow(screenWidth, screenHeight, "Maze Generator with raylib");
-    
-    //ToggleFullscreen();
 
     menu.init(*this);
+
+    SetWindowState(FLAG_WINDOW_UNDECORATED);
 
     //SetWindowState(FLAG_WINDOW_RESIZABLE);
 
@@ -34,9 +34,9 @@ void Program::InitProgram()
 
     //--------------------------------------------------------------------------------------
 
-    M = Maze(MazeSize, buffer_width, buffer_height, KRUSKAL);
+    M = Maze(MazeSize, buffer_width, buffer_height, Generator);
 
-    S = Pathsolver(M.getGeneratedMaze(), M.getStart(), SM_BFS);
+    S = Pathsolver(M.getGeneratedMaze(), M.getStart(), Solver);
 
     //create buffer for drawing
     buffer = LoadRenderTexture(buffer_width, buffer_height);
@@ -48,7 +48,6 @@ void Program::InitProgram()
     //--------------------------------------------------------------------------------------
 
     scale = min((float)GetScreenWidth() / screenWidth, (float)GetScreenHeight() / screenHeight);
-
 }
 
 int Program::Run()
@@ -56,10 +55,6 @@ int Program::Run()
     // Main program loop
     while (!WindowShouldClose() && State != STOPPED)
     {
-        //update Screen Variables
-        screenWidth = GetScreenWidth();
-        screenHeight = GetScreenHeight();
-
         //check Keys
         if (IsKeyPressed(KEY_M)) {
             if (State == MENU) {
@@ -99,17 +94,10 @@ int Program::Run()
                 break;
 
             case MENU:
-                menu.displayGUI();
+                EndTextureMode();
+                //menu_buffer = menu.displayGUI();
                 break;
         }
-
-        //if (M.playRecording()) {
-        //    //SetTargetFPS(40);
-        //}
-        //else {
-        //    S.playRecording();
-        //    //SetTargetFPS(170);
-        //}
 
         EndTextureMode();
 
@@ -119,26 +107,20 @@ int Program::Run()
 
         ClearBackground(LIGHTGRAY);
 
-        //display buffer
-        //DrawTextureRec(buffer.texture, source, Vector2{0, 0}, WHITE);
+        if (State == MENU) {
 
-        //DrawTexturePro(buffer.texture,
-        //    source,
-        //    Rectangle{ (GetScreenWidth() - ((float)screenWidth * scale)) * 0.5f, (GetScreenHeight() - ((float)screenHeight * scale)) * 0.5f,(float)screenWidth * scale, (float)screenHeight * scale },
-        //    Vector2{ 0, 0 },
-        //    0.0f,
-        //    WHITE);
-
-        DrawTexturePro(
-            buffer.texture,
-            source,
-            Rectangle{ 0, 0, static_cast<float>(screenWidth), static_cast<float>(screenHeight) },
-            Vector2{ 0, 0 },
-            0,
-            WHITE);
-
-        //DrawTexture(buffer.texture, 0, 0, WHITE);
-
+            menu.displayGUI();
+        }
+        else {
+            DrawTexturePro(
+                buffer.texture,
+                source,
+                Rectangle{ 0, 0, static_cast<float>(screenWidth), static_cast<float>(screenHeight) },
+                Vector2{ 0, 0 },
+                0,
+                WHITE);
+        }
+       
         EndDrawing();
         //----------------------------------------------------------------------------------
     }
@@ -198,18 +180,77 @@ ProgramState Program::getState()
 
 void Program::updateMaze(int size, int method)
 {
-    GenerationMethod m = (GenerationMethod)method;
+    Generator = (GenerationMethod)method;
 
-    M = Maze(MazeSize, buffer_width, buffer_height, m);
+    M = Maze(MazeSize, buffer_width, buffer_height, Generator);
 
 }
 
 void Program::updatePath(int method)
 {
-    SolvingMethod m = (SolvingMethod)method;
+    Solver = (SolvingMethod)method;
     M.resetMaze();
-    S = Pathsolver(M.getGeneratedMaze(), M.getStart(), m);
+    S = Pathsolver(M.getGeneratedMaze(), M.getStart(), Solver);
 
+}
+
+void Program::updateWindow(int size)
+{
+
+    SetWindowState(FLAG_WINDOW_RESIZABLE);
+
+    if (this->Windowsize == (Screensize)size) {
+        ClearWindowState(FLAG_WINDOW_RESIZABLE);
+        return;
+    }
+    else {
+        switch ((Screensize)size) {
+        case UHD:
+            screenWidth = 2560;
+            screenHeight = 1440;
+            Windowsize = UHD;
+            break;
+
+        case FHD:
+            screenWidth = 1920;
+            screenHeight = 1080;
+            Windowsize = FHD;
+            break;
+
+        case WSXGA:
+            screenWidth = 1600;
+            screenHeight = 900;
+            Windowsize = WSXGA;
+            break;
+
+        case SMALL:
+            screenWidth = 960;
+            screenHeight = 540;
+            Windowsize = SMALL;
+            break;
+
+        default:
+            updateWindow((int)SMALL);
+            break;
+        }
+        SetWindowState(FLAG_WINDOW_RESIZABLE);
+
+        SetWindowSize(screenWidth, screenHeight);
+
+        centerWindow();
+
+        ClearWindowState(FLAG_WINDOW_RESIZABLE);
+
+    }
+    ClearWindowState(FLAG_WINDOW_RESIZABLE);
+}
+
+void Program::centerWindow() {
+
+    int monitor = GetCurrentMonitor();
+    int monitor_width = GetMonitorWidth(monitor); 
+    int monitor_height = GetMonitorHeight(monitor); 
+    SetWindowPosition((int)(monitor_width / 2) - (int)(screenWidth / 2), (int)(monitor_height / 2) - (int)(screenHeight / 2));
 }
 
 void Program::saveLastFrame()
