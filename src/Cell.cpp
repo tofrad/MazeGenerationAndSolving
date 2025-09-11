@@ -96,12 +96,14 @@ void Cell::updateColor()
 
 void Cell::resetCell()
 {
+	this->wasVisited = false;
 	this->Parent = nullptr;
 	this->pathVisited = false;
 	this->isPath = false;
 	this->isfinishedPath = false;
 	this->isActive = false;
-	this->color = LIGHTGRAY;
+	updateColor();
+	
 }
 
 void Cell::makeWall()

@@ -43,8 +43,6 @@ class Maze
 
 		vector<Cell*> Cell_List;
 
-		vector<Cell*> GeneratedMaze;
-
 		Cell* Start = nullptr;
 		Cell* Target = nullptr;
 
@@ -53,8 +51,6 @@ class Maze
 		std::mt19937 rand_gen;
 
 		void generateMaze(GenerationMethod method);
-
-		void saveLastState();
 
 		void drawCells();
 

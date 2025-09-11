@@ -77,7 +77,7 @@ Cell* Maze::getStart()
 
 vector<Cell*> Maze::getGeneratedMaze()
 {
-	return GeneratedMaze;
+	return Cell_List;
 }
 
 void Maze::createConnectedMaze()
@@ -177,7 +177,6 @@ void Maze::generateMaze(GenerationMethod method)
 	}
 
 	record.saveLastFrame(Cell_List);
-	saveLastState();
 }
 
 void Maze::resetMaze()
@@ -206,14 +205,6 @@ void Maze::loopRecording()
 void Maze::stopRecording()
 {
 	record.stopPlaying();
-}
-
-void Maze::saveLastState()
-{
-	for (auto cell : Cell_List)
-	{
-		GeneratedMaze.push_back(new Cell(*cell));
-	}
 }
 
 void Maze::drawCells()

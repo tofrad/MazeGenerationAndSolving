@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include "Program.hpp"
+#include "Menu.hpp"
 
 Program::Program()
 {
@@ -35,7 +36,7 @@ void Program::InitProgram()
     //--------------------------------------------------------------------------------------
 
     M = Maze(MazeSize, buffer_width, buffer_height, Generator);
-
+    M.resetMaze();
     S = Pathsolver(M.getGeneratedMaze(), M.getStart(), Solver);
 
     //create buffer for drawing

@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Menu.hpp"
 #include "Program.hpp"
 
@@ -24,7 +26,6 @@ void Menu::open()
 
 void Menu::init(Program& P)
 {
-
     GuiLoadStyle("src//GUI_Style.rgs");
     program = &P;
     syncToProgram();
@@ -33,11 +34,11 @@ void Menu::init(Program& P)
 void Menu::close()
 {
     state = CLOSED;
-
 }
 
 void Menu::displayGUI()
 {
+    ClearBackground(GRAY);
 
     int window_height = 1080;
     int window_width = 1920;
