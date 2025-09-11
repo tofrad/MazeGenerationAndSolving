@@ -24,10 +24,11 @@ void Menu::open()
     syncToProgram();
 }
 
-void Menu::init(Program& P)
+void Menu::init(ProgramCallbacks& callbacks)
 {
+    this->callbacks = callbacks;
     GuiLoadStyle("src//GUI_Style.rgs");
-    program = &P;
+    //program = &P;
     syncToProgram();
 }
 
@@ -43,7 +44,7 @@ void Menu::displayGUI()
     int window_height = 1080;
     int window_width = 1920;
 
-    Screensize size = program->Windowsize;
+    Screensize size = callbacks.getWindowSize();
     switch (size) {
         case UHD:
             window_height = 1440;
@@ -101,6 +102,7 @@ void Menu::displayGUI()
         if (GuiDropdownBox(Rectangle{ x, y + Label_height + 1, Labelwidth, dropdown_thick }, "BACKTRACKING;KRUSKAL;HUNTANDKILL;CUSTOM", &Maze_GUI, MazeEdit)) {
 
             MazeEdit = !MazeEdit;
+            MazeMethod = static_cast<GenerationMethod>(Maze_GUI);
         }
 
         //Solver Section #################################################################################################################################################################
@@ -116,6 +118,7 @@ void Menu::displayGUI()
         if (GuiDropdownBox(Rectangle{ x, y + Label_height + 1, Labelwidth, dropdown_thick }, "BFS;DFS", &Path_GUI, PathEdit)) {
 
             PathEdit = !PathEdit;
+            PathMethod = static_cast<SolvingMethod>(Path_GUI);
         }
 
         //Window Section ################################################################################################################################################################
@@ -126,21 +129,22 @@ void Menu::displayGUI()
         if (GuiDropdownBox(Rectangle{ x, y + Label_height + 1, Labelwidth, dropdown_thick }, "UHD;FHD;WSXGA;SMALL", &Window_GUI, WindowEdit)) {
 
             WindowEdit = !WindowEdit;
-            WindowRequest();
+            WindowSize = static_cast<Screensize>(Window_GUI);
+            callbacks.onWindowRequest(WindowSize);
         }
 
         //Resolve Actions here
         if (Generate_Button) {
 
-            generatorRequest();
-            solverRequest();
+            callbacks.onGenerateRequest(MazeSize, MazeMethod);
+            callbacks.onSolveRequest(PathMethod);
 
             Generate_Button = false;
         }
 
         if (Solve_Button) {
 
-            solverRequest();
+            callbacks.onSolveRequest(PathMethod);
 
             Solve_Button = false;
         }
@@ -157,39 +161,24 @@ void Menu::displayGUI()
 
 void Menu::syncToProgram()
 {
-    Maze_GUI = program->Generator;
-    Path_GUI = program->Solver;
-    Window_GUI = program->Windowsize;
+    if (callbacks.getGenerator) {
+        MazeMethod = callbacks.getGenerator();
+    }
+    if (callbacks.getMazeSize) {
+        MazeSize = callbacks.getMazeSize();
+    }
+    if (callbacks.getSolver) {
+        PathMethod = callbacks.getSolver();
+    }
+    if (callbacks.getWindowSize) {
+        WindowSize = callbacks.getWindowSize();
+    }
+    Maze_GUI = static_cast<int>(MazeMethod);
+    Path_GUI = static_cast<int>(PathMethod);
+    Window_GUI = static_cast<int>(WindowSize);
 }
 
 void Menu::requestStateChange(ProgramState newState)
 {
-    if (program != nullptr) {
-
-        program->setState(newState);
-    }
-}
-
-void Menu::generatorRequest()
-{
-    if (program != nullptr) {
-
-        program->updateMaze(MazeSize, Maze_GUI); 
-    }
-}
-
-void Menu::solverRequest()
-{
-    if (program != nullptr) {
-
-        program->updatePath(Path_GUI); 
-    } 
-}
-
-void Menu::WindowRequest()
-{
-    if (program != nullptr) {
-
-        program->updateWindow(Window_GUI);
-    }
+    callbacks.onStateRequest(newState);
 }

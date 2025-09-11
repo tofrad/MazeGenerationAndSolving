@@ -5,7 +5,10 @@
 
 Program::Program()
 {
+    menu = new Menu();
+    ProgramCallbacks callbacks = createCallbacks();
 	InitProgram();
+    menu->init(callbacks);
     setState(MENU);
 }
 
@@ -22,8 +25,6 @@ void Program::InitProgram()
     //--------------------------------------------------------------------------------------
 
     InitWindow(screenWidth, screenHeight, "Maze Generator with raylib");
-
-    menu.init(*this);
 
     SetWindowState(FLAG_WINDOW_UNDECORATED);
 
@@ -59,7 +60,7 @@ int Program::Run()
         //check Keys
         if (IsKeyPressed(KEY_M)) {
             if (State == MENU) {
-                menu.close();
+                menu->close();
                 setState(LastState);
             }
             else {
@@ -110,7 +111,7 @@ int Program::Run()
 
         if (State == MENU) {
 
-            menu.displayGUI();
+            menu->displayGUI();
         }
         else {
             DrawTexturePro(
@@ -143,7 +144,7 @@ void Program::setState(ProgramState next_state)
 
         case MENU:
             saveLastFrame();
-            menu.open();
+            menu->open();
 
             if (State != STOPPED) {
                 LastState = State; 
@@ -179,33 +180,38 @@ ProgramState Program::getState()
     return State;
 }
 
-void Program::updateMaze(int size, int method)
+void Program::handleStateRequest(ProgramState state)
 {
-    Generator = (GenerationMethod)method;
+    setState(state);
+}
+
+void Program::handleGeneratorRequest(int size, GenerationMethod method)
+{
+    Generator = method;
 
     M = Maze(MazeSize, buffer_width, buffer_height, Generator);
 
 }
 
-void Program::updatePath(int method)
+void Program::handleSolveRequest(SolvingMethod method)
 {
-    Solver = (SolvingMethod)method;
+    Solver = method;
     M.resetMaze();
     S = Pathsolver(M.getGeneratedMaze(), M.getStart(), Solver);
 
 }
 
-void Program::updateWindow(int size)
+void Program::handleWindowChange(Screensize size)
 {
 
     SetWindowState(FLAG_WINDOW_RESIZABLE);
 
-    if (this->Windowsize == (Screensize)size) {
+    if (this->Windowsize == size) {
         ClearWindowState(FLAG_WINDOW_RESIZABLE);
         return;
     }
     else {
-        switch ((Screensize)size) {
+        switch (size) {
         case UHD:
             screenWidth = 2560;
             screenHeight = 1440;
@@ -231,7 +237,7 @@ void Program::updateWindow(int size)
             break;
 
         default:
-            updateWindow((int)SMALL);
+            handleWindowChange(SMALL);
             break;
         }
         SetWindowState(FLAG_WINDOW_RESIZABLE);
@@ -252,6 +258,36 @@ void Program::centerWindow() {
     int monitor_width = GetMonitorWidth(monitor); 
     int monitor_height = GetMonitorHeight(monitor); 
     SetWindowPosition((int)(monitor_width / 2) - (int)(screenWidth / 2), (int)(monitor_height / 2) - (int)(screenHeight / 2));
+}
+
+ProgramCallbacks Program::createCallbacks()
+{
+    ProgramCallbacks callbacks;
+
+    callbacks.onGenerateRequest = [this](int size, GenerationMethod method) {
+
+        this->handleGeneratorRequest(size, method);
+        };
+
+    callbacks.onSolveRequest = [this](SolvingMethod method) {
+        this->handleSolveRequest(method);
+        };
+
+    callbacks.onWindowRequest = [this](Screensize size) {
+        this->handleWindowChange(size);
+        };
+    
+    callbacks.onStateRequest = [this](ProgramState state) {
+        this->handleStateRequest(state);
+        };
+
+
+    callbacks.getGenerator = [this]() {return Generator; };
+    callbacks.getMazeSize = [this]() {return MazeSize; };
+    callbacks.getSolver = [this]() {return Solver; };
+    callbacks.getWindowSize = [this]() {return Windowsize; };
+
+    return callbacks;
 }
 
 void Program::saveLastFrame()

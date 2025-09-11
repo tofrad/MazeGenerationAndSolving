@@ -2,7 +2,7 @@
 
 #include "raylib.h"
 
-#include "State_Definitions.hpp"
+#include "ProgramCallbacks.hpp"
 
 class Program;
 
@@ -21,7 +21,7 @@ class Menu
 		Menu();
 		~Menu();
 
-		void init(Program& P);
+		void init(ProgramCallbacks& callbacks);
 
 		void open();
 		void close();
@@ -31,26 +31,23 @@ class Menu
 
 	private:
 
-		Program* program = nullptr;
+		ProgramCallbacks callbacks;
+
+		//Program* program = nullptr;
 
 		void syncToProgram();
 
 		void requestStateChange(ProgramState newState);
 
-		void generatorRequest();
+	/*	void generatorRequest();
 
 		void solverRequest();
 
-		void WindowRequest();
+		void WindowRequest();*/
 
 		MenuState state = CLOSED;
 
-		//GUI Variables-------------------------------------------------------
-
-		/*TODO Dynamic GUI Size with Start and GetScreen Coords*/
-		Vector2 GUI_Start;
-		
-		RenderTexture2D buffer;
+		//GUI Variables-------------------------------------------------------		
 
 		float dropdown_height = 40;
 		float dropdown_length = 250;
@@ -72,10 +69,11 @@ class Menu
 
 		//Maze-------------------------------------
 		int MazeSize = 50;
-		GenerationMethod MazeMethod;
+		GenerationMethod MazeMethod = GenerationMethod::REC_BACKTRACKING;
 
 		//Solver-----------------------------------
-		SolvingMethod PathMethod;		
+		SolvingMethod PathMethod = SolvingMethod::SM_BFS;		
 
+		Screensize WindowSize = Screensize::FHD;
 };
 

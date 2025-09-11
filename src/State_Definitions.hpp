@@ -28,9 +28,9 @@ typedef enum {
 } SolvingMethod;
 
 typedef enum {
-	UHD,	//2560x1440
-	FHD,	//1920x1080
-	WSXGA,	//1600x900
-	SMALL	//960x540
+	UHD = 0,	//2560x1440
+	FHD = 1,	//1920x1080
+	WSXGA = 2,	//1600x900
+	SMALL = 3	//960x540
 
 } Screensize;

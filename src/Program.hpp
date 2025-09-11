@@ -4,9 +4,12 @@
 
 #include "Maze.hpp"
 #include "Pathsolver.hpp"
-#include "Menu.hpp"
 
-#include "State_Definitions.hpp"
+#include "ProgramCallbacks.hpp"
+
+//#include "State_Definitions.hpp"
+
+class Menu;
 
 class Program
 {
@@ -18,22 +21,26 @@ class Program
 		void InitProgram();
 		int Run();
 
-		void setState(ProgramState next_state);
 		ProgramState getState();
 
-		void updateMaze(int size, int method);
-		void updatePath(int method);
-		void updateWindow(int size);
+		void handleStateRequest(ProgramState state);
 
-		void centerWindow();
-		
+		void handleGeneratorRequest(int size, GenerationMethod method);
+		void handleSolveRequest(SolvingMethod method);
+
+		void handleWindowChange(Screensize size);
+
+	private:
+
+		void setState(ProgramState next_state);
+
+		ProgramCallbacks createCallbacks();
+
 		Screensize Windowsize = FHD;
 
 		GenerationMethod Generator = REC_BACKTRACKING;
 
 		SolvingMethod Solver = SM_BFS;
-
-	private:
 
 		ProgramState State = STOPPED;
 
@@ -51,12 +58,13 @@ class Program
 
 		Pathsolver S;
 
-		Menu menu;  
+		Menu* menu;
 
 		int FrameRate = 20;
 
 		float scale = 1.0f;
 
+		void centerWindow();
 
 		//buffer for displaying program to window
 		RenderTexture2D buffer;
