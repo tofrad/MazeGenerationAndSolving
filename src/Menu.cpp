@@ -3,10 +3,7 @@
 #include "Menu.hpp"
 #include "Program.hpp"
 
-#define RAYGUI_IMPLEMENTATION
 #include "raygui.h"
-
-#include "../style_cyber.h"
 
 Menu::Menu()
 {
@@ -28,7 +25,8 @@ void Menu::init(ProgramCallbacks& callbacks)
 {
     this->callbacks = callbacks;
     GuiLoadStyle("src//GUI_Style.rgs");
-    //program = &P;
+    //Center Label
+    GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
     syncToProgram();
 }
 
@@ -74,9 +72,6 @@ void Menu::displayGUI()
 
     float Labelwidth = (window_width - (4*Label_offset)) / 3;
     float Label_height = 24;
-
-    //Center Label
-    GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
 
     if (state == OPEN) {
 

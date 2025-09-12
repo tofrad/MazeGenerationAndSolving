@@ -2,13 +2,18 @@
 #include <iostream>
 #include "Program.hpp"
 #include "Menu.hpp"
+#include "Editor.hpp"
 
 Program::Program()
 {
     menu = new Menu();
+    editor = new Editor();
+
     ProgramCallbacks callbacks = createCallbacks();
+
 	InitProgram();
     menu->init(callbacks);
+    editor->init(callbacks);
     setState(MENU);
 }
 
@@ -68,6 +73,16 @@ int Program::Run()
             }
         }
 
+        if (IsKeyPressed(KEY_E)) {
+            if (State == EDITING) {
+                editor->close();
+                setState(LastState);
+            }
+            else {
+                setState(EDITING);
+            }
+        }
+
         if (IsKeyPressed(KEY_ONE)) {
 
             setState(PLAY_MAZE);
@@ -113,6 +128,10 @@ int Program::Run()
 
             menu->displayGUI();
         }
+        else if(State == EDITING) {
+
+            editor->displayEditor();
+        }
         else {
             DrawTexturePro(
                 buffer.texture,
@@ -153,7 +172,11 @@ void Program::setState(ProgramState next_state)
             break;
 
         case EDITING:
-
+            saveLastFrame();
+            editor->open();
+            if (State != STOPPED) {
+                LastState = State;
+            }
             break;
 
         case PLAY_MAZE:

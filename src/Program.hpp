@@ -1,4 +1,5 @@
 #pragma once
+#define RAYGUI_IMPLEMENTATION
 
 #include "raylib.h"
 
@@ -7,9 +8,8 @@
 
 #include "ProgramCallbacks.hpp"
 
-//#include "State_Definitions.hpp"
-
 class Menu;
+class Editor;
 
 class Program
 {
@@ -60,7 +60,9 @@ class Program
 
 		Menu* menu;
 
-		int FrameRate = 20;
+		Editor* editor;
+
+		int FrameRate = 30;
 
 		float scale = 1.0f;
 
@@ -81,8 +83,6 @@ class Program
 		void saveLastFrame();
 		void getLastMazeFrame();
 		void getLastPathFrame();
-
-		
 
 };
 
