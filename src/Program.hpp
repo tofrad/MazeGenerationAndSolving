@@ -62,7 +62,7 @@ class Program
 
 		Editor* editor;
 
-		int FrameRate = 30;
+		int FrameRate = 60;
 
 		float scale = 1.0f;
 

@@ -47,7 +47,7 @@ void Program::InitProgram()
 
     //create buffer for drawing
     buffer = LoadRenderTexture(buffer_width, buffer_height);
-    source = { 0, 0, (float)buffer.texture.width, (float) - buffer.texture.height};
+    source = Rectangle{ 0, 0, (float)buffer.texture.width, (float) - buffer.texture.height};
 
     last_maze_buffer = LoadRenderTexture(screenWidth, screenHeight);
     last_path_buffer = LoadRenderTexture(screenWidth, screenHeight);

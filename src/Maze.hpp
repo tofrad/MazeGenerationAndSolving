@@ -27,7 +27,7 @@ class Maze
 		void resetMaze();
 
 		void drawMaze();
-
+	
 		bool playRecording();
 		void loopRecording();
 		void stopRecording();

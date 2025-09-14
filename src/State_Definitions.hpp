@@ -1,5 +1,9 @@
 #pragma once
 
+#include "Point.hpp"
+
+#include <vector>
+
 //Programhandler
 typedef enum {
 	STOPPED,
@@ -34,3 +38,13 @@ typedef enum {
 	SMALL = 3	//960x540
 
 } Screensize;
+
+struct TileMap{
+
+	int size = 0;
+	int height = 0;
+	Point Start{ -1,-1 };
+	Point Target{ -1,-1 };
+	std::vector<std::vector<char>> TileArray;
+
+};

@@ -27,14 +27,14 @@ public:
 
 private:
 
+	TileMap CustomMaze;
+	
 	ProgramCallbacks callbacks;
 
 	void syncToProgram();
 
 	vector<vector<char>> tile_map;
 	void createTileMap();
-
-	int tile_map_height = 0;
 
 	int window_height = 1080;
 	int window_width = 1920;
@@ -44,6 +44,8 @@ private:
 	float slider_value_float = 50.0f;
 	int slider_value_int = static_cast<int>(slider_value_float);
 	int old_slider_value_int = static_cast<int>(slider_value_float);
+
+	int tile_map_height = max(10, (slider_value_int / 16) * 9);
 
 	int toggle_group = 2;
 
