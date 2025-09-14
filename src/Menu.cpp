@@ -71,7 +71,7 @@ void Menu::displayGUI()
     float Label_offset = 10;
 
     float Labelwidth = (window_width - (4*Label_offset)) / 3;
-    float Label_height = 24;
+    float Label_height = 30;
 
     if (state == OPEN) {
 

@@ -48,3 +48,12 @@ struct TileMap{
 	std::vector<std::vector<char>> TileArray;
 
 };
+
+//Helper to define and calculate positions of Elements to draw inside
+struct UI_Rectangle{
+
+	Vector2 Point{ 0,0 };
+	float width = 0;
+	float height = 0;
+
+};
