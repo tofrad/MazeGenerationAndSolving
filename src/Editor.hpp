@@ -25,13 +25,15 @@ public:
 
 	void displayEditor();
 
+	TileMap CustomMaze;
 
 private:
 
 	TileMap CustomMaze;
 	void createTileMap();
+	void checkValidity();
 
-	void drawGrid(int tile_size);
+	void drawGrid(int tile_size, int x_tile_offset, int y_tile_offset);
 	
 	ProgramCallbacks callbacks;
 	void syncToProgram();

@@ -5,6 +5,7 @@
 
 #include <iostream>
 
+
 Editor::Editor()
 {
 
@@ -17,10 +18,8 @@ Editor::~Editor()
 
 void Editor::init(ProgramCallbacks& callbacks)
 {
-	this->callbacks = callbacks;
-
+    this->callbacks = callbacks;
     createTileMap();
-
 }
 
 void Editor::open() 
@@ -73,11 +72,16 @@ void Editor::displayEditor()
     // Below Canvas ##########################################################################################################################################################################
 
     float slider_width = 2 * WindowSection;
-    GuiSlider(Rectangle{ BelowCanvas.Point.x + 2 * General_Offset, BelowCanvas.Point.y, slider_width, Label_height }, "10", "150", &slider_value_float, 10, 150);
+    GuiSlider(Rectangle{ BelowCanvas.Point.x + 2 * General_Offset, BelowCanvas.Point.y, slider_width, Label_height }, "10", "150", &slider_value_float, 10, 100);
 
     slider_value_int = static_cast<int>(slider_value_float);
 
-    GuiValueBox(Rectangle{ BelowCanvas.Point.x + slider_width +  4 * General_Offset, BelowCanvas.Point.y, WindowSection / 3, Label_height }, " ", &slider_value_int, 10, 150, false);
+    char slide_buffer[5]; // Statischer Puffer
+    snprintf(slide_buffer, sizeof(slide_buffer), "%d", slider_value_int);
+
+    GuiTextBox(Rectangle{ BelowCanvas.Point.x + slider_width + 5 * General_Offset, BelowCanvas.Point.y, WindowSection / 3, Label_height }, slide_buffer, 11, false);
+
+    //GuiValueBox(Rectangle{ BelowCanvas.Point.x + slider_width +  4 * General_Offset, BelowCanvas.Point.y, WindowSection / 3, Label_height }, " ", &slider_value_int, 10, 150, false);
 
     if (slider_value_int != old_slider_value_int) 
     {
@@ -96,24 +100,29 @@ void Editor::displayEditor()
 
     int tile_size = min((int)(Canvas.width - General_Offset) / slider_value_int, (int)(Canvas.height - General_Offset) / tile_map_height);
 
+    int x_offset =  (Canvas.width - (CustomMaze.size * tile_size)) / 2;
+    int y_offset =  (Canvas.height - (CustomMaze.height * tile_size)) / 2;
+
+    //center drawing
+    int x_tile_offset = Canvas.Point.x + x_offset;
+    int y_tile_offset = Canvas.Point.y + y_offset;
+    //((Canvas.Point.y + Canvas.height) - (CustomMaze.size * tile_size)) / 2;
     if(CheckCollisionPointRec(mouse, CanvasRect))
-    {
-        
-        //center drawing
-        int x_tile_offset = General_Offset + ((Canvas.width - (CustomMaze.size * tile_size)) / 2);
-        int y_tile_offset = Canvas.Point.y + ((Canvas.height - (CustomMaze.height * tile_size)) / 2);
-        
+    {   
+        //Canvas Borders right and under for bound checking
+        float canvas_x_right = Canvas.Point.x + Canvas.width - x_offset;
+        float canvas_y_under = Canvas.Point.y + Canvas.height - y_offset;
+
         //get corresponding mouse tile
         int temp_x = -1;
         int temp_y = -1;
-        if (mouse.x > x_tile_offset) 
+        if (x_tile_offset < mouse.x && mouse.x < canvas_x_right &&  y_tile_offset < mouse.y && mouse.y < canvas_y_under)
         {
             temp_x = (mouse.x - x_tile_offset) / tile_size;
-        }
-        if (mouse.y > y_tile_offset)
-        {
             temp_y = (mouse.y - y_tile_offset) / tile_size;
         }
+
+        Point Mouse_Tile = Point(-3,-3);
 
         Rectangle highlighted_tile;
         bool highlight_tile = false;
@@ -121,18 +130,40 @@ void Editor::displayEditor()
         //check bounds for valid tile and define rec
         if (temp_x >= 0 && temp_y >= 0 && temp_x < CustomMaze.size && temp_y < CustomMaze.height) {
             highlighted_tile = Rectangle(x_tile_offset + temp_x * tile_size, y_tile_offset + temp_y * tile_size, tile_size, tile_size);
+            Mouse_Tile = Point(temp_x, temp_y);
             highlight_tile = true;
+
+            //show tile coord.
+            char point_buffer_x[5]; // Statischer Puffer
+            snprintf(point_buffer_x, sizeof(point_buffer_x), "%d", Mouse_Tile.getX());
+
+            GuiTextBox(Rectangle{ AboveCanvas.Point.x , AboveCanvas.Point.y, WindowSection, Label_height }, point_buffer_x, 11, false);
+
+            char point_buffer_y[5]; // Statischer Puffer
+            snprintf(point_buffer_y, sizeof(point_buffer_y), "%d", Mouse_Tile.getY());
+
+            GuiTextBox(Rectangle{ AboveCanvas.Point.x + WindowSection , AboveCanvas.Point.y, WindowSection, Label_height }, point_buffer_y, 11, false);
+
         }
         else {
             highlight_tile = false;
-        }
-      
 
+        }
+        
         //handle edit events
         // TODO: capture deletion off start or target to pre check validity
-
+        Point Invalid_Point = Point(-1, -1);
         //set walls
         if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && highlight_tile && toggle_group == 2) {
+
+            if (Mouse_Tile == CustomMaze.Start) 
+            {
+                CustomMaze.Start = Point(-1, -1);
+            }
+            else if (Mouse_Tile == CustomMaze.Target) 
+            {
+                CustomMaze.Target = Point(-1, -1);
+            }
 
             CustomMaze.TileArray[temp_x][temp_y] = 1;
         }
@@ -140,20 +171,55 @@ void Editor::displayEditor()
         //clear walls
         if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && highlight_tile && toggle_group == 3 || (IsMouseButtonDown(MOUSE_BUTTON_RIGHT) && highlight_tile)) 
         {
+            if (Mouse_Tile == CustomMaze.Start)
+            {
+                CustomMaze.Start = Point(-1, -1);
+            }
+            else if (Mouse_Tile == CustomMaze.Target)
+            {
+                CustomMaze.Target = Point(-1, -1);
+            }
+
             CustomMaze.TileArray[temp_x][temp_y] = 0;
         }
 
         //set start
         if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && highlight_tile && toggle_group == 0) {
 
+            //if valid start exists and current tile isnt this start
+            if (Mouse_Tile != CustomMaze.Start && CustomMaze.Start != Invalid_Point)
+            {
+                CustomMaze.TileArray[CustomMaze.Start.getX()][CustomMaze.Start.getY()] = 0;
+                CustomMaze.Start = Point(-1, -1);
+                
+            }
+            else if (Mouse_Tile == CustomMaze.Target)
+            {
+                CustomMaze.Target = Point(-1, -1);
+
+            }
+            
             CustomMaze.Start.setX(temp_x);
             CustomMaze.Start.setY(temp_y);
 
             CustomMaze.TileArray[temp_x][temp_y] = 2;
+
+
+
         }
 
         //set target
         if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && highlight_tile && toggle_group == 1) {
+
+            if (Mouse_Tile == CustomMaze.Start)
+            {
+                CustomMaze.Start = Point(-1, -1);
+            }//if valid target exists and current tile isnt this target
+            else if (Mouse_Tile != CustomMaze.Target && CustomMaze.Target != Invalid_Point)
+            {
+                CustomMaze.TileArray[CustomMaze.Target.getX()][CustomMaze.Target.getY()] = 0;
+                CustomMaze.Target = Point(-1, -1);
+            }
 
             CustomMaze.Target.setX(temp_x);
             CustomMaze.Target.setY(temp_y);
@@ -161,7 +227,7 @@ void Editor::displayEditor()
             CustomMaze.TileArray[temp_x][temp_y] = 3;
         }
 
-        drawGrid(tile_size);
+        drawGrid(tile_size, x_tile_offset, y_tile_offset);
 
         //draw highlighted tile if valid 
         if (highlight_tile) {           
@@ -169,37 +235,35 @@ void Editor::displayEditor()
         } 
     }
     else {
-        drawGrid(tile_size);
+        drawGrid(tile_size, x_tile_offset, y_tile_offset);
     }
 }
 
-void Editor::drawGrid(int tile_size) 
+void Editor::drawGrid(int tile_size, int x_tile_offset, int y_tile_offset) 
 {
-    int x_tile_offset = General_Offset + ((Canvas.width - (CustomMaze.size * tile_size)) / 2);
-    int y_tile_offset = Canvas.Point.y + ((Canvas.height - (CustomMaze.height * tile_size)) / 2);
     //draw full grid
     for (int x = 0; x < CustomMaze.TileArray.size(); x++)
     {
         for (int y = 0; y < CustomMaze.TileArray[x].size(); y++)
         {
-            Rectangle temp_rec = Rectangle(x_tile_offset + x * tile_size, y_tile_offset + y * tile_size, tile_size, tile_size);
+            Rectangle draw_rec = Rectangle(x_tile_offset + x * tile_size, y_tile_offset + y * tile_size, tile_size, tile_size);
             if (CustomMaze.TileArray[x][y] == 1) {
-                DrawRectangleRec(temp_rec, BLACK);
-                DrawRectangleLinesEx(temp_rec, 1, SKYBLUE);
+                DrawRectangleRec(draw_rec, BLACK);
+                DrawRectangleLinesEx(draw_rec, 1, SKYBLUE);
             }
             else if (CustomMaze.TileArray[x][y] == 2)
             {
-                DrawRectangleRec(temp_rec, BLUE);
-                DrawRectangleLinesEx(temp_rec, 1, SKYBLUE);
+                DrawRectangleRec(draw_rec, BLUE);
+                DrawRectangleLinesEx(draw_rec, 1, SKYBLUE);
             }
             else if (CustomMaze.TileArray[x][y] == 3)
             {
-                DrawRectangleRec(temp_rec, ORANGE);
-                DrawRectangleLinesEx(temp_rec, 1, SKYBLUE);
+                DrawRectangleRec(draw_rec, ORANGE);
+                DrawRectangleLinesEx(draw_rec, 1, SKYBLUE);
             }
             else
             {
-                DrawRectangleLinesEx(temp_rec, 1, SKYBLUE);
+                DrawRectangleLinesEx(draw_rec, 1, SKYBLUE);
             }
 
 
@@ -268,7 +332,7 @@ void Editor::calculateLandmarks()
 }
 void Editor::syncToProgram() 
 {
-
+    
 }
 
 void Editor::createTileMap()
@@ -287,4 +351,20 @@ void Editor::createTileMap()
         CustomMaze.TileArray.push_back(temp);
 
     }
+}
+
+void Editor::checkValidity()
+{
+    Point Invalid_Point = Point(-1, -1);
+    
+    if (CustomMaze.Start != Invalid_Point && CustomMaze.Target != Invalid_Point) 
+    {
+        CustomMaze.isValid = true;
+    }
+    else
+    {
+        CustomMaze.isValid = false;
+    }
+
+
 }
