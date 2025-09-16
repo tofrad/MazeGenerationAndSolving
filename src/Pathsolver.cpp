@@ -149,6 +149,7 @@ bool Pathsolver::BFS(Cell* start)
 {
 	queue<vector<Cell*>> tobevisited;
 
+	start->pathVisited = true;
 	tobevisited.push(vector<Cell*>{start});
 
 	bool wasTargetFound = false;
@@ -172,28 +173,30 @@ bool Pathsolver::BFS(Cell* start)
 					foundTarget = cell;
 					break;
 				}
-
-				cell->pathVisited = true;
 		
 				if (isVisitable(cell->getNorth())) {
 
 					cell->getNorth()->setParent(cell);
 					next_cells.push_back(cell->getNorth());
+					cell->getNorth()->pathVisited = true;
 				}
 				if (isVisitable(cell->getEast())) {
 
 					cell->getEast()->setParent(cell);
 					next_cells.push_back(cell->getEast());
+					cell->getEast()->pathVisited = true;
 				}
 				if (isVisitable(cell->getSouth())) {
 
 					cell->getSouth()->setParent(cell);
 					next_cells.push_back(cell->getSouth());
+					cell->getSouth()->pathVisited = true;
 				}
 				if (isVisitable(cell->getWest())) {
 
 					cell->getWest()->setParent(cell);
 					next_cells.push_back(cell->getWest());
+					cell->getWest()->pathVisited = true;
 				}
 			}
 			// record current cells here###############################################################

@@ -210,9 +210,20 @@ void Program::handleStateRequest(ProgramState state)
 
 void Program::handleGeneratorRequest(int size, GenerationMethod method)
 {
+    
     Generator = method;
+    if (Generator == CUSTOM) {
 
-    M = Maze(MazeSize, buffer_width, buffer_height, Generator);
+        //get TileArray from Editor
+        //TileMap currentEditorMaze = editor->CustomMaze;
+
+        //forward TileArray to Maze
+        M = Maze(buffer_width, buffer_height, &editor->CustomMaze);
+    }
+    else{
+        M = Maze(MazeSize, buffer_width, buffer_height, Generator);
+    }
+    
 
 }
 

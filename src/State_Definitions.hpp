@@ -45,7 +45,11 @@ struct TileMap{
 	int height = 0;
 	Point Start{ -1,-1 };
 	Point Target{ -1,-1 };
+
 	std::vector<std::vector<char>> TileArray;
+
+	bool isValid = false;
+	bool isSolvable = false;
 
 };
 

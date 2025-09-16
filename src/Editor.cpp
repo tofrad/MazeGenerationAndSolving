@@ -72,7 +72,7 @@ void Editor::displayEditor()
     // Below Canvas ##########################################################################################################################################################################
 
     float slider_width = 2 * WindowSection;
-    GuiSlider(Rectangle{ BelowCanvas.Point.x + 2 * General_Offset, BelowCanvas.Point.y, slider_width, Label_height }, "10", "150", &slider_value_float, 10, 100);
+    GuiSlider(Rectangle{ BelowCanvas.Point.x + 2 * General_Offset, BelowCanvas.Point.y, slider_width, Label_height }, "10", "100", &slider_value_float, 10, 100);
 
     slider_value_int = static_cast<int>(slider_value_float);
 
@@ -337,6 +337,10 @@ void Editor::syncToProgram()
 
 void Editor::createTileMap()
 {
+
+    CustomMaze.Start = Point(-1, -1);
+    CustomMaze.Target = Point(-1, -1);
+
     tile_map_height = max(10, (slider_value_int / 16) * 9);
 
     CustomMaze.size = slider_value_int;
@@ -353,7 +357,7 @@ void Editor::createTileMap()
     }
 }
 
-void Editor::checkValidity()
+void Editor::isValid()
 {
     Point Invalid_Point = Point(-1, -1);
     

@@ -70,6 +70,59 @@ Maze::~Maze()
 
 }
 
+Maze::Maze(int screenwidth, int screenheight, TileMap* custom_maze)
+{
+	this->width = custom_maze->size;
+	this->height = custom_maze->height;
+
+	usable_height = screenheight - (OFFSET);
+	usable_width = screenwidth - (OFFSET);
+
+	this->cellsize = min(usable_width / this->width, usable_height / this->height);
+	
+	createConnectedMaze();
+
+	for (int x = 0; x < this->width; x++) {
+
+		for (int y = 0; y < this->height; y++) {
+
+			switch (custom_maze->TileArray[x][y]) {
+
+				case 0:
+					//cell clear
+					break;
+
+				case 1:
+					//cell wall
+					Cell_Grid[x][y]->makeWall();
+					break;
+
+				case 2:
+					//cell start
+					Cell_Grid[x][y]->isStart = true;
+					Start = Cell_Grid[x][y];
+					break;
+
+				case 3:
+					//cell target
+
+					Cell_Grid[x][y]->isTarget = true;
+					Target = Cell_Grid[x][y];
+					break;
+
+				default:
+					//cell clear
+					break;
+			}
+
+
+		}
+
+	}
+	int x = 0;
+	//Maze(custom_maze.size, custom_maze.)
+}
+
 Cell* Maze::getStart()
 {
 	return Start;
@@ -159,7 +212,15 @@ void Maze::generateMaze(GenerationMethod method)
 			break;
 
 		case CUSTOM:
+			//TODO
+			// error logging
+			//shouldnt land here 
 
+			//Cell_List[rand]->isStart = false;
+			//Start = nullptr;
+
+			//Cell_List[rand2]->isTarget = false;
+			//Target = nullptr;
 			break;
 
 		default:

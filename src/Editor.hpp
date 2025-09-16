@@ -28,10 +28,9 @@ public:
 	TileMap CustomMaze;
 
 private:
-
-	TileMap CustomMaze;
+	
 	void createTileMap();
-	void checkValidity();
+	void isValid();
 
 	void drawGrid(int tile_size, int x_tile_offset, int y_tile_offset);
 	

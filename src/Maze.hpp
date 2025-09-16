@@ -17,6 +17,8 @@ class Maze
 		Maze(int width, int screenwidth, int screenheight, GenerationMethod method);
 		~Maze();
 
+		Maze(int screenwidth, int screemheight, TileMap* custom_maze);
+
 		Cell* getStart();
 		vector<Cell*> getGeneratedMaze();
 

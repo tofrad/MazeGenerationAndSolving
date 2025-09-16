@@ -27,6 +27,7 @@ void Menu::init(ProgramCallbacks& callbacks)
     GuiLoadStyle("src//GUI_Style.rgs");
     //Center Label
     GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
+    GuiSetStyle(TEXTBOX, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
     syncToProgram();
 }
 
