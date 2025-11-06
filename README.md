@@ -1,11 +1,15 @@
 ## Maze Generation & Solving
 
-A repo to showcase different Mazegeneration- and Pathfinding-Algorithms, visualized with the help of raylib.
+A repo to showcase different Mazegeneration- and Pathfinding-Algorithms, visualized with the help of raylib and raygui.
 
 Goal is to create a connected Graph and giving the solving Algorithm only the starting cell. 
 
 This is a work in progress.
 
+In progress:
+ - Editor
+ - Solving of Custom Mazes
+ - 
 To be added:
   - Generators: Prims
   
@@ -14,7 +18,7 @@ To be added:
   - UI to choose Generation and Pathfinding Algorithms
     
 
-# Some Examples from Current Implementation
+#Some Examples from Current Implementation
 
 <table>
   <tr>
