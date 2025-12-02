@@ -31,7 +31,7 @@ void Program::InitProgram()
 
     InitWindow(screenWidth, screenHeight, "Maze Generator with raylib");
 
-    SetWindowState(FLAG_WINDOW_UNDECORATED);
+    //SetWindowState(FLAG_WINDOW_UNDECORATED);
 
     //SetWindowState(FLAG_WINDOW_RESIZABLE);
 
@@ -140,6 +140,7 @@ int Program::Run()
                 Vector2{ 0, 0 },
                 0,
                 WHITE);
+           
         }
        
         EndDrawing();
@@ -218,7 +219,14 @@ void Program::handleGeneratorRequest(int size, GenerationMethod method)
         //TileMap currentEditorMaze = editor->CustomMaze;
 
         //forward TileArray to Maze
-        M = Maze(buffer_width, buffer_height, &editor->CustomMaze);
+        if (editor->CustomMaze.isValid) {
+            M = Maze(buffer_width, buffer_height, &editor->CustomMaze);
+        }
+        else {
+            //TODOs
+            //throw error and logging
+        }
+        
     }
     else{
         M = Maze(MazeSize, buffer_width, buffer_height, Generator);

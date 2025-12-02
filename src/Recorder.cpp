@@ -116,6 +116,7 @@ void Recorder::loopRecording()
 
 bool Recorder::stepForward()
 {
+
 	if (current_step >= history.size()) {
 		return stopPlaying();
 	}

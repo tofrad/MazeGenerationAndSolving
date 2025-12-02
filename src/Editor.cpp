@@ -232,7 +232,10 @@ void Editor::displayEditor()
         //draw highlighted tile if valid 
         if (highlight_tile) {           
             DrawRectangleLinesEx(highlighted_tile, 3, RED);
-        } 
+        }
+
+        this->isValid();
+
     }
     else {
         drawGrid(tile_size, x_tile_offset, y_tile_offset);
