@@ -68,8 +68,13 @@ void Base_Cell::drawCell()
 	Vector2 bottomright = Vector2Add(Vector2{ right, bottom }, offset);
 
 	Vector2 size = Vector2{ (float)cellsize, (float)cellsize };
+	Vector2 topleft_rect = Vector2Add(Vector2{ left+1, top+1 }, offset);
 
 	DrawRectangleV(topleft, size, getColor());
+
+	//TODO
+	//else cases draw over already drawn lines "cutting" them 
+	//configure case so they draw only inside the supposed rect eg. the right side would be drawn from topright-1(?) to bottomright +1(?)
 
 	if (wallbits & 0b1000) {
 		DrawLineEx(topleft, topright, 3, BLACK);

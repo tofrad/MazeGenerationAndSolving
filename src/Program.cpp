@@ -239,6 +239,13 @@ void Program::handleSolveRequest(SolvingMethod method)
 {
     Solver = method;
     M.resetMaze();
+
+    //in case of custom maze request clear buffer from last solved maze for clear canvas
+    if (Generator == CUSTOM) {
+        last_path_buffer = LoadRenderTexture(screenWidth, screenHeight);
+
+    }
+
     S = Pathsolver(M.getGeneratedMaze(), M.getStart(), Solver);
 
 }
