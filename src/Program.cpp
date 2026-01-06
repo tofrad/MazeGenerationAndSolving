@@ -108,6 +108,9 @@ int Program::Run()
                 if (!S.playRecording()) {
                     //Recorder finished
                 }
+                if (Generator == CUSTOM) {
+                    S.displayInitialFrame();
+                }
                 break;
 
             case MENU:
@@ -213,6 +216,8 @@ void Program::handleGeneratorRequest(int size, GenerationMethod method)
 {
     
     Generator = method;
+    last_maze_buffer = LoadRenderTexture(screenWidth, screenHeight);
+
     if (Generator == CUSTOM) {
 
         //get TileArray from Editor
@@ -240,11 +245,9 @@ void Program::handleSolveRequest(SolvingMethod method)
     Solver = method;
     M.resetMaze();
 
-    //in case of custom maze request clear buffer from last solved maze for clear canvas
-    if (Generator == CUSTOM) {
-        last_path_buffer = LoadRenderTexture(screenWidth, screenHeight);
+    //clear prev buffer
+    last_path_buffer = LoadRenderTexture(screenWidth, screenHeight);
 
-    }
 
     S = Pathsolver(M.getGeneratedMaze(), M.getStart(), Solver);
 
@@ -365,6 +368,7 @@ void Program::getLastMazeFrame()
     BeginTextureMode(buffer);
     ClearBackground(LIGHTGRAY);
     DrawTextureRec(last_maze_buffer.texture, source, Vector2{ 0, 0 }, WHITE);
+    EndTextureMode();
 }
 
 void Program::getLastPathFrame()
@@ -372,5 +376,6 @@ void Program::getLastPathFrame()
     BeginTextureMode(buffer);
     ClearBackground(LIGHTGRAY);
     DrawTextureRec(last_path_buffer.texture, source, Vector2{ 0, 0 }, WHITE);
+    EndTextureMode();
 }
 

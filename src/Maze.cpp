@@ -133,6 +133,21 @@ vector<Cell*> Maze::getGeneratedMaze()
 	return Cell_List;
 }
 
+int Maze::getCellsize()
+{
+	return this->cellsize;
+}
+
+int Maze::getHeight()
+{
+	return this->height;
+}
+
+int Maze::getWidth()
+{
+	return this->width;
+}
+
 void Maze::createConnectedMaze()
 {
 	createEmptyMaze();

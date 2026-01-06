@@ -33,6 +33,8 @@ public:
 	bool stepForward();
 	void playLastFrame();
 
+	void playInitialGrid();
+
 	void playStep(int step);
 
 private:

@@ -19,6 +19,8 @@ class Pathsolver
 		void loopRecording();
 		void stopRecording();
 
+		void displayInitialFrame();
+
 	private:
 
 		Cell* startNode = nullptr;

@@ -22,6 +22,10 @@ class Maze
 		Cell* getStart();
 		vector<Cell*> getGeneratedMaze();
 
+		int getCellsize();
+		int getHeight();
+		int getWidth();
+
 		void createEmptyMaze();
 
 		void createConnectedMaze();

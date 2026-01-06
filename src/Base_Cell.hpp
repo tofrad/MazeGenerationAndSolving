@@ -20,6 +20,8 @@ class Base_Cell
 
 		void drawCell();
 
+		void drawEmptyCell();
+
 		Point getPosition();
 
 		void setColor(Color color);

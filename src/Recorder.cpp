@@ -140,6 +140,14 @@ void Recorder::playLastFrame()
 	}
 }
 
+void Recorder::playInitialGrid()
+{
+	for (auto cell : initialState) {
+		cell.drawEmptyCell();
+	}
+
+}
+
 void Recorder::playStep(int step)
 {
 	current_step = step;
