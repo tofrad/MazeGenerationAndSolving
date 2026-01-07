@@ -4,7 +4,6 @@
 
 #include <cstdint>
 
-#include "raylib.h"
 #include "raymath.h"
 
 #include "Point.hpp"

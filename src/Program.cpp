@@ -39,6 +39,8 @@ void Program::InitProgram()
 
     SetTargetFPS(FrameRate);
 
+    //GuiLoadStyle("src//GUI_Style.rgs");
+
     //--------------------------------------------------------------------------------------
 
     M = Maze(MazeSize, buffer_width, buffer_height, Generator);

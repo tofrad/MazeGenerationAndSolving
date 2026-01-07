@@ -72,11 +72,7 @@ void Base_Cell::drawCell()
 
 	DrawRectangleV(topleft, size, getColor());
 
-	//TODO
-	//else cases draw over already drawn lines "cutting" them 
-	//configure cases so they draw only inside the supposed rect eg. the right side would be drawn from topright-1(?) to bottomright +1(?)
-
-	float thickness = 1;
+	float thickness = 3;
 
 	if (wallbits & 0b1000) {
 		DrawLineEx(topleft, topright, thickness, BLACK);

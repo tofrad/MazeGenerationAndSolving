@@ -1,5 +1,8 @@
 #pragma once
 #include <functional>
+
+#include "raylib.h"
+
 #include "State_Definitions.hpp"
 
 using ProgramstateCallback = std::function<void(ProgramState)>;
@@ -9,7 +12,6 @@ using GenerateCallback = std::function<void(int, GenerationMethod)>;
 using SolveCallback = std::function<void(SolvingMethod)>;
 
 using WindowChangeCallback = std::function<void(Screensize)>;
-
 
 
 using GetMazeGeneratorCallback = std::function<GenerationMethod()>;

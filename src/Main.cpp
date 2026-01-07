@@ -23,3 +23,12 @@ int main()
     }
     return error;
 }
+
+//TODO
+// 
+// Implement Player Object to control displayed frames/steps
+// 
+// implement diff object to each record step to save prev state for reversing frames/steps
+// 	
+// get rid of cellsize from any maze related objects only let program control it with screensize
+// when resizing draw fresh buffer from player object
