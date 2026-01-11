@@ -1,8 +1,6 @@
 #pragma once
 #include <functional>
 
-#include "raylib.h"
-
 #include "State_Definitions.hpp"
 
 using ProgramstateCallback = std::function<void(ProgramState)>;
