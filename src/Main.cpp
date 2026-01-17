@@ -27,8 +27,16 @@ int main()
 //TODO
 // 
 // Implement Player Object to control displayed frames/steps
-// 
-// implement diff object to each record step to save prev state for reversing frames/steps
-// 	
-// get rid of cellsize from any maze related objects only let program control it with screensize
-// when resizing draw fresh buffer from player object
+    // 
+    // implement diff object to each record step to save prev state for reversing frames/steps
+    // 	
+    // get rid of cellsize from any maze related objects only let program control it with screensize
+    // when resizing draw fresh buffer from player object
+    // 
+// Implement Program Element Base Class for Menu, Editor, Player
+    //
+    // 
+// Round out UI
+    //Rescale with dynamic buffersize, recalculate cellsize and drawing thickness depending on size
+    // 
+//Prepare Code for WebAssembly
