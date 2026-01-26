@@ -111,7 +111,7 @@ int Program::Run()
                     //Recorder finished
                 }
                 if (Generator == CUSTOM) {
-                    S.displayInitialFrame();
+                    M.displayInitialFrame();
                 }
                 break;
 
@@ -250,9 +250,8 @@ void Program::handleSolveRequest(SolvingMethod method)
     //clear prev buffer
     last_path_buffer = LoadRenderTexture(screenWidth, screenHeight);
 
-
     S = Pathsolver(M.getGeneratedMaze(), M.getStart(), Solver);
-
+    
 }
 
 void Program::handleWindowChange(Screensize size)

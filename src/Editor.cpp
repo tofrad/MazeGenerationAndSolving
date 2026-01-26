@@ -333,6 +333,7 @@ void Editor::calculateLandmarks()
     BottomRight.Point = Vector2{TopRight.Point.x, BelowCanvas.Point.y};
 
 }
+
 void Editor::syncToProgram() 
 {
     

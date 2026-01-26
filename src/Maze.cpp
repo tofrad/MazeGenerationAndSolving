@@ -121,6 +121,13 @@ Maze::Maze(int screenwidth, int screenheight, TileMap* custom_maze)
 	}
 	int x = 0;
 	//Maze(custom_maze.size, custom_maze.)
+
+	record = Recorder(Cell_List);
+}
+
+void Maze::displayInitialFrame()
+{
+	record.playInitialGrid();
 }
 
 Cell* Maze::getStart()

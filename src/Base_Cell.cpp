@@ -127,7 +127,7 @@ void Base_Cell::drawEmptyCell()
 	Vector2 bottomleft = Vector2Add(Vector2{ left, bottom }, offset);
 	Vector2 bottomright = Vector2Add(Vector2{ right, bottom }, offset);
 
-	float thickness = 1;
+	float thickness = 3;
 
 	if (wallbits & 0b1000) {
 		DrawLineEx(topleft, topright, thickness, BLACK);
