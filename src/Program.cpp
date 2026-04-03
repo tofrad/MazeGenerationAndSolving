@@ -3,17 +3,20 @@
 #include "Program.hpp"
 #include "Menu.hpp"
 #include "Editor.hpp"
+#include "Player.hpp"
 
 Program::Program()
 {
     menu = new Menu();
     editor = new Editor();
+    player = new Player();
 
     ProgramCallbacks callbacks = createCallbacks();
 
 	InitProgram();
     menu->init(callbacks);
     editor->init(callbacks);
+    player->init(callbacks);
     setState(MENU);
 }
 
@@ -95,6 +98,11 @@ int Program::Run()
             setState(PLAY_PATH);
         }
 
+        if (IsKeyPressed(KEY_THREE)) {
+
+            setState(PLAYER);
+        }
+
         //write changes into buffer
         //just write recorder stuff - no setStates to preserve TextureMode
         BeginTextureMode(buffer);
@@ -136,6 +144,10 @@ int Program::Run()
         else if(State == EDITING) {
 
             editor->displayEditor();
+        }
+        else if (State == PLAYER) {
+
+            player->displayPlayerGUI();
         }
         else {
             DrawTexturePro(

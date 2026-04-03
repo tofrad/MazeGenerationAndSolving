@@ -10,6 +10,7 @@
 
 class Menu;
 class Editor;
+class Player;
 
 class Program
 {
@@ -61,6 +62,8 @@ class Program
 		Menu* menu;
 
 		Editor* editor;
+
+		Player* player;
 
 		int FrameRate = 120;
 

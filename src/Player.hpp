@@ -9,12 +9,6 @@
 class Program;
 
 
-typedef enum {
-	OPEN,
-	CLOSED
-
-}PlayerState;
-
 class Player {
 
 	public:
@@ -33,8 +27,6 @@ class Player {
 	private:
 
 		ProgramCallbacks callbacks;
-
-		PlayerState state = CLOSED;
 
 		Recorder Record_Object;
 

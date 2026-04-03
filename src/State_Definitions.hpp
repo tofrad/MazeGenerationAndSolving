@@ -10,7 +10,8 @@ typedef enum {
 	MENU,
 	EDITING,
 	PLAY_MAZE,
-	PLAY_PATH
+	PLAY_PATH,
+	PLAYER
 
 } ProgramState;
 
