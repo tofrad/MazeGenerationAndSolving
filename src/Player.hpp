@@ -18,7 +18,7 @@ class Player {
 
 		void init(ProgramCallbacks& callbacks);
 
-		void open();
+		void open(Recorder* Rec);
 		void close();
 
 		void displayPlayerGUI();
@@ -28,7 +28,7 @@ class Player {
 
 		ProgramCallbacks callbacks;
 
-		Recorder Record_Object;
+		Recorder* Record_Object = nullptr;
 
 		//GUI Variables-------------------------------------------------------
 		int window_height = 1080;
@@ -40,6 +40,24 @@ class Player {
 		UI_Rectangle BelowCanvas;
 
 		UI_Rectangle BottomRight;
+
+		Rectangle Button_FullRewind;
+		Rectangle Button_Rewind;
+		Rectangle Button_Pause;
+		Rectangle Button_Forward;
+		Rectangle Button_FullForward;
+
+		Rectangle Slider;
+		Rectangle Slider_TextBox;
+		Rectangle MaxValue_TextBox;
+
+		//GUI Values-------------------------------------------------
+		int stepValue = 0;
+		int maxValue = 0;
+
+		float slider_value_float = 0;
+		int slider_value_int = 0;
+
 
 		float General_Offset = 10; //10 px Offset
 

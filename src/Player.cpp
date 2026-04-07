@@ -16,14 +16,15 @@ Player::~Player()
 void Player::init(ProgramCallbacks& callbacks) {
 
     this->callbacks = callbacks;
+    calculateLandmarks();
 }
 
-void Player::open() {
-    
+void Player::open(Recorder* Rec) {
+    Record_Object = Rec;
 }
 
 void Player::close() {
-    
+    Record_Object = nullptr;
 }
 
 void Player::displayPlayerGUI()
@@ -31,36 +32,45 @@ void Player::displayPlayerGUI()
     calculateLandmarks();
     ClearBackground(GRAY);
 
-    int Bottom_Split_x = BelowCanvas.width / 10;
-    int BetweenOffset = Bottom_Split_x / 4;
+    if (GuiButton(Button_FullRewind, GuiIconText(129, ""))) { /* ACTION */ }
+    if (GuiButton(Button_Rewind, GuiIconText(130, ""))) { /* ACTION */ }
+    if (GuiButton(Button_Pause, GuiIconText(132, ""))) { /* ACTION */ }
+    if (GuiButton(Button_Forward, GuiIconText(131, ""))) { /* ACTION */ }
+    if (GuiButton(Button_FullForward, GuiIconText(134, ""))) { /* ACTION */ }
 
-    int Button_Size_x = Bottom_Split_x;
+    //Menu Button
+    if (GuiButton(Rectangle(BottomRight.Point.x, BottomRight.Point.y, BottomRight.width, BottomRight.height), GuiIconText(142, "Menu"))) { /* ACTION */ }
 
-    int Bottom_Split_y = BelowCanvas.height / 9;
 
-    int Button_Y = Bottom_Split_y * 5;
-    int ButtonSize_y = Bottom_Split_y * 4;
+    if (Record_Object != nullptr) {
 
-    int Button_FirstFrame = 2 * Bottom_Split_x;
-    int Button_Rewind = Button_FirstFrame + Button_Size_x + BetweenOffset;
-    int Button_Pause = Button_Rewind + Button_Size_x + BetweenOffset;
-    int Button_Resume = Button_Pause + Button_Size_x + BetweenOffset;
-    int Button_LastFrame = Button_Resume + Button_Size_x + BetweenOffset;
+        stepValue = Record_Object->getStep();
+        maxValue = Record_Object->getSize();
+    }
+    
+    char maxValue_char[8];
+    snprintf(maxValue_char, sizeof(maxValue_char), "%d", maxValue);
 
-    if (GuiButton(Rectangle(Button_FirstFrame, BelowCanvas.Point.y + Button_Y, Button_Size_x, ButtonSize_y), GuiIconText(129, ""))) { /* ACTION */ }
-    if (GuiButton(Rectangle(Button_Rewind, BelowCanvas.Point.y + Button_Y, Button_Size_x, ButtonSize_y), GuiIconText(130, ""))) { /* ACTION */ }
-    if (GuiButton(Rectangle(Button_Pause, BelowCanvas.Point.y + Button_Y, Button_Size_x, ButtonSize_y), GuiIconText(132, ""))) { /* ACTION */ }
-    if (GuiButton(Rectangle(Button_Resume, BelowCanvas.Point.y + Button_Y, Button_Size_x, ButtonSize_y), GuiIconText(131, ""))) { /* ACTION */ }
-    if (GuiButton(Rectangle(Button_LastFrame, BelowCanvas.Point.y + Button_Y, Button_Size_x, ButtonSize_y), GuiIconText(134, ""))) { /* ACTION */ }
 
+    GuiSlider(Slider, "", "", &slider_value_float, 0, (float)maxValue);
+
+    slider_value_int = static_cast<int>(slider_value_float);
+    char slide_buffer[8]; // Statischer Puffer
+    snprintf(slide_buffer, sizeof(slide_buffer), "%d", slider_value_int);
+
+
+
+    DrawRectangleRec(Slider_TextBox, RAYWHITE);
+    GuiTextBox(Slider_TextBox, slide_buffer, 11, false);
+
+    DrawRectangleRec(MaxValue_TextBox, RAYWHITE);
+    GuiTextBox(MaxValue_TextBox, maxValue_char, 11, false);
 
     DrawRectangle(Canvas.Point.x, Canvas.Point.y, Canvas.width, Canvas.height, RAYWHITE);
 
     //DrawRectangle(BelowCanvas.Point.x, BelowCanvas.Point.y, BelowCanvas.width, BelowCanvas.height, RED);
 
     //DrawRectangle(BottomRight.Point.x, BottomRight.Point.y, BottomRight.width, BottomRight.height, GREEN);
-
-    if (GuiButton(Rectangle(BottomRight.Point.x, BottomRight.Point.y, BottomRight.width, BottomRight.height), GuiIconText(142, ""))) { /* ACTION */ }
 
 }
 
@@ -108,5 +118,33 @@ void Player::calculateLandmarks()
     BottomRight.width = 1 * WindowSection; //RightToCanvas.width;
     BottomRight.height = BelowCanvas.height;
     BottomRight.Point = Vector2{ BelowCanvas.Point.x + BelowCanvas.width, BelowCanvas.Point.y };
+
+
+    int Bottom_Split_x = BelowCanvas.width / 10;
+    int BetweenOffset = Bottom_Split_x / 4;
+
+    int Button_Size_x = Bottom_Split_x;
+
+    int Bottom_Split_y = BelowCanvas.height / 9;
+
+    int Button_Y = Bottom_Split_y * 5;
+    int ButtonSize_y = Bottom_Split_y * 4;
+
+    int Button_FirstFrame_x = 2 * Bottom_Split_x;
+    int Button_Rewind_x = Button_FirstFrame_x + Button_Size_x + BetweenOffset;
+    int Button_Pause_x = Button_Rewind_x + Button_Size_x + BetweenOffset;
+    int Button_Resume_x = Button_Pause_x + Button_Size_x + BetweenOffset;
+    int Button_LastFrame_x = Button_Resume_x + Button_Size_x + BetweenOffset;
+
+    
+    Button_FullRewind = Rectangle(Button_FirstFrame_x, BelowCanvas.Point.y + Button_Y, Button_Size_x, ButtonSize_y);
+    Button_Rewind = Rectangle(Button_Rewind_x, BelowCanvas.Point.y + Button_Y, Button_Size_x, ButtonSize_y);
+    Button_Pause = Rectangle(Button_Pause_x, BelowCanvas.Point.y + Button_Y, Button_Size_x, ButtonSize_y);
+    Button_Forward = Rectangle(Button_Resume_x, BelowCanvas.Point.y + Button_Y, Button_Size_x, ButtonSize_y);
+    Button_FullForward = Rectangle(Button_LastFrame_x, BelowCanvas.Point.y + Button_Y, Button_Size_x, ButtonSize_y);
+
+    Slider = Rectangle(BelowCanvas.Point.x, BelowCanvas.Point.y, Bottom_Split_x * 7 ,Bottom_Split_y * 4);
+    Slider_TextBox = Rectangle(BelowCanvas.Point.x + Bottom_Split_x * 8, BelowCanvas.Point.y, Bottom_Split_x, Bottom_Split_y * 4 );
+    MaxValue_TextBox = Rectangle(BelowCanvas.Point.x + Bottom_Split_x * 9, BelowCanvas.Point.y, Bottom_Split_x, Bottom_Split_y * 4);
 
 }
