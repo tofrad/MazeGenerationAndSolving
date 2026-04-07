@@ -38,6 +38,8 @@ class Maze
 		void loopRecording();
 		void stopRecording();
 
+		Recorder* getRecording();
+
 		void displayInitialFrame();
 
 	private:

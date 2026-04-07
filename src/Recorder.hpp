@@ -14,6 +14,9 @@ public:
 	Recorder(const vector<Cell*> cell_list);
 	~Recorder();
 
+	int getStep();
+	int getSize();
+
 	void startRecording();
 	void stopRecording();
 
@@ -36,6 +39,7 @@ public:
 	void playInitialGrid();
 
 	void playStep(int step);
+
 
 private:
 

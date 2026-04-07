@@ -101,6 +101,8 @@ int Program::Run()
         if (IsKeyPressed(KEY_THREE)) {
 
             setState(PLAYER);
+            //open just Mazes for now
+            player->open(M.getRecording());
         }
 
         //write changes into buffer
@@ -176,7 +178,7 @@ void Program::setState(ProgramState next_state)
     switch (next_state) {
 
         case STOPPED:
-
+            State = next_state;
             break;
 
         case MENU:
@@ -186,7 +188,7 @@ void Program::setState(ProgramState next_state)
             if (State != STOPPED) {
                 LastState = State; 
             }
-
+            State = next_state;
             break;
 
         case EDITING:
@@ -195,16 +197,27 @@ void Program::setState(ProgramState next_state)
             if (State != STOPPED) {
                 LastState = State;
             }
+            State = next_state;
             break;
 
         case PLAY_MAZE:
             saveLastFrame();
             getLastMazeFrame();
+            State = next_state;
             break;
 
         case PLAY_PATH:
             saveLastFrame();
             getLastPathFrame();
+            State = next_state;
+            break;
+
+        case PLAYER:
+            saveLastFrame();
+            if (State != STOPPED) {
+                LastState = State;
+            }
+            State = next_state;
             break;
 
         default:
@@ -212,7 +225,7 @@ void Program::setState(ProgramState next_state)
             break;
     }
 
-    State = next_state;
+    
 
 }
 

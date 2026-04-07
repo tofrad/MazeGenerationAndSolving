@@ -290,6 +290,11 @@ void Maze::stopRecording()
 	record.stopPlaying();
 }
 
+Recorder* Maze::getRecording()
+{
+	return &record;
+}
+
 void Maze::drawCells()
 {
 	for (const auto& cell : Cell_List) {

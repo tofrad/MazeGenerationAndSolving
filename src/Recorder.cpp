@@ -18,6 +18,16 @@ Recorder::~Recorder()
 
 }
 
+int Recorder::getStep()
+{
+	return current_step;
+}
+
+int Recorder::getSize()
+{
+	return size;
+}
+
 void Recorder::startRecording()
 {
 	history.clear();

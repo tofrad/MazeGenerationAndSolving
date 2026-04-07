@@ -62,6 +62,11 @@ void Pathsolver::displayInitialFrame()
 	path_record.playInitialGrid();
 }
 
+Recorder* Pathsolver::getRecording()
+{
+	return &path_record;
+}
+
 bool Pathsolver::isVisitable(Cell* cell)
 {
 	if (cell != nullptr && !cell->pathVisited) {
