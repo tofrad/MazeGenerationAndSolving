@@ -136,24 +136,11 @@ void Cell::makeWall()
 
 }
 
-void Cell::setWallbits()
+void Cell::breakWall()
 {
-	wallbits &= 0b0000;
-
-	if (this->getNorth() == nullptr) {
-		wallbits |= 0b1000;
-	}
-	if (this->getEast() == nullptr) {
-		wallbits |= 0b0100;
-	}
-	if (this->getSouth() == nullptr) {
-		wallbits |= 0b0010;
-	}
-	if (this->getWest() == nullptr) {
-		wallbits |= 0b0001;
-	}
-
+	this->isWall = false;
 }
+
 
 uint64_t Cell::getCellID()
 {

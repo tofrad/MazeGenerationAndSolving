@@ -5,11 +5,11 @@
 #include <random>
 #include <ctime>
 
-#define MAX_HEIGHT 150
-#define MAX_WIDTH 150
+#define MAX_HEIGHT 149
+#define MAX_WIDTH 149
 
-#define MIN_HEIGHT 3
-#define MIN_WIDTH 3
+#define MIN_HEIGHT 11
+#define MIN_WIDTH 11
 
 #define OFFSET 30
 
@@ -27,20 +27,26 @@ Maze::Maze()
 	createConnectedMaze();
 }
 
-Maze::Maze(int width, int screenwidth, int screenheight, GenerationMethod method)
+Maze::Maze(int w, int screenwidth, int screenheight, GenerationMethod method)
 {
 
-	if (width > MAX_WIDTH) {
+	if (w > MAX_WIDTH) {
 		this->width = MAX_WIDTH;
 	}
-	else if (width < MIN_WIDTH) {
+	else if (w < MIN_WIDTH) {
 		this->width = MIN_WIDTH;
 	}
 	else {
-		this->width = width;
+		this->width = w;
+	}
+	if (this->width % 2 == 0) {
+		this->width = this->width - 1;
 	}
 
 	int height = (this->width * 9) / 16;
+	if (height % 2 == 0) {
+		height = height - 1;
+	}
 
 	if (height > MAX_HEIGHT) {
 		this->height = MAX_HEIGHT;
@@ -57,8 +63,8 @@ Maze::Maze(int width, int screenwidth, int screenheight, GenerationMethod method
 
 	this->cellsize = min(usable_width / this->width, usable_height / this->height);
 
-	this->height = (int)(usable_height / this->cellsize);
-	this->width = (int)(usable_width / this->cellsize);
+	//this->height = (int)(usable_height / this->cellsize);
+	//this->width = (int)(usable_width / this->cellsize);
 
 	rand_gen.seed(time(0));
 	generateMaze(method);
@@ -119,8 +125,6 @@ Maze::Maze(int screenwidth, int screenheight, TileMap* custom_maze)
 		}
 
 	}
-	int x = 0;
-	//Maze(custom_maze.size, custom_maze.)
 
 	record = Recorder(Cell_List);
 }
@@ -176,6 +180,7 @@ void Maze::createConnectedMaze()
 
 		}
 	}
+
 }
 
 void Maze::createEmptyMaze()
@@ -192,6 +197,10 @@ void Maze::createEmptyMaze()
 			start_y = OFFSET / 2 + (usable_height - (height * cellsize)) / 2;
 			Vector2 Offset{ start_x, start_y };
 			Cell* C = new Cell(Point(x, y), cellsize, Offset);
+
+			if (x % 2 != 0 || y % 2 != 0) {
+				C->makeWall();
+			}
 
 			Cell_List.push_back(C);
 			Cell_Grid[x][y] = C;
@@ -547,8 +556,8 @@ vector<Cell*> Maze::getUnvisitedNeighbors(Cell* cell) {
 	Cell* target_cell = nullptr;
 	
 	//north possible
-	if (pos.getY() > 0) {
-		target_cell = Cell_Grid[X][Y - 1];
+	if (pos.getY() >= 2) {
+		target_cell = Cell_Grid[X][Y - 2];
 
 		if (target_cell->wasVisited == false) {
 			directions.push_back(target_cell);
@@ -556,8 +565,8 @@ vector<Cell*> Maze::getUnvisitedNeighbors(Cell* cell) {
 	}
 
 	//East possible
-	if (pos.getX() < this->width - 1) {
-		target_cell = Cell_Grid[X + 1][Y];
+	if (pos.getX() < this->width - 2) {
+		target_cell = Cell_Grid[X + 2][Y];
 
 		if (target_cell->wasVisited == false) {
 			directions.push_back(target_cell);
@@ -565,8 +574,8 @@ vector<Cell*> Maze::getUnvisitedNeighbors(Cell* cell) {
 	}
 
 	//south possible
-	if (pos.getY() < this->height - 1) {
-		target_cell = Cell_Grid[X][Y + 1];
+	if (pos.getY() < this->height - 2) {
+		target_cell = Cell_Grid[X][Y + 2];
 
 		if (target_cell->wasVisited == false) {
 			directions.push_back(target_cell);
@@ -574,8 +583,8 @@ vector<Cell*> Maze::getUnvisitedNeighbors(Cell* cell) {
 	}
 
 	//West possible
-	if (pos.getX() > 0) {
-		target_cell = Cell_Grid[X - 1][Y];
+	if (pos.getX() >= 2) {
+		target_cell = Cell_Grid[X - 2][Y];
 
 		if (target_cell->wasVisited == false) {
 			directions.push_back(target_cell);
@@ -637,31 +646,46 @@ vector<Cell*> Maze::getVisitedNeighbors(Cell* cell) {
 
 void Maze::connectCells(Cell* first, Cell* second)
 {
+	//get diff values to determin directions
 	int diff_x = first->getPosition().getX() - second->getPosition().getX();
 	int diff_y = first->getPosition().getY() - second->getPosition().getY();
 
+	Cell* CellInBetween = nullptr;
+
 	if (diff_x == 0) {
+		CellInBetween = Cell_Grid[first->getPosition().getX()][first->getPosition().getY() - (diff_y/2)];
+		CellInBetween->breakWall();
 		//North
-		if (diff_y == 1) {
-			first->setNorth(second);
-			second->setSouth(first);
+		if (diff_y > 0) {
+			first->setNorth(CellInBetween);
+			CellInBetween->setSouth(first);
+			CellInBetween->setNorth(second);
+			second->setSouth(CellInBetween);
 		}
 		//South
-		if (diff_y == -1) {
-			first->setSouth(second);
-			second->setNorth(first);
+		if (diff_y < 0) {
+			first->setSouth(CellInBetween);
+			CellInBetween->setNorth(first);
+			CellInBetween->setSouth(second);
+			second->setNorth(CellInBetween);
 		}
 	}
 	else {
+		CellInBetween = Cell_Grid[first->getPosition().getX() - (diff_x/2)][first->getPosition().getY()];
+		CellInBetween->breakWall();
 		//West
-		if (diff_x == 1) {
-			first->setWest(second);
-			second->setEast(first);
+		if (diff_x > 0) {
+			first->setWest(CellInBetween);
+			CellInBetween->setEast(first);
+			CellInBetween->setWest(second);
+			second->setEast(CellInBetween);
 		}
 		//East
-		if (diff_x == -1) {
-			first->setEast(second);
-			second->setWest(first);
+		if (diff_x < 0) {
+			first->setEast(CellInBetween);
+			CellInBetween->setWest(first);
+			CellInBetween->setEast(second);
+			second->setWest(CellInBetween);
 		}
 
 	}

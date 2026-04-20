@@ -72,43 +72,6 @@ void Base_Cell::drawCell()
 
 	DrawRectangleV(topleft, size, getColor());
 
-	float thickness = 3;
-
-	if (wallbits & 0b1000) {
-		DrawLineEx(topleft, topright, thickness, BLACK);
-	}
-	else {
-		DrawLineEx(	Vector2Add(topleft, Vector2{3, 0 }) ,
-					Vector2Add(topright, Vector2{ -3, 0}),
-					thickness, getColor());
-	}
-
-	if (wallbits & 0b0100) {
-		DrawLineEx(topright, bottomright, thickness, BLACK);
-	}
-	else {
-		DrawLineEx( Vector2Add(topright, Vector2{ 0, 3}),
-					Vector2Add(bottomright, Vector2{ 0, -3 }),
-					thickness, getColor());
-	}
-
-	if (wallbits & 0b0010) {
-		DrawLineEx(bottomleft, bottomright, thickness, BLACK);
-	}
-	else {
-		DrawLineEx(	Vector2Add(bottomleft, Vector2{ 3, 0 }),
-					Vector2Add(bottomright, Vector2{ -3, 0}),
-					thickness, getColor());
-	}
-
-	if (wallbits & 0b0001) {
-		DrawLineEx(topleft, bottomleft, thickness, BLACK);
-	}
-	else {
-		DrawLineEx(	Vector2Add(topleft, Vector2{ 0, 3 }),
-					Vector2Add(bottomleft, Vector2{ 0, -3 }),
-					thickness, getColor());
-	}
 
 }
 
@@ -126,25 +89,6 @@ void Base_Cell::drawEmptyCell()
 	Vector2 topright = Vector2Add(Vector2{ right, top }, offset);
 	Vector2 bottomleft = Vector2Add(Vector2{ left, bottom }, offset);
 	Vector2 bottomright = Vector2Add(Vector2{ right, bottom }, offset);
-
-	float thickness = 3;
-
-	if (wallbits & 0b1000) {
-		DrawLineEx(topleft, topright, thickness, BLACK);
-	}
-
-	if (wallbits & 0b0100) {
-		DrawLineEx(topright, bottomright, thickness, BLACK);
-	}
-
-
-	if (wallbits & 0b0010) {
-		DrawLineEx(bottomleft, bottomright, thickness, BLACK);
-	}
-
-	if (wallbits & 0b0001) {
-		DrawLineEx(topleft, bottomleft, thickness, BLACK);
-	}
 
 
 

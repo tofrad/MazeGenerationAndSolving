@@ -35,8 +35,7 @@ class Cell : public Base_Cell
 		void drawCell() {};
 		void resetCell();
 		void makeWall();
-
-		void setWallbits();
+		void breakWall();
 
 		uint64_t getCellID();
 

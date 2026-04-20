@@ -47,7 +47,6 @@ void Recorder::recordStep(Cell* modifiedCell)
 
 	vector<Base_Cell> temp;
 	modifiedCell->updateColor();
-	modifiedCell->setWallbits();
 	temp.push_back(modifiedCell->get_Base_copy());
 
 	history.push_back(temp);
@@ -62,7 +61,6 @@ void Recorder::recordStep(vector<Cell*> modifiedCells)
 	for (auto cell : modifiedCells) {
 
 		cell->updateColor();
-		cell->setWallbits();
 		temp.push_back(cell->get_Base_copy()); 
 	}	
 
