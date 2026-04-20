@@ -36,6 +36,9 @@ class Player {
 
 		void calculateLandmarks();
 
+		int x_section_cnt = 8;
+		int y_section_cnt = 10;
+
 		UI_Rectangle Canvas;
 		UI_Rectangle BelowCanvas;
 
@@ -62,8 +65,8 @@ class Player {
 		float General_Offset = 10; //10 px Offset
 
 		//windows splited into parts ( 7 parts Canvas, 1 Part Right Column, with Offset from Borders and between) 
-		float WindowSection = (window_width - (3 * General_Offset)) / 8;
-
+		int WindowSection_x = (window_width - (2 * General_Offset)) / x_section_cnt;
+		int WindowSection_y = (window_height - (2 * General_Offset)) / y_section_cnt;
 
 		float Label_height = 30;
 

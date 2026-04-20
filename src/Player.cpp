@@ -100,22 +100,22 @@ void Player::calculateLandmarks()
         break;
     }
 
-    WindowSection = (window_width - (3 * General_Offset)) / 8;
-    int WindowSection_Vertical = (window_height - (2 * General_Offset)) / 10;
+    WindowSection_x = (window_width - (2 * General_Offset)) / x_section_cnt;
+    WindowSection_y = (window_height - (2 * General_Offset)) / y_section_cnt;
 
     //Calculate Canvas as Center
-    Canvas.width = 8 * WindowSection;
-    Canvas.height = WindowSection_Vertical * 9 - General_Offset;//(Canvas.width / 16) * 9;
+    Canvas.width = 8 * WindowSection_x;
+    Canvas.height = WindowSection_y * 9 - General_Offset;//(Canvas.width / 16) * 9;
     Canvas.Point = Vector2{ General_Offset, General_Offset};
 
     //BelowCanvas Field
-    BelowCanvas.width = WindowSection * 7;
+    BelowCanvas.width = WindowSection_x * 7;
     BelowCanvas.Point = Vector2{ General_Offset, Canvas.Point.y + Canvas.height};
-    BelowCanvas.height = WindowSection_Vertical * 1 - General_Offset; // window_height - General_Offset - BelowCanvas.Point.y;
+    BelowCanvas.height = WindowSection_y * 1 - General_Offset; // window_height - General_Offset - BelowCanvas.Point.y;
 
 
     //Bottom right Field
-    BottomRight.width = 1 * WindowSection; //RightToCanvas.width;
+    BottomRight.width = 1 * WindowSection_x; //RightToCanvas.width;
     BottomRight.height = BelowCanvas.height;
     BottomRight.Point = Vector2{ BelowCanvas.Point.x + BelowCanvas.width, BelowCanvas.Point.y };
 
