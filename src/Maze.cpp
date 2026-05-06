@@ -5,8 +5,8 @@
 #include <random>
 #include <ctime>
 
-#define MAX_HEIGHT 149
-#define MAX_WIDTH 149
+#define MAX_HEIGHT 249
+#define MAX_WIDTH 249
 
 #define MIN_HEIGHT 11
 #define MIN_WIDTH 11
@@ -76,7 +76,7 @@ Maze::~Maze()
 
 }
 
-Maze::Maze(int screenwidth, int screenheight, TileMap* custom_maze)
+Maze::Maze(int screenwidth, int screenheight, const TileMap* custom_maze)
 {
 	this->width = custom_maze->size;
 	this->height = custom_maze->height;
@@ -201,7 +201,7 @@ void Maze::createEmptyMaze()
 			if (x % 2 != 0 || y % 2 != 0) {
 				C->makeWall();
 			}
-
+			C->setParent(C);
 			Cell_List.push_back(C);
 			Cell_Grid[x][y] = C;
 		}
@@ -341,14 +341,18 @@ void Maze::RecursiveBacktracking(Cell& cell)
 	for (auto target : directions) {
 
 		if (!target->wasVisited) {
-
-			connectCells(&cell, target);
+			
+			Cell* MiddleCell = connectCells(&cell, target);
+			MiddleCell->wasVisited = true;
+			MiddleCell->isActive = true;
+			record.recordStep(MiddleCell);
 
 			for (int i = 0; i < 5; i++) {
 				record.recordStep(&cell);
 			}
 
 			cell.isActive = false;
+			MiddleCell->isActive = false;
 			record.recordStep(&cell);
 			RecursiveBacktracking(*target);
 	}
@@ -360,79 +364,68 @@ void Maze::RecursiveBacktracking(Cell& cell)
 
 void Maze::Kruskal()
 {
-	//take all Connections by interating through cell grid after fully connected generation
-	// set Parent Cell to itslef in every Cell
-	// add only existing connections to South and East to prevent duplicates
-	//------>>> vector<pair<Cell*,Cell*>> Walls -> currentCell, Cell.East
-	//											-> currentCell, Cell.South
-	vector<pair<Cell*, Cell*>> Walls;
+	//store all valid walls in vector
+	vector<Cell*> Walls;
 
+	//every uneven number is a wall
 	for (int x = 0; x < width; x++) {
 
 		for (int y = 0; y < height; y++) {
 
-			Cell* currentCell = Cell_Grid[x][y];
-			currentCell->setParent(currentCell);
-
-			//add East Wall if not border
-			if (x < width - 1) {
-				Cell* EastCell = Cell_Grid[x+1][y];
-				EastCell->setParent(EastCell);
-				Walls.push_back(make_pair(currentCell, EastCell));
-			}
-			//add South Wall if not border
-			if (y < height - 1) {
-				Cell* WestCell = Cell_Grid[x][y+1];
-				WestCell->setParent(WestCell);
-				Walls.push_back(make_pair(currentCell, WestCell));
-			}
+			if (x % 2 != 0 || y % 2 != 0) {
+				Walls.push_back(Cell_Grid[x][y]);
+			}	
 		}
 	}
+
 	// shuffle the Wall List
 	shuffle(Walls.begin(), Walls.end(), rand_gen);
 	
-	// do a union find by checking Parents
-	// if same parents -> do nothing 
-	// if different parents -> overwrite Parent from one Cell with other Parent to join the Sets
-	// check if its South Connecting or East Connecting, by using th Cell Grid or Coordinates 
-	// if Cell.x == Cell2.x --> X cord. same --> Cells above each other 
-	//												-> Cell1.South = Cell2;
-	//												-> Cell2.North = Cell1;
-	// if Cell.y == Cell2.y --> Y Cord. same --> Cells next to each other
-	//												-> Cell1.East = cell2;
-	//												-> Cell2.west = cell1
 	for (auto wall : Walls) {
-		Cell* firstCell = wall.first;
-		Cell* secondCell = wall.second;
 
-		if (firstCell->getParent() != secondCell->getParent()) {
+		vector<Cell*> Neighbors = getWalkableNeighborsFromWall(wall);
 
-			secondCell->setParent(firstCell->getParent());
+		if (Neighbors.size() == 2) {
 
-			uniteGroupByParents(secondCell);
+			Cell* firstCell = Neighbors[0];
+			Cell* secondCell = Neighbors[1];
 
-			firstCell->isActive = true;
-			secondCell->isActive = true;
+			Cell* firstRoot = firstCell->findRoot();
+			Cell* secondRoot = secondCell->findRoot();
 
-			for (int i = 0; i < 7; i++) {
-				record.recordStep(vector<Cell*>{firstCell, secondCell});
+			//different parents = different sets
+			if (firstRoot != secondRoot) {
+				//connect Cells and get former wall
+				Cell* InBetween = connectCells(firstCell, secondCell);
+
+				//set parents for joining sets
+				secondRoot->setParent(firstRoot);
+
+				//for recording
+				firstCell->isActive = true;
+				InBetween->isActive = true;
+				secondCell->isActive = true;
+
+				for (int i = 0; i < 2; i++) {
+					record.recordStep(vector<Cell*>{firstCell, InBetween, secondCell});
+				}
+
+				//for recording
+				firstCell->isActive = false;
+				InBetween->isActive = false;
+				secondCell->isActive = false;
+				firstCell->wasVisited = true;
+				InBetween->wasVisited = true;
+				secondCell->wasVisited = true;
+				record.recordStep(vector<Cell*>{firstCell, InBetween, secondCell});
 			}
-			if (firstCell->getPosition().getX() == secondCell->getPosition().getX()) {
-				firstCell->setSouth(secondCell);
-				secondCell->setNorth(firstCell);
+			else {
+				// do nothing, cells already in same union
 			}
-			if (firstCell->getPosition().getY() == secondCell->getPosition().getY()) {
-				firstCell->setEast(secondCell);
-				secondCell->setWest(firstCell);
-			}
-			firstCell->isActive = false;
-			secondCell->isActive = false;
-			firstCell->wasVisited = true;
-			secondCell->wasVisited = true;
-			record.recordStep(vector<Cell*>{firstCell, secondCell});
 		}
 		else {
-			// do nothing, cells already in same union
+			//not enough walkable neighbors, just wall neighbors
+			//nothing to do
 		}
 	}
 
@@ -486,7 +479,7 @@ void Maze::HuntAndKill()
 
 				if(cell->wasVisited == false){
 
-					vector<Cell*> VisitedNeighbors = getVisitedNeighbors(cell);
+					vector<Cell*> VisitedNeighbors;// = getVisitedNeighbors(cell);
 
 					if (!VisitedNeighbors.empty()) {
 
@@ -594,7 +587,8 @@ vector<Cell*> Maze::getUnvisitedNeighbors(Cell* cell) {
 	return directions;
 }
 
-vector<Cell*> Maze::getVisitedNeighbors(Cell* cell) {
+//needs to be called from a wall, does only one step in each direction
+vector<Cell*> Maze::getWalkableNeighborsFromWall(Cell* cell) {
 
 	vector<Cell*> directions;
 
@@ -608,16 +602,17 @@ vector<Cell*> Maze::getVisitedNeighbors(Cell* cell) {
 	if (pos.getY() > 0) {
 		target_cell = Cell_Grid[X][Y - 1];
 
-		if (target_cell->wasVisited) {
+		if(!target_cell->isWall){
 			directions.push_back(target_cell);
 		}
+		
 	}
 
 	//East possible
 	if (pos.getX() < this->width - 1) {
 		target_cell = Cell_Grid[X + 1][Y];
 
-		if (target_cell->wasVisited) {
+		if (!target_cell->isWall) {
 			directions.push_back(target_cell);
 		}
 	}
@@ -625,8 +620,8 @@ vector<Cell*> Maze::getVisitedNeighbors(Cell* cell) {
 	//south possible
 	if (pos.getY() < this->height - 1) {
 		target_cell = Cell_Grid[X][Y + 1];
-
-		if (target_cell->wasVisited) {
+		
+		if (!target_cell->isWall) {
 			directions.push_back(target_cell);
 		}
 	}
@@ -635,16 +630,15 @@ vector<Cell*> Maze::getVisitedNeighbors(Cell* cell) {
 	if (pos.getX() > 0) {
 		target_cell = Cell_Grid[X - 1][Y];
 
-		if (target_cell->wasVisited) {
+		if (!target_cell->isWall) {
 			directions.push_back(target_cell);
 		}
 	}
 
-
 	return directions;
 }
 
-void Maze::connectCells(Cell* first, Cell* second)
+Cell* Maze::connectCells(Cell* first, Cell* second)
 {
 	//get diff values to determin directions
 	int diff_x = first->getPosition().getX() - second->getPosition().getX();
@@ -689,5 +683,6 @@ void Maze::connectCells(Cell* first, Cell* second)
 		}
 
 	}
+	return CellInBetween;
 }
 

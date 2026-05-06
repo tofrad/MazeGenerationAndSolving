@@ -17,7 +17,7 @@ class Maze
 		Maze(int width, int screenwidth, int screenheight, GenerationMethod method);
 		~Maze();
 
-		Maze(int screenwidth, int screemheight, TileMap* custom_maze);
+		Maze(int screenwidth, int screemheight, const TileMap* custom_maze);
 
 		Cell* getStart();
 		vector<Cell*> getGeneratedMaze();
@@ -75,8 +75,8 @@ class Maze
 		void uniteGroupByParents(Cell* start);
 
 		vector<Cell*> getUnvisitedNeighbors(Cell* cell);
-		vector<Cell*> getVisitedNeighbors(Cell* cell);
+		vector<Cell*> getWalkableNeighborsFromWall(Cell* cell);
 
-		void connectCells(Cell* first, Cell* second);
+		Cell* connectCells(Cell* first, Cell* second);
 };
 

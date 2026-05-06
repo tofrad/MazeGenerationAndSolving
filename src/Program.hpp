@@ -53,7 +53,7 @@ class Program
 		int buffer_width = 1920;
 		int buffer_height = 1080;
 
-		int MazeSize = 30;
+		int MazeSize = 150;
 
 		Maze M;
 
