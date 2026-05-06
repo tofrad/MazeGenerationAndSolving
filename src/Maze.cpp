@@ -384,7 +384,7 @@ void Maze::Kruskal()
 	for (auto wall : Walls) {
 
 		vector<Cell*> Neighbors = getWalkableNeighborsFromWall(wall);
-
+		
 		if (Neighbors.size() == 2) {
 
 			Cell* firstCell = Neighbors[0];
@@ -397,9 +397,11 @@ void Maze::Kruskal()
 			if (firstRoot != secondRoot) {
 				//connect Cells and get former wall
 				Cell* InBetween = connectCells(firstCell, secondCell);
+				Cell* InBetweenRoot = InBetween->findRoot();
 
 				//set parents for joining sets
 				secondRoot->setParent(firstRoot);
+				InBetweenRoot->setParent(firstRoot);
 
 				//for recording
 				firstCell->isActive = true;
@@ -433,12 +435,6 @@ void Maze::Kruskal()
 	for (auto cell : Cell_List) {
 		cell->setParent(nullptr);
 	}
-	
-	// For  Recording highlight Cells as Active and record 273 times
-	// Delete active flag and record once
-	// 
-	// Delete Pair from Walls and repeat with for loop through walls
-	// 
 }
 
 void Maze::HuntAndKill()
@@ -510,31 +506,6 @@ void Maze::HuntAndKill()
 		}
 	}
 
-}
-
-void Maze::uniteGroupByParents(Cell* start)
-{
-	vector<Cell*> neighbors;
-	if (start->getSouth() != nullptr) {
-		neighbors.push_back(start->getSouth());
-	}
-	if (start->getNorth() != nullptr) {
-		neighbors.push_back(start->getNorth());
-	}
-	if (start->getWest() != nullptr) {
-		neighbors.push_back(start->getWest());
-	}
-	if (start->getEast() != nullptr) {
-		neighbors.push_back(start->getEast());
-	}
-	for (auto neighbor : neighbors) {
-
-		if (neighbor->getParent() != start->getParent()) {
-
-			neighbor->setParent(start->getParent());
-			uniteGroupByParents(neighbor);
-		}
-	}
 }
 
 vector<Cell*> Maze::getUnvisitedNeighbors(Cell* cell) {
@@ -640,46 +611,51 @@ vector<Cell*> Maze::getWalkableNeighborsFromWall(Cell* cell) {
 
 Cell* Maze::connectCells(Cell* first, Cell* second)
 {
+	int x1 = first->getPosition().getX();
+	int y1 = first->getPosition().getY();
+	int x2 = second->getPosition().getX();
+	int y2 = second->getPosition().getY();
+
 	//get diff values to determin directions
 	int diff_x = first->getPosition().getX() - second->getPosition().getX();
 	int diff_y = first->getPosition().getY() - second->getPosition().getY();
 
 	Cell* CellInBetween = nullptr;
 
-	if (diff_x == 0) {
-		CellInBetween = Cell_Grid[first->getPosition().getX()][first->getPosition().getY() - (diff_y/2)];
+	if (x1 == x2) {
+		int midY = (y1 + y2) / 2;
+		CellInBetween = Cell_Grid[x1][midY];
 		CellInBetween->breakWall();
-		//North
-		if (diff_y > 0) {
-			first->setNorth(CellInBetween);
-			CellInBetween->setSouth(first);
-			CellInBetween->setNorth(second);
-			second->setSouth(CellInBetween);
-		}
-		//South
-		if (diff_y < 0) {
+		
+		if (y1 < y2) { //first north of second
 			first->setSouth(CellInBetween);
 			CellInBetween->setNorth(first);
 			CellInBetween->setSouth(second);
 			second->setNorth(CellInBetween);
 		}
+		else {
+			first->setNorth(CellInBetween);
+			CellInBetween->setSouth(first);
+			CellInBetween->setNorth(second);
+			second->setSouth(CellInBetween);
+		}
 	}
 	else {
-		CellInBetween = Cell_Grid[first->getPosition().getX() - (diff_x/2)][first->getPosition().getY()];
+		int midX = (x1 + x2) / 2;
+		CellInBetween = Cell_Grid[midX][y1];
 		CellInBetween->breakWall();
-		//West
-		if (diff_x > 0) {
-			first->setWest(CellInBetween);
-			CellInBetween->setEast(first);
-			CellInBetween->setWest(second);
-			second->setEast(CellInBetween);
-		}
-		//East
-		if (diff_x < 0) {
+
+		if (x1 < x2) { //first west of second
 			first->setEast(CellInBetween);
 			CellInBetween->setWest(first);
 			CellInBetween->setEast(second);
 			second->setWest(CellInBetween);
+		}
+		else {
+			first->setWest(CellInBetween);
+			CellInBetween->setEast(first);
+			CellInBetween->setWest(second);
+			second->setEast(CellInBetween);
 		}
 
 	}

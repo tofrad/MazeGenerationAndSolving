@@ -72,8 +72,6 @@ class Maze
 
 		void HuntAndKill();
 
-		void uniteGroupByParents(Cell* start);
-
 		vector<Cell*> getUnvisitedNeighbors(Cell* cell);
 		vector<Cell*> getWalkableNeighborsFromWall(Cell* cell);
 

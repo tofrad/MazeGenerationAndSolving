@@ -160,7 +160,7 @@ bool Pathsolver::BFS(Cell* start)
 	queue<vector<Cell*>> tobevisited;
 
 	start->pathVisited = true;
-	tobevisited.push(vector<Cell*>{start});
+	tobevisited.push({start});
 
 	bool wasTargetFound = false;
 	Cell* foundTarget = nullptr;
@@ -183,35 +183,29 @@ bool Pathsolver::BFS(Cell* start)
 					foundTarget = cell;
 					break;
 				}
-		
-				if (isVisitable(cell->getNorth())) {
+				
+				Cell* Neighbors[4] = {
+					cell->getNorth(),
+					cell->getEast(),
+					cell->getSouth(),
+					cell->getWest()
+				};
+				
+				for (Cell* neighbor : Neighbors) {
 
-					cell->getNorth()->setParent(cell);
-					next_cells.push_back(cell->getNorth());
-					cell->getNorth()->pathVisited = true;
-				}
-				if (isVisitable(cell->getEast())) {
+					if (neighbor && isVisitable(neighbor)) {
 
-					cell->getEast()->setParent(cell);
-					next_cells.push_back(cell->getEast());
-					cell->getEast()->pathVisited = true;
-				}
-				if (isVisitable(cell->getSouth())) {
+						neighbor->setParent(cell);
+						neighbor->pathVisited = true;
+						next_cells.push_back(neighbor);
 
-					cell->getSouth()->setParent(cell);
-					next_cells.push_back(cell->getSouth());
-					cell->getSouth()->pathVisited = true;
-				}
-				if (isVisitable(cell->getWest())) {
+					}
 
-					cell->getWest()->setParent(cell);
-					next_cells.push_back(cell->getWest());
-					cell->getWest()->pathVisited = true;
 				}
 			}
 			// record current cells here###############################################################
 			path_record.recordStep(current_cells);
-			tobevisited.push(vector<Cell*>(next_cells));
+			tobevisited.push(next_cells);
 		}
 		
 	}
