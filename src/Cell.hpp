@@ -60,7 +60,7 @@ class Cell : public Base_Cell
 		Cell* South = nullptr;
 		Cell* West = nullptr;
 
-		Cell* Parent = nullptr;
+		Cell* Parent = this;
 
 		uint64_t cell_id = 0;
 		
