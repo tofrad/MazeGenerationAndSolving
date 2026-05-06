@@ -73,6 +73,7 @@ class Maze
 		void HuntAndKill();
 
 		vector<Cell*> getUnvisitedNeighbors(Cell* cell);
+		vector<Cell*> getVisitedNeighbors(Cell* cell);
 		vector<Cell*> getWalkableNeighborsFromWall(Cell* cell);
 
 		Cell* connectCells(Cell* first, Cell* second);

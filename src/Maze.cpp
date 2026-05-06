@@ -445,63 +445,69 @@ void Maze::HuntAndKill()
 	while(true){
 
 		vector<Cell*> neighbor_list = getUnvisitedNeighbors(current_cell);
-		shuffle(neighbor_list.begin(), neighbor_list.end(), rand_gen);
-
-		Cell* next_cell = nullptr;
-
-		//counter for iterating cell list in search for new cell
-		int cell_cnt = 0;
-
+		current_cell->wasVisited = true;
+		bool found_new_cell = false;
 		//get next cell
 		if (!neighbor_list.empty()) {
 			
-			next_cell = neighbor_list[0];
+			shuffle(neighbor_list.begin(), neighbor_list.end(), rand_gen);
+
+			Cell* next_cell = neighbor_list[0];
 
 			current_cell->isActive = true;
-			for (int i = 0; i < 5; i++) {
+			for (int i = 0; i < 2; i++) {
 				record.recordStep(current_cell);
 			}
 
-			connectCells(current_cell, next_cell);
+			Cell* InBetween = connectCells(current_cell, next_cell);
+			InBetween->wasVisited = true;
 
 			current_cell->isActive = false;
-			current_cell->wasVisited = true;
-			record.recordStep(current_cell);
+			record.recordStep({ current_cell, InBetween});
 
 			current_cell = next_cell;
+			found_new_cell = true; //mark to signal found cell
+			continue;
 		}
 		else {
+			record.recordStep(current_cell);//mark visited in recording
+			found_new_cell = false;
+			// iterate through all cells till found unvisited with visited Neighbors for new starting point	
 			for (auto cell : Cell_List) {
 
-				if(cell->wasVisited == false){
+				if (cell->wasVisited == false && cell->isWall == false) {
 
-					vector<Cell*> VisitedNeighbors;// = getVisitedNeighbors(cell);
+					vector<Cell*> VisitedNeighbors = getVisitedNeighbors(cell);
 
 					if (!VisitedNeighbors.empty()) {
 
 						shuffle(VisitedNeighbors.begin(), VisitedNeighbors.end(), rand_gen);
 
-						next_cell = VisitedNeighbors[0];
+						Cell* neighbor = VisitedNeighbors[0];
 
-						cell->isActive = true;
-						cell->wasVisited = true;
-						for (int i = 0; i < 5; i++) {
-							record.recordStep(cell);
+						neighbor->isActive = true;
+						for (int i = 0; i < 2; i++) {
+							record.recordStep(neighbor);
 						}
 
-						connectCells(cell, next_cell);
-						current_cell = next_cell;
+						Cell* InBetween = connectCells(cell, neighbor);
+						InBetween->wasVisited = true;
 
-						cell->isActive = false;
-						record.recordStep(cell);
+						current_cell = cell;
+
+						found_new_cell = true; //mark to signal found cell
+
+						neighbor->isActive = false;
+						record.recordStep({ neighbor, InBetween });
 
 						break;
 					}
 				}
 			}
 		}
+
 		//no valid cell is left , abort
-		if (next_cell == nullptr) {
+		if (found_new_cell == false) {
 			break;
 		}
 	}
@@ -551,6 +557,56 @@ vector<Cell*> Maze::getUnvisitedNeighbors(Cell* cell) {
 		target_cell = Cell_Grid[X - 2][Y];
 
 		if (target_cell->wasVisited == false) {
+			directions.push_back(target_cell);
+		}
+	}
+
+	return directions;
+}
+
+vector<Cell*> Maze::getVisitedNeighbors(Cell* cell) {
+
+	vector<Cell*> directions;
+
+
+	Point pos = cell->getPosition();
+	int X = pos.getX();
+	int Y = pos.getY();
+
+	Cell* target_cell = nullptr;
+
+	//north possible
+	if (pos.getY() >= 2) {
+		target_cell = Cell_Grid[X][Y - 2];
+
+		if (target_cell->wasVisited == true) {
+			directions.push_back(target_cell);
+		}
+	}
+
+	//East possible
+	if (pos.getX() < this->width - 2) {
+		target_cell = Cell_Grid[X + 2][Y];
+
+		if (target_cell->wasVisited == true) {
+			directions.push_back(target_cell);
+		}
+	}
+
+	//south possible
+	if (pos.getY() < this->height - 2) {
+		target_cell = Cell_Grid[X][Y + 2];
+
+		if (target_cell->wasVisited == true) {
+			directions.push_back(target_cell);
+		}
+	}
+
+	//West possible
+	if (pos.getX() >= 2) {
+		target_cell = Cell_Grid[X - 2][Y];
+
+		if (target_cell->wasVisited == true) {
 			directions.push_back(target_cell);
 		}
 	}
