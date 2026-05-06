@@ -76,6 +76,15 @@ Cell* Cell::getParent()
 	return Parent;
 }
 
+//find with path compression
+Cell* Cell::findRoot()
+{
+	if(Parent != this) {
+		Parent = Parent->findRoot();
+	}
+	return Parent;
+}
+
 void Cell::updateColor()
 {
 	Base_Cell::onColorChange();
@@ -133,12 +142,14 @@ void Cell::makeWall()
 	}
 
 	this->isWall = true;
+	this->updateColor();
 
 }
 
 void Cell::breakWall()
 {
 	this->isWall = false;
+	this->updateColor();
 }
 
 

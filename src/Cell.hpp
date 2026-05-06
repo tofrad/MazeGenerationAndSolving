@@ -30,6 +30,8 @@ class Cell : public Base_Cell
 		Cell* getWest();
 		Cell* getParent();
 
+		Cell* findRoot();
+
 		void updateColor();
 
 		void drawCell() {};
