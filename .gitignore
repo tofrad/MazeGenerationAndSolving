@@ -371,3 +371,9 @@ sunny.h
 *.rgs
 .gitignore
 GUI_Style.h
+
+.idea/
+
+lib/
+
+CMakeLists.txt

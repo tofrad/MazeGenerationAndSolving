@@ -3,7 +3,7 @@
 #include "Menu.hpp"
 #include "Program.hpp"
 
-#include "raygui.h"
+#include "../lib/raylib/include/raygui.h"
 
 Menu::Menu()
 {

@@ -1,7 +1,7 @@
 #pragma once
 #define RAYGUI_IMPLEMENTATION
 
-#include "raylib.h"
+#include "../lib/raylib/include/raylib.h"
 
 #include "Maze.hpp"
 #include "Pathsolver.hpp"

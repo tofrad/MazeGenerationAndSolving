@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Editor.hpp"
-#include "raygui.h"
+#include "../lib/raylib/include/raygui.h"
 
 #include <iostream>
 

@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Player.hpp"
-
-#include "raygui.h"
+#include "../lib/raylib/include/raygui.h"
+#include<cstdio>
 
 
 Player::Player()

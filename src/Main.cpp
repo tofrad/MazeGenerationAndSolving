@@ -1,5 +1,5 @@
 #pragma once
-#include "Program.hpp"
+#include "../include/Program.hpp"
 
 #include <filesystem>
 #include <iostream>

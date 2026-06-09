@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "raylib.h"
+#include "../lib/raylib/include/raylib.h"
 
 #include "ProgramCallbacks.hpp"
 

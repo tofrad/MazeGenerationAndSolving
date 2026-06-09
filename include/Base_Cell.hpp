@@ -2,8 +2,8 @@
 
 #include "Point.hpp"
 
-#include "raylib.h"
-#include "raymath.h"
+#include "../lib/raylib/include/raylib.h"
+#include "../lib/raylib/include/raymath.h"
 
 
 class Base_Cell

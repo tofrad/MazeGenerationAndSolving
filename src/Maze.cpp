@@ -1,5 +1,5 @@
 #include "Maze.hpp"
-#include "raymath.h"
+#include "../lib/raylib/include/raymath.h"
 
 #include <algorithm>
 #include <random>
