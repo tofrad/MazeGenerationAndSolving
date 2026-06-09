@@ -18,7 +18,7 @@ public:
 	Editor();
 	~Editor();
 
-	void init(ProgramCallbacks& callbacks);
+	void init(const ProgramCallbacks& cb);
 
 	void open();
 	void close();

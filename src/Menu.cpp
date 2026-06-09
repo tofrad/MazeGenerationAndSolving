@@ -1,5 +1,3 @@
-#pragma once
-
 #include "Menu.hpp"
 #include "Program.hpp"
 

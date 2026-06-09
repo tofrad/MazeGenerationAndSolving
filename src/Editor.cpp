@@ -1,5 +1,3 @@
-#pragma once
-
 #include "Editor.hpp"
 #include "../lib/raylib/include/raygui.h"
 
@@ -16,9 +14,9 @@ Editor::~Editor()
 
 }
 
-void Editor::init(ProgramCallbacks& callbacks)
+void Editor::init(const ProgramCallbacks& cb)
 {
-    this->callbacks = callbacks;
+    this->callbacks = cb;
     createTileMap();
 }
 

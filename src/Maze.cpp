@@ -1,5 +1,4 @@
 #include "Maze.hpp"
-#include "../lib/raylib/include/raymath.h"
 
 #include <algorithm>
 #include <random>
@@ -23,7 +22,7 @@ Maze::Maze()
 {
 	this->height = MIN_HEIGHT;
 	this->width = MIN_WIDTH;
-	rand_gen.seed(time(0));
+	rand_gen.seed(time(nullptr));
 	createConnectedMaze();
 }
 
@@ -43,19 +42,19 @@ Maze::Maze(int w, int screenwidth, int screenheight, GenerationMethod method)
 		this->width = this->width - 1;
 	}
 
-	int height = (this->width * 9) / 16;
-	if (height % 2 == 0) {
-		height = height - 1;
+	int temp_height = (this->width * 9) / 16;
+	if (temp_height % 2 == 0) {
+		temp_height = temp_height - 1;
 	}
 
-	if (height > MAX_HEIGHT) {
+	if (temp_height > MAX_HEIGHT) {
 		this->height = MAX_HEIGHT;
 	}
-	else if (height < MIN_HEIGHT) {
+	else if (temp_height < MIN_HEIGHT) {
 		this->height = MIN_HEIGHT;
 	}
 	else {
-		this->height = height;
+		this->height = temp_height;
 	}
 
 	usable_height = screenheight - (OFFSET);
@@ -66,7 +65,7 @@ Maze::Maze(int w, int screenwidth, int screenheight, GenerationMethod method)
 	//this->height = (int)(usable_height / this->cellsize);
 	//this->width = (int)(usable_width / this->cellsize);
 
-	rand_gen.seed(time(0));
+	rand_gen.seed(time(nullptr));
 	generateMaze(method);
 	
 }
@@ -195,8 +194,8 @@ void Maze::createEmptyMaze()
 
 			start_x = OFFSET / 2 + (usable_width - (width * cellsize)) / 2;
 			start_y = OFFSET / 2 + (usable_height - (height * cellsize)) / 2;
-			Vector2 Offset{ start_x, start_y };
-			Cell* C = new Cell(Point(x, y), cellsize, Offset);
+			const Vector2 LocalOffset{ static_cast<float>(start_x), static_cast<float>(start_y) };
+			Cell* C = new Cell(Point(x, y), cellsize, LocalOffset);
 
 			if (x % 2 != 0 || y % 2 != 0) {
 				C->makeWall();

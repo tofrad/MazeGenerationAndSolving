@@ -37,6 +37,6 @@ int main()
     //
     // 
 // Round out UI
-    //Rescale with dynamic buffersize, recalculate cellsize and drawing thickness depending on size
+    //Rescale with dynamic buffer size, recalculate cellsize and drawing thickness depending on size
     // 
 //Prepare Code for WebAssembly

@@ -1,5 +1,3 @@
-#pragma once
-
 #include "Player.hpp"
 #include "../lib/raylib/include/raygui.h"
 #include<cstdio>
@@ -13,9 +11,9 @@ Player::~Player()
 {
 }
 
-void Player::init(ProgramCallbacks& callbacks) {
+void Player::init(ProgramCallbacks& cb) {
 
-    this->callbacks = callbacks;
+    this->callbacks = cb;
     calculateLandmarks();
 }
 

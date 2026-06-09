@@ -16,7 +16,7 @@ class Player {
 		Player();
 		~Player();
 
-		void init(ProgramCallbacks& callbacks);
+		void init(ProgramCallbacks& cb);
 
 		void open(Recorder* Rec);
 		void close();
