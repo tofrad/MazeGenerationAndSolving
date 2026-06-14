@@ -20,8 +20,8 @@ public:
 
 	void init(const ProgramCallbacks& cb);
 
-	void open();
-	void close();
+	static void open();
+	static void close();
 
 	void displayEditor();
 
@@ -32,10 +32,10 @@ private:
 	void createTileMap();
 	void isValid();
 
-	void drawGrid(int tile_size, int x_tile_offset, int y_tile_offset);
+	void drawGrid(int tile_size, int x_tile_offset, int y_tile_offset) const;
 	
 	ProgramCallbacks callbacks;
-	void syncToProgram();
+	static void syncToProgram();
 
 	//Windows and UI Size Stuff ################################################################################################################################
 	int window_height = 1080;
@@ -53,7 +53,7 @@ private:
 
 	float General_Offset = 10; //10 px Offset
 
-	//windows splited into parts ( 7 parts Canvas, 1 Part Right Column, with Offset from Borders and between) 
+	//windows split into parts ( 7 parts Canvas, 1 Part Right Column, with Offset from Borders and between)
 	float WindowSection = (window_width - (3 * General_Offset)) / 8;
 
 

@@ -11,32 +11,32 @@ class Recorder
 
 public:
 	Recorder();
-	Recorder(const vector<Cell*> cell_list);
+	explicit Recorder(const vector<Cell*>& cell_list);
 	~Recorder();
 
-	int getStep();
-	int getSize();
+	int getStep() const;
+	int getSize() const;
 
 	void startRecording();
 	void stopRecording();
 
 	void recordStep(Cell* modifiedCell);
-	void recordStep(vector<Cell*> modifiedCells);
-	void saveLastFrame(vector<Cell*> LastList);
+	void recordStep(const vector<Cell*>& modifiedCells);
+	void saveLastFrame(const vector<Cell*>& LastList);
 
 	void startPlaying();
-	bool stopPlaying();
+	void stopPlaying();
 
-	bool getPlaystate();
+	bool getPlaystate() const;
 	void setLooping(bool state);
 
 	bool playRecording();
 	void loopRecording();
 
 	bool stepForward();
-	void playLastFrame();
+	void playLastFrame() const;
 
-	void playInitialGrid();
+	void playInitialGrid() const;
 
 	void playStep(int step);
 

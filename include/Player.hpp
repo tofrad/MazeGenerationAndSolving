@@ -16,7 +16,7 @@ class Player {
 		Player();
 		~Player();
 
-		void init(ProgramCallbacks& cb);
+		void init(const ProgramCallbacks& callbacks);
 
 		void open(Recorder* Rec);
 		void close();
@@ -26,7 +26,7 @@ class Player {
 
 	private:
 
-		ProgramCallbacks callbacks;
+		ProgramCallbacks player_callbacks;
 
 		Recorder* Record_Object = nullptr;
 
@@ -44,15 +44,15 @@ class Player {
 
 		UI_Rectangle BottomRight;
 
-		Rectangle Button_FullRewind;
-		Rectangle Button_Rewind;
-		Rectangle Button_Pause;
-		Rectangle Button_Forward;
-		Rectangle Button_FullForward;
+		Rectangle Button_FullRewind{};
+		Rectangle Button_Rewind{};
+		Rectangle Button_Pause{};
+		Rectangle Button_Forward{};
+		Rectangle Button_FullForward{};
 
-		Rectangle Slider;
-		Rectangle Slider_TextBox;
-		Rectangle MaxValue_TextBox;
+		Rectangle Slider{};
+		Rectangle Slider_TextBox{};
+		Rectangle MaxValue_TextBox{};
 
 		//GUI Values-------------------------------------------------
 		int stepValue = 0;
@@ -64,7 +64,7 @@ class Player {
 
 		float General_Offset = 10; //10 px Offset
 
-		//windows splited into parts ( 7 parts Canvas, 1 Part Right Column, with Offset from Borders and between) 
+		//windows split into parts ( 7 parts Canvas, 1 Part Right Column, with Offset from Borders and between)
 		int WindowSection_x = (window_width - (2 * General_Offset)) / x_section_cnt;
 		int WindowSection_y = (window_height - (2 * General_Offset)) / y_section_cnt;
 

@@ -1,6 +1,5 @@
 #pragma once
 #include <functional>
-
 #include "State_Definitions.hpp"
 
 using ProgramstateCallback = std::function<void(ProgramState)>;

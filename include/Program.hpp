@@ -22,7 +22,7 @@ class Program
 		void InitProgram();
 		int Run();
 
-		ProgramState getState();
+		ProgramState getState() const;
 
 		void handleStateRequest(ProgramState state);
 
@@ -69,7 +69,7 @@ class Program
 
 		float scale = 1.0f;
 
-		void centerWindow();
+		void centerWindow() const;
 
 		//buffer for displaying program to window
 		RenderTexture2D buffer;
@@ -83,9 +83,9 @@ class Program
 		Rectangle source;
 
 
-		void saveLastFrame();
-		void getLastMazeFrame();
-		void getLastPathFrame();
+		void saveLastFrame() const;
+		void getLastMazeFrame() const;
+		void getLastPathFrame() const;
 
 };
 

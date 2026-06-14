@@ -11,28 +11,29 @@ class Base_Cell
 	public:
 
 		Base_Cell();
-		Base_Cell(Point p1);
-		Base_Cell(Point p1, int cellsize, Vector2 offset);
+		explicit Base_Cell(const Point& p1);
+		Base_Cell(const Point& p1, int cellsize, Vector2 offset);
 
 		Base_Cell get_Base_copy() const;
 
 		~Base_Cell();
 
-		void drawCell();
+		void drawCell() const;
 
-		void drawEmptyCell();
+		void drawEmptyCell() const;
 
-		Point getPosition();
+		Point getPosition() const;
 
-		void setColor(Color color);
-		Color getColor();
+		void setColor(Color Color);
+		Color getColor() const;
 		void onColorChange();
 
 		Point p;
 		int cellsize = 10;
-		Vector2 offset;
+		Vector2 offset{10.f, 10.f};
 
 		Color color = LIGHTGRAY;
+		int cellsize_{};
 
 	private:
 

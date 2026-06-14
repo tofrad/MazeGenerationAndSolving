@@ -13,19 +13,19 @@ Menu::~Menu()
 
 }
 
-void Menu::open()
+void Menu::init(const ProgramCallbacks& callbacks)
 {
-    state = OPEN;
-    syncToProgram();
-}
+    this->menu_callbacks = callbacks;
 
-void Menu::init(ProgramCallbacks& callbacks)
-{
-    this->callbacks = callbacks;
- 
     //Center Label
     GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
     GuiSetStyle(TEXTBOX, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
+    syncToProgram();
+}
+
+void Menu::open()
+{
+    state = OPEN;
     syncToProgram();
 }
 
@@ -41,41 +41,39 @@ void Menu::displayGUI()
     int window_height = 1080;
     int window_width = 1920;
 
-    Screensize size = callbacks.getWindowSize();
-    switch (size) {
-        case UHD:
-            window_height = 1440;
-            window_width = 2560;
-            break;
-        case FHD:
-            window_height = 1080;
-            window_width = 1920;
-            break;
-        case WSXGA:
-            window_height = 900;
-            window_width = 1600;
-            break;
-        case SMALL:
-            window_height = 540;
-            window_width = 960;
-            break;
-        default:
-            window_height = 540;
-            window_width = 960;
-            break;
+    switch (const Screensize size = menu_callbacks.getWindowSize()) {
+    case UHD:
+        window_height = 1440;
+        window_width = 2560;
+        break;
+    case FHD:
+        window_height = 1080;
+        window_width = 1920;
+        break;
+    case WSXGA:
+        window_height = 900;
+        window_width = 1600;
+        break;
+    case SMALL:
+        window_height = 540;
+        window_width = 960;
+        break;
+    default:
+        window_height = 540;
+        window_width = 960;
+        break;
     }
 
-    float Labelpos_y = 10;
+    constexpr float Label_offset = 10;
 
-    float Label_offset = 10;
-
-    float Labelwidth = (window_width - (4*Label_offset)) / 3;
-    float Label_height = 30;
+    const float Labelwidth = (window_width - (4*Label_offset)) / 3;
 
     if (state == OPEN) {
+        constexpr float Label_height = 30;
+        constexpr float Labelpos_y = 10;
 
         float x = Label_offset;
-        float y = Labelpos_y;
+        constexpr float y = Labelpos_y;
         
         //GuiListView(Rectangle{ x, y + Label_height + 1, Labelwidth, dropdown_thick}, "BACKTRACKING;KRUSKAL;HUNTANDKILL;CUSTOM", &test , &Maze_GUI);
         // 
@@ -124,21 +122,21 @@ void Menu::displayGUI()
 
             WindowEdit = !WindowEdit;
             WindowSize = static_cast<Screensize>(Window_GUI);
-            callbacks.onWindowRequest(WindowSize);
+            menu_callbacks.onWindowRequest(WindowSize);
         }
 
         //Resolve Actions here
         if (Generate_Button) {
 
-            callbacks.onGenerateRequest(MazeSize, MazeMethod);
-            callbacks.onSolveRequest(PathMethod);
+            menu_callbacks.onGenerateRequest(MazeSize, MazeMethod);
+            menu_callbacks.onSolveRequest(PathMethod);
 
             Generate_Button = false;
         }
 
         if (Solve_Button) {
 
-            callbacks.onSolveRequest(PathMethod);
+            menu_callbacks.onSolveRequest(PathMethod);
 
             Solve_Button = false;
         }
@@ -155,24 +153,24 @@ void Menu::displayGUI()
 
 void Menu::syncToProgram()
 {
-    if (callbacks.getGenerator) {
-        MazeMethod = callbacks.getGenerator();
+    if (menu_callbacks.getGenerator) {
+        MazeMethod = menu_callbacks.getGenerator();
     }
-    if (callbacks.getMazeSize) {
-        MazeSize = callbacks.getMazeSize();
+    if (menu_callbacks.getMazeSize) {
+        MazeSize = menu_callbacks.getMazeSize();
     }
-    if (callbacks.getSolver) {
-        PathMethod = callbacks.getSolver();
+    if (menu_callbacks.getSolver) {
+        PathMethod = menu_callbacks.getSolver();
     }
-    if (callbacks.getWindowSize) {
-        WindowSize = callbacks.getWindowSize();
+    if (menu_callbacks.getWindowSize) {
+        WindowSize = menu_callbacks.getWindowSize();
     }
     Maze_GUI = static_cast<int>(MazeMethod);
     Path_GUI = static_cast<int>(PathMethod);
     Window_GUI = static_cast<int>(WindowSize);
 }
 
-void Menu::requestStateChange(ProgramState newState)
+void Menu::requestStateChange(const ProgramState newState) const
 {
-    callbacks.onStateRequest(newState);
+    menu_callbacks.onStateRequest(newState);
 }

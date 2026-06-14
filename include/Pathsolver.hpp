@@ -12,14 +12,14 @@ class Pathsolver
 {
 	public:
 		Pathsolver();
-		Pathsolver(vector<Cell*> Initial, Cell* start, SolvingMethod method);
+		Pathsolver(const vector<Cell*>& Initial, Cell* start, SolvingMethod method);
 		~Pathsolver();
 
 		bool playRecording();
 		void loopRecording();
 		void stopRecording();
 
-		void displayInitialFrame();
+		void displayInitialFrame() const;
 
 		Recorder* getRecording();
 
@@ -33,7 +33,7 @@ class Pathsolver
 
 		Recorder path_record;
 
-		bool isVisitable(Cell* cell);
+		static bool isVisitable(const Cell* cell);
 
 		void solveMaze(Cell* start, SolvingMethod method);
 

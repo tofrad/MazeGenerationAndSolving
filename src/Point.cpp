@@ -9,30 +9,33 @@ Point::~Point() {
 
 }
 
-Point::Point(int x, int y) : X(x), Y(y) {
+Point::Point(const int x, const int y) : X(x), Y(y) {
 
 }
 
-int Point::getX() {
+int Point::getX() const
+{
 	return this->X;
 }
 
-int Point::getY() {
+int Point::getY() const
+{
 
 	return this->Y;
 }
 
-void Point::setX(int x) {
+void Point::setX(const int x) {
 
 	this->X = x;
 }
 
-void Point::setY(int y) {
+void Point::setY(const int y) {
 
 	this->Y = y;
 }
 
-bool Point::operator==(Point p1) {
+bool Point::operator==(const Point& p1) const
+{
 
 	if (this->X == p1.X && this->Y == p1.Y) {
 		return true;

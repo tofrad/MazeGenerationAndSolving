@@ -4,7 +4,7 @@
 
 #include <vector>
 
-//Programhandler
+//Program-handler
 typedef enum {
 	STOPPED,
 	MENU,

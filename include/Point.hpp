@@ -10,10 +10,10 @@ class Point
 		void setX(int x);
 		void setY(int y);
 
-		int getX();
-		int getY();
+		int getX() const;
+		int getY() const;
 
-		bool operator==(Point p1);
+		bool operator==(const Point& p1) const;
 
 	private:
 		int X;

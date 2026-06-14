@@ -17,22 +17,22 @@ class Maze
 		Maze(int width, int screenwidth, int screenheight, GenerationMethod method);
 		~Maze();
 
-		Maze(int screenwidth, int screemheight, const TileMap* custom_maze);
+		Maze(int screenwidth, int screenheight, const TileMap* custom_maze);
 
-		Cell* getStart();
+		Cell* getStart() const;
 		vector<Cell*> getGeneratedMaze();
 
-		int getCellsize();
-		int getHeight();
-		int getWidth();
+		int getCellsize() const;
+		int getHeight() const;
+		int getWidth() const;
 
 		void createEmptyMaze();
 
 		void createConnectedMaze();
 
-		void resetMaze();
+		void resetMaze() const;
 
-		void drawMaze();
+		void drawMaze() const;
 	
 		bool playRecording();
 		void loopRecording();
@@ -40,14 +40,14 @@ class Maze
 
 		Recorder* getRecording();
 
-		void displayInitialFrame();
+		void displayInitialFrame() const;
 
 	private:
 
 		int height;
 		int width;
-		int cellsize;
-		Vector2 Offset;
+		int cellsize = 10;
+		Vector2 Offset{10.f, 10.f};
 
 		vector<vector<Cell*>> Cell_Grid;
 
@@ -62,9 +62,9 @@ class Maze
 
 		void generateMaze(GenerationMethod method);
 
-		void drawCells();
+		void drawCells() const;
 
-		void deleteConnections();
+		void deleteConnections() const;
 
 		void RecursiveBacktracking(Cell& cell);
 
@@ -72,10 +72,10 @@ class Maze
 
 		void HuntAndKill();
 
-		vector<Cell*> getUnvisitedNeighbors(Cell* cell);
-		vector<Cell*> getVisitedNeighbors(Cell* cell);
-		vector<Cell*> getWalkableNeighborsFromWall(Cell* cell);
+		vector<Cell*> getUnvisitedNeighbors(Cell* cell) const;
+		vector<Cell*> getVisitedNeighbors(const Cell* cell) const;
+		vector<Cell*> getWalkableNeighborsFromWall(const Cell* cell) const;
 
-		Cell* connectCells(Cell* first, Cell* second);
+		Cell* connectCells(Cell* first, Cell* second) const;
 };
 

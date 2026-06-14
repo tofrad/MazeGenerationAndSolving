@@ -10,9 +10,9 @@ Program::Program()
     editor = new Editor();
     player = new Player();
 
-    ProgramCallbacks callbacks = createCallbacks();
+    const ProgramCallbacks callbacks = createCallbacks();
 
-	InitProgram();
+    InitProgram();
     menu->init(callbacks);
     editor->init(callbacks);
     player->init(callbacks);
@@ -26,7 +26,7 @@ Program::~Program()
 
 void Program::InitProgram()
 {
-	//create raylib dependencies
+    //create raylib dependencies
     // 
     // Initialization
     //--------------------------------------------------------------------------------------
@@ -51,14 +51,14 @@ void Program::InitProgram()
 
     //create buffer for drawing
     buffer = LoadRenderTexture(buffer_width, buffer_height);
-    source = Rectangle{ 0, 0, (float)buffer.texture.width, (float) - buffer.texture.height};
+    source = Rectangle{ 0, 0, static_cast<float>(buffer.texture.width), static_cast<float>(-buffer.texture.height)};
 
     last_maze_buffer = LoadRenderTexture(screenWidth, screenHeight);
     last_path_buffer = LoadRenderTexture(screenWidth, screenHeight);
 
     //--------------------------------------------------------------------------------------
 
-    scale = min((float)GetScreenWidth() / screenWidth, (float)GetScreenHeight() / screenHeight);
+    scale = min(static_cast<float>(GetScreenWidth()) / screenWidth, static_cast<float>(GetScreenHeight()) / screenHeight);
 }
 
 int Program::Run()
@@ -109,25 +109,28 @@ int Program::Run()
         BeginTextureMode(buffer);
         switch (State) {
 
-            case PLAY_MAZE:
-                if (!M.playRecording()) {
-                    //Recorder finished
-                }
-                break;
+        case PLAY_MAZE:
+            if (!M.playRecording()) {
+                //Recorder finished
+            }
+            break;
 
-            case PLAY_PATH:
-                if (!S.playRecording()) {
-                    //Recorder finished
-                }
-                if (Generator == CUSTOM) {
-                    M.displayInitialFrame();
-                }
-                break;
+        case PLAY_PATH:
+            if (!S.playRecording()) {
+                //Recorder finished
+            }
+            if (Generator == CUSTOM) {
+                M.displayInitialFrame();
+            }
+            break;
 
-            case MENU:
-                EndTextureMode();
-                //menu_buffer = menu.displayGUI();
-                break;
+        case MENU:
+            EndTextureMode();
+            //menu_buffer = menu.displayGUI();
+            break;
+
+        default:
+            break;
         }
 
         EndTextureMode();
@@ -169,78 +172,22 @@ int Program::Run()
     CloseWindow();
 
     setState(STOPPED);
-	return 0;
+    return 0;
 }
 
-void Program::setState(ProgramState next_state)
-{
-    switch (next_state) {
-
-        case STOPPED:
-            State = next_state;
-            break;
-
-        case MENU:
-            saveLastFrame();
-            menu->open();
-
-            if (State != STOPPED) {
-                LastState = State; 
-            }
-            State = next_state;
-            break;
-
-        case EDITING:
-            saveLastFrame();
-            editor->open();
-            if (State != STOPPED) {
-                LastState = State;
-            }
-            State = next_state;
-            break;
-
-        case PLAY_MAZE:
-            saveLastFrame();
-            getLastMazeFrame();
-            State = next_state;
-            break;
-
-        case PLAY_PATH:
-            saveLastFrame();
-            getLastPathFrame();
-            State = next_state;
-            break;
-
-        case PLAYER:
-            saveLastFrame();
-            if (State != STOPPED) {
-                LastState = State;
-            }
-            State = next_state;
-            break;
-
-        default:
-            setState(MENU);
-            break;
-    }
-
-    
-
-}
-
-ProgramState Program::getState()
+ProgramState Program::getState() const
 {
     return State;
 }
 
-void Program::handleStateRequest(ProgramState state)
+void Program::handleStateRequest(const ProgramState state)
 {
     setState(state);
 }
 
-void Program::handleGeneratorRequest(int size, GenerationMethod method)
+void Program::handleGeneratorRequest(int size, const GenerationMethod method)
 {
-    
+
     Generator = method;
     last_maze_buffer = LoadRenderTexture(screenWidth, screenHeight);
 
@@ -254,19 +201,19 @@ void Program::handleGeneratorRequest(int size, GenerationMethod method)
             M = Maze(buffer_width, buffer_height, &editor->CustomMaze);
         }
         else {
-            //TODOs
+            //TODO
             //throw error and logging
         }
-        
+
     }
     else{
         M = Maze(MazeSize, buffer_width, buffer_height, Generator);
     }
-    
+
 
 }
 
-void Program::handleSolveRequest(SolvingMethod method)
+void Program::handleSolveRequest(const SolvingMethod method)
 {
     Solver = method;
     M.resetMaze();
@@ -275,10 +222,10 @@ void Program::handleSolveRequest(SolvingMethod method)
     last_path_buffer = LoadRenderTexture(screenWidth, screenHeight);
 
     S = Pathsolver(M.getGeneratedMaze(), M.getStart(), Solver);
-    
+
 }
 
-void Program::handleWindowChange(Screensize size)
+void Program::handleWindowChange(const Screensize size)
 {
 
     SetWindowState(FLAG_WINDOW_RESIZABLE);
@@ -329,34 +276,82 @@ void Program::handleWindowChange(Screensize size)
     ClearWindowState(FLAG_WINDOW_RESIZABLE);
 }
 
-void Program::centerWindow() {
+void Program::setState(const ProgramState next_state)
+{
+    switch (next_state) {
 
-    int monitor = GetCurrentMonitor();
-    int monitor_width = GetMonitorWidth(monitor); 
-    int monitor_height = GetMonitorHeight(monitor); 
-    SetWindowPosition((int)(monitor_width / 2) - (int)(screenWidth / 2), (int)(monitor_height / 2) - (int)(screenHeight / 2));
+    case STOPPED:
+        State = next_state;
+        break;
+
+    case MENU:
+        saveLastFrame();
+        menu->open();
+
+        if (State != STOPPED) {
+            LastState = State;
+        }
+        State = next_state;
+        break;
+
+    case EDITING:
+        saveLastFrame();
+        editor->open();
+        if (State != STOPPED) {
+            LastState = State;
+        }
+        State = next_state;
+        break;
+
+    case PLAY_MAZE:
+        saveLastFrame();
+        getLastMazeFrame();
+        State = next_state;
+        break;
+
+    case PLAY_PATH:
+        saveLastFrame();
+        getLastPathFrame();
+        State = next_state;
+        break;
+
+    case PLAYER:
+        saveLastFrame();
+        if (State != STOPPED) {
+            LastState = State;
+        }
+        State = next_state;
+        break;
+
+    default:
+        setState(MENU);
+        break;
+    }
+
+
+
 }
 
 ProgramCallbacks Program::createCallbacks()
 {
     ProgramCallbacks callbacks;
 
-    callbacks.onGenerateRequest = [this](int size, GenerationMethod method) {
+    callbacks.onGenerateRequest = [this](const int size, const GenerationMethod method) {
 
         this->handleGeneratorRequest(size, method);
-        };
+    };
 
-    callbacks.onSolveRequest = [this](SolvingMethod method) {
+    callbacks.onSolveRequest = [this](const SolvingMethod method) {
         this->handleSolveRequest(method);
-        };
+    };
 
-    callbacks.onWindowRequest = [this](Screensize size) {
+    callbacks.onWindowRequest = [this](const Screensize size) {
         this->handleWindowChange(size);
-        };
-    
-    callbacks.onStateRequest = [this](ProgramState state) {
+    };
+
+    callbacks.onStateRequest = [this](const ProgramState state) {
         this->handleStateRequest(state);
-        };
+    };
 
 
     callbacks.getGenerator = [this]() {return Generator; };
@@ -367,7 +362,16 @@ ProgramCallbacks Program::createCallbacks()
     return callbacks;
 }
 
-void Program::saveLastFrame()
+void Program::centerWindow() const
+{
+
+    const int monitor = GetCurrentMonitor();
+    const int monitor_width = GetMonitorWidth(monitor);
+    const int monitor_height = GetMonitorHeight(monitor);
+    SetWindowPosition((int)(monitor_width / 2) - (int)(screenWidth / 2), (int)(monitor_height / 2) - (int)(screenHeight / 2));
+}
+
+void Program::saveLastFrame() const
 {  
     //Checks old states before new state is set
     if (State == PLAY_MAZE) {
@@ -388,7 +392,7 @@ void Program::saveLastFrame()
      
 }
 
-void Program::getLastMazeFrame()
+void Program::getLastMazeFrame() const
 {
     BeginTextureMode(buffer);
     ClearBackground(LIGHTGRAY);
@@ -396,7 +400,7 @@ void Program::getLastMazeFrame()
     EndTextureMode();
 }
 
-void Program::getLastPathFrame()
+void Program::getLastPathFrame() const
 {
     BeginTextureMode(buffer);
     ClearBackground(LIGHTGRAY);

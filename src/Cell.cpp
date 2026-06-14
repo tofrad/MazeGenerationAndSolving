@@ -5,18 +5,18 @@ Cell::Cell() : Base_Cell()
 	this->weight = 0;
 }
 
-Cell::Cell(Point p1) : Base_Cell(p1)
+Cell::Cell(const Point& p1) : Base_Cell(p1)
 {
 	this->weight = 0;
 	setId();
 }
 
-Cell::Cell(Point p1, int cellsize, Vector2 offset) : Base_Cell(p1, cellsize, offset)
+Cell::Cell(const Point& p1, const int cellsize, const Vector2 offset) : Base_Cell(p1, cellsize, offset)
 {
 	setId();
 }
 
-Cell::Cell(Point p1, int w) : Cell(p1)
+Cell::Cell(const Point& p1, const int w) : Cell(p1)
 {
 	this->weight = w;
 	setId();
@@ -26,24 +26,24 @@ Cell::~Cell() {
 
 }
 
-void Cell::setNorth(Cell* cellptr)
+void Cell::setNorth(Cell* north)
 {
-	this->North = cellptr;
+	this->North = north;
 }
 
-void Cell::setEast(Cell* cellptr)
+void Cell::setEast(Cell* east)
 {
-	this->East = cellptr;
+	this->East = east;
 }
 
-void Cell::setSouth(Cell* cellptr)
+void Cell::setSouth(Cell* south)
 {
-	this->South = cellptr;
+	this->South = south;
 }
 
-void Cell::setWest(Cell* cellptr)
+void Cell::setWest(Cell* west)
 {
-	this->West = cellptr;
+	this->West = west;
 }
 
 void Cell::setParent(Cell* parent)
@@ -51,27 +51,27 @@ void Cell::setParent(Cell* parent)
 	this->Parent = parent;
 }
 
-Cell* Cell::getNorth()
+Cell* Cell::getNorth() const
 {
 	return North;
 }
 
-Cell* Cell::getEast()
+Cell* Cell::getEast() const
 {
 	return East;
 }
 
-Cell* Cell::getSouth()
+Cell* Cell::getSouth() const
 {
 	return South;
 }
 
-Cell* Cell::getWest()
+Cell* Cell::getWest() const
 {
 	return West;
 }
 
-Cell* Cell::getParent()
+Cell* Cell::getParent() const
 {
 	return Parent;
 }
@@ -153,12 +153,12 @@ void Cell::breakWall()
 }
 
 
-uint64_t Cell::getCellID()
+uint64_t Cell::getCellID() const
 {
 	return cell_id;
 }
 
 void Cell::setId()
 {
-	cell_id = (uint64_t) ((uint64_t)p.getX()	<< 32) | (uint64_t)p.getY();	
+	cell_id = (uint64_t) (static_cast<uint64_t>(p.getX())	<< 32) | static_cast<uint64_t>(p.getY());
 }

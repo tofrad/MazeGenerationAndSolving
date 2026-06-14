@@ -11,9 +11,9 @@ Player::~Player()
 {
 }
 
-void Player::init(ProgramCallbacks& cb) {
+void Player::init(const ProgramCallbacks& callbacks) {
 
-    this->callbacks = cb;
+    this->player_callbacks = callbacks;
     calculateLandmarks();
 }
 
@@ -50,10 +50,10 @@ void Player::displayPlayerGUI()
     snprintf(maxValue_char, sizeof(maxValue_char), "%d", maxValue);
 
 
-    GuiSlider(Slider, "", "", &slider_value_float, 0, (float)maxValue);
+    GuiSlider(Slider, "", "", &slider_value_float, 0, static_cast<float>(maxValue));
 
     slider_value_int = static_cast<int>(slider_value_float);
-    char slide_buffer[8]; // Statischer Puffer
+    char slide_buffer[8];
     snprintf(slide_buffer, sizeof(slide_buffer), "%d", slider_value_int);
 
 
@@ -74,8 +74,7 @@ void Player::displayPlayerGUI()
 
 void Player::calculateLandmarks()
 {
-    Screensize size = callbacks.getWindowSize();
-    switch (size) {
+    switch (player_callbacks.getWindowSize()) {
     case UHD:
         window_height = 1440;
         window_width = 2560;
@@ -118,21 +117,21 @@ void Player::calculateLandmarks()
     BottomRight.Point = Vector2{ BelowCanvas.Point.x + BelowCanvas.width, BelowCanvas.Point.y };
 
 
-    int Bottom_Split_x = BelowCanvas.width / 10;
-    int BetweenOffset = Bottom_Split_x / 4;
+    const int Bottom_Split_x = BelowCanvas.width / 10;
+    const int BetweenOffset = Bottom_Split_x / 4;
 
-    int Button_Size_x = Bottom_Split_x;
+    const int Button_Size_x = Bottom_Split_x;
 
-    int Bottom_Split_y = BelowCanvas.height / 9;
+    const int Bottom_Split_y = BelowCanvas.height / 9;
 
-    int Button_Y = Bottom_Split_y * 5;
-    int ButtonSize_y = Bottom_Split_y * 4;
+    const int Button_Y = Bottom_Split_y * 5;
+    const int ButtonSize_y = Bottom_Split_y * 4;
 
-    int Button_FirstFrame_x = 2 * Bottom_Split_x;
-    int Button_Rewind_x = Button_FirstFrame_x + Button_Size_x + BetweenOffset;
-    int Button_Pause_x = Button_Rewind_x + Button_Size_x + BetweenOffset;
-    int Button_Resume_x = Button_Pause_x + Button_Size_x + BetweenOffset;
-    int Button_LastFrame_x = Button_Resume_x + Button_Size_x + BetweenOffset;
+    const int Button_FirstFrame_x = 2 * Bottom_Split_x;
+    const int Button_Rewind_x = Button_FirstFrame_x + Button_Size_x + BetweenOffset;
+    const int Button_Pause_x = Button_Rewind_x + Button_Size_x + BetweenOffset;
+    const int Button_Resume_x = Button_Pause_x + Button_Size_x + BetweenOffset;
+    const int Button_LastFrame_x = Button_Resume_x + Button_Size_x + BetweenOffset;
 
     
     Button_FullRewind = Rectangle(Button_FirstFrame_x, BelowCanvas.Point.y + Button_Y, Button_Size_x, ButtonSize_y);

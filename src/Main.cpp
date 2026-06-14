@@ -1,4 +1,3 @@
-#pragma once
 #include "../include/Program.hpp"
 
 #include <filesystem>
@@ -17,7 +16,7 @@ int main()
     std::cout << "Current path is " << fs::current_path() << '\n';
 
     // Main game loop
-    while (P.getState() != STOPPED) 
+    while (P.getState() != STOPPED)
     {
         error = P.Run();
     }

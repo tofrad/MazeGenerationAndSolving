@@ -12,9 +12,9 @@ class Cell : public Base_Cell
 {
 	public:
 		Cell();
-		Cell(Point p1);
-		Cell(Point p1, int cellsize, Vector2 offset);
-		Cell(Point p1, int weight);
+		explicit Cell(const Point& p1);
+		Cell(const Point& p1, int cellsize, Vector2 offset);
+		Cell(const Point& p1, int weight);
 
 		~Cell();
 
@@ -24,22 +24,22 @@ class Cell : public Base_Cell
 		void setWest(Cell* west);
 		void setParent(Cell* parent);
 
-		Cell* getNorth();
-		Cell* getEast();
-		Cell* getSouth();
-		Cell* getWest();
-		Cell* getParent();
+		Cell* getNorth() const;
+		Cell* getEast() const;
+		Cell* getSouth() const;
+		Cell* getWest() const;
+		Cell* getParent() const;
 
 		Cell* findRoot();
 
 		void updateColor();
 
-		void drawCell() {};
+		static void drawCell() {};
 		void resetCell();
 		void makeWall();
 		void breakWall();
 
-		uint64_t getCellID();
+		uint64_t getCellID() const;
 
 		bool isStart = false;
 		bool isTarget = false;
@@ -50,7 +50,7 @@ class Cell : public Base_Cell
 		bool isWall = false;
 
 		bool pathVisited = false;
-		bool isPath = false;  //marker for dfs recursion when deadend was found
+		bool isPath = false;  //marker for dfs recursion when dead end was found
 		bool isfinishedPath = false;
 
 
@@ -64,7 +64,7 @@ class Cell : public Base_Cell
 
 		uint64_t cell_id = 0;
 		
-		int weight;
+		int weight{};
 
 		void setId();
 

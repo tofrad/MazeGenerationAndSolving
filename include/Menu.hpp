@@ -21,7 +21,7 @@ class Menu
 		Menu();
 		~Menu();
 
-		void init(ProgramCallbacks& callbacks);
+		void init(const ProgramCallbacks& callbacks);
 
 		void open();
 		void close();
@@ -31,13 +31,13 @@ class Menu
 
 	private:
 
-		ProgramCallbacks callbacks;
+		ProgramCallbacks menu_callbacks;
 
 		//Program* program = nullptr;
 
 		void syncToProgram();
 
-		void requestStateChange(ProgramState newState);
+		void requestStateChange(ProgramState newState) const;
 
 	/*	void generatorRequest();
 

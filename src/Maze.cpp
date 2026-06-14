@@ -26,7 +26,7 @@ Maze::Maze()
 	createConnectedMaze();
 }
 
-Maze::Maze(int w, int screenwidth, int screenheight, GenerationMethod method)
+Maze::Maze(const int w, const int screenwidth, const int screenheight, const GenerationMethod method)
 {
 
 	if (w > MAX_WIDTH) {
@@ -75,7 +75,7 @@ Maze::~Maze()
 
 }
 
-Maze::Maze(int screenwidth, int screenheight, const TileMap* custom_maze)
+Maze::Maze(const int screenwidth, const int screenheight, const TileMap* custom_maze)
 {
 	this->width = custom_maze->size;
 	this->height = custom_maze->height;
@@ -93,31 +93,31 @@ Maze::Maze(int screenwidth, int screenheight, const TileMap* custom_maze)
 
 			switch (custom_maze->TileArray[x][y]) {
 
-				case 0:
-					//cell clear
-					break;
+			case 0:
+				//cell clear
+				break;
 
-				case 1:
-					//cell wall
-					Cell_Grid[x][y]->makeWall();
-					break;
+			case 1:
+				//cell wall
+				Cell_Grid[x][y]->makeWall();
+				break;
 
-				case 2:
-					//cell start
-					Cell_Grid[x][y]->isStart = true;
-					Start = Cell_Grid[x][y];
-					break;
+			case 2:
+				//cell start
+				Cell_Grid[x][y]->isStart = true;
+				Start = Cell_Grid[x][y];
+				break;
 
-				case 3:
-					//cell target
+			case 3:
+				//cell target
 
-					Cell_Grid[x][y]->isTarget = true;
-					Target = Cell_Grid[x][y];
-					break;
+				Cell_Grid[x][y]->isTarget = true;
+				Target = Cell_Grid[x][y];
+				break;
 
-				default:
-					//cell clear
-					break;
+			default:
+				//cell clear
+				break;
 			}
 
 
@@ -128,12 +128,7 @@ Maze::Maze(int screenwidth, int screenheight, const TileMap* custom_maze)
 	record = Recorder(Cell_List);
 }
 
-void Maze::displayInitialFrame()
-{
-	record.playInitialGrid();
-}
-
-Cell* Maze::getStart()
+Cell* Maze::getStart() const
 {
 	return Start;
 }
@@ -143,43 +138,19 @@ vector<Cell*> Maze::getGeneratedMaze()
 	return Cell_List;
 }
 
-int Maze::getCellsize()
+int Maze::getCellsize() const
 {
 	return this->cellsize;
 }
 
-int Maze::getHeight()
+int Maze::getHeight() const
 {
 	return this->height;
 }
 
-int Maze::getWidth()
+int Maze::getWidth() const
 {
 	return this->width;
-}
-
-void Maze::createConnectedMaze()
-{
-	createEmptyMaze();
-
-	//connect with neighbors
-
-	for (int x = 0; x < width; x++) {
-
-		for (int y = 0; y < height; y++) {
-
-			Cell* currentCell = Cell_Grid[x][y];
-
-			//set borders 
-			currentCell->setNorth((y > 0) ? Cell_Grid[x][y -1] : nullptr);
-			currentCell->setWest((x > 0) ? Cell_Grid[x-1][y] : nullptr);
-
-			currentCell->setEast((x < width-1) ? Cell_Grid[x+1][y] : nullptr);
-			currentCell->setSouth((y < height-1) ? Cell_Grid[x][y+1] : nullptr);
-
-		}
-	}
-
 }
 
 void Maze::createEmptyMaze()
@@ -209,76 +180,39 @@ void Maze::createEmptyMaze()
 
 }
 
-void Maze::generateMaze(GenerationMethod method)
+void Maze::createConnectedMaze()
 {
 	createEmptyMaze();
 
-	int rand = 0; // GetRandomValue(0, Cell_List.size() - 1); 
-	int rand2 = (height * width) - 1;// GetRandomValue(0, Cell_List.size() - 1); //(height*width) - 1; 
+	//connect with neighbors
 
-	Cell_List[rand]->isStart = true; 
-	Start = Cell_List[rand]; 
+	for (int x = 0; x < width; x++) {
 
-	Cell_List[rand2]->isTarget = true; 
-	Target = Cell_List[rand2];
+		for (int y = 0; y < height; y++) {
 
+			Cell* currentCell = Cell_Grid[x][y];
 
-	record = Recorder(Cell_List);
+			//set borders 
+			currentCell->setNorth((y > 0) ? Cell_Grid[x][y -1] : nullptr);
+			currentCell->setWest((x > 0) ? Cell_Grid[x-1][y] : nullptr);
 
-	record.startRecording();
+			currentCell->setEast((x < width-1) ? Cell_Grid[x+1][y] : nullptr);
+			currentCell->setSouth((y < height-1) ? Cell_Grid[x][y+1] : nullptr);
 
-	switch (method) {
-
-		case REC_BACKTRACKING:
-			RecursiveBacktracking(*Start);
-			break;
-
-		case KRUSKAL:
-			Kruskal();
-			break;
-
-		case HUNTANDKILL:
-			HuntAndKill();
-			break;
-
-		case CUSTOM:
-			//TODO
-			// error logging
-			//shouldnt land here 
-
-			//Cell_List[rand]->isStart = false;
-			//Start = nullptr;
-
-			//Cell_List[rand2]->isTarget = false;
-			//Target = nullptr;
-			break;
-
-		default:
-			HuntAndKill();
-			break;
-
+		}
 	}
 
-	record.stopRecording();
-
-	//clear was_visited mark for coloring in pathfinding 
-	for (auto cell : Cell_List) {
-		cell->wasVisited = false;
-		cell->isActive = false;
-	}
-
-	record.saveLastFrame(Cell_List);
 }
 
-void Maze::resetMaze()
+void Maze::resetMaze() const
 {
-	for (auto cell : this->Cell_List) {
+	for (const auto cell : this->Cell_List) {
 		cell->resetCell();
 	}
 
 }
 
-void Maze::drawMaze()
+void Maze::drawMaze() const
 {
 	record.playLastFrame();
 }
@@ -303,7 +237,73 @@ Recorder* Maze::getRecording()
 	return &record;
 }
 
-void Maze::drawCells()
+void Maze::displayInitialFrame() const
+{
+	record.playInitialGrid();
+}
+
+void Maze::generateMaze(const GenerationMethod method)
+{
+	createEmptyMaze();
+
+	constexpr int rand = 0; // GetRandomValue(0, Cell_List.size() - 1);
+	const int rand2 = (height * width) - 1;// GetRandomValue(0, Cell_List.size() - 1); //(height*width) - 1;
+
+	Cell_List[rand]->isStart = true;
+	Start = Cell_List[rand];
+
+	Cell_List[rand2]->isTarget = true;
+	Target = Cell_List[rand2];
+
+
+	record = Recorder(Cell_List);
+
+	record.startRecording();
+
+	switch (method) {
+
+	case REC_BACKTRACKING:
+		RecursiveBacktracking(*Start);
+		break;
+
+	case KRUSKAL:
+		Kruskal();
+		break;
+
+	case HUNTANDKILL:
+		HuntAndKill();
+		break;
+
+	case CUSTOM:
+		//TODO
+		// error logging
+		//shouldn't land here
+
+		//Cell_List[rand]->isStart = false;
+		//Start = nullptr;
+
+		//Cell_List[rand2]->isTarget = false;
+		//Target = nullptr;
+		break;
+
+	default:
+		HuntAndKill();
+		break;
+
+	}
+
+	record.stopRecording();
+
+	//clear was_visited mark for coloring in pathfinding
+	for (const auto cell : Cell_List) {
+		cell->wasVisited = false;
+		cell->isActive = false;
+	}
+
+	record.saveLastFrame(Cell_List);
+}
+
+void Maze::drawCells() const
 {
 	for (const auto& cell : Cell_List) {
 		
@@ -311,9 +311,9 @@ void Maze::drawCells()
 	}
 }
 
-void Maze::deleteConnections()
+void Maze::deleteConnections() const
 {
-	for (auto Cell : Cell_List) {
+	for (const auto Cell : Cell_List) {
 		Cell->setSouth(nullptr);
 		Cell->setNorth(nullptr);
 		Cell->setWest(nullptr);
@@ -335,9 +335,9 @@ void Maze::RecursiveBacktracking(Cell& cell)
 	// //mark as visited
 	cell.wasVisited = true;
 
-	shuffle(directions.begin(), directions.end(), rand_gen);
+	ranges::shuffle(directions, rand_gen);
 	
-	for (auto target : directions) {
+	for (const auto target : directions) {
 
 		if (!target->wasVisited) {
 			
@@ -354,7 +354,7 @@ void Maze::RecursiveBacktracking(Cell& cell)
 			MiddleCell->isActive = false;
 			record.recordStep(&cell);
 			RecursiveBacktracking(*target);
-	}
+		}
 	}
 	cell.isActive = false;
 	record.recordStep(&cell);
@@ -378,9 +378,9 @@ void Maze::Kruskal()
 	}
 
 	// shuffle the Wall List
-	shuffle(Walls.begin(), Walls.end(), rand_gen);
+	ranges::shuffle(Walls, rand_gen);
 	
-	for (auto wall : Walls) {
+	for (const auto wall : Walls) {
 
 		vector<Cell*> Neighbors = getWalkableNeighborsFromWall(wall);
 		
@@ -431,7 +431,7 @@ void Maze::Kruskal()
 	}
 
 	// Delete all Parent Cells to Null
-	for (auto cell : Cell_List) {
+	for (const auto cell : Cell_List) {
 		cell->setParent(nullptr);
 	}
 }
@@ -449,7 +449,7 @@ void Maze::HuntAndKill()
 		//get next cell
 		if (!neighbor_list.empty()) {
 			
-			shuffle(neighbor_list.begin(), neighbor_list.end(), rand_gen);
+			ranges::shuffle(neighbor_list, rand_gen);
 
 			Cell* next_cell = neighbor_list[0];
 
@@ -472,7 +472,7 @@ void Maze::HuntAndKill()
 			record.recordStep(current_cell);//mark visited in recording
 			found_new_cell = false;
 			// iterate through all cells till found unvisited with visited Neighbors for new starting point	
-			for (auto cell : Cell_List) {
+			for (const auto cell : Cell_List) {
 
 				if (cell->wasVisited == false && cell->isWall == false) {
 
@@ -480,7 +480,7 @@ void Maze::HuntAndKill()
 
 					if (!VisitedNeighbors.empty()) {
 
-						shuffle(VisitedNeighbors.begin(), VisitedNeighbors.end(), rand_gen);
+						ranges::shuffle(VisitedNeighbors, rand_gen);
 
 						Cell* neighbor = VisitedNeighbors[0];
 
@@ -513,14 +513,15 @@ void Maze::HuntAndKill()
 
 }
 
-vector<Cell*> Maze::getUnvisitedNeighbors(Cell* cell) {
+vector<Cell*> Maze::getUnvisitedNeighbors(Cell* cell) const
+{
 
 	vector<Cell*> directions;
 	
 
 	Point pos = cell->getPosition();
-	int X = pos.getX();
-	int Y = pos.getY();
+	const int X = pos.getX();
+	const int Y = pos.getY();
 
 	Cell* target_cell = nullptr;
 	
@@ -563,14 +564,15 @@ vector<Cell*> Maze::getUnvisitedNeighbors(Cell* cell) {
 	return directions;
 }
 
-vector<Cell*> Maze::getVisitedNeighbors(Cell* cell) {
+vector<Cell*> Maze::getVisitedNeighbors(const Cell* cell) const
+{
 
 	vector<Cell*> directions;
 
 
 	Point pos = cell->getPosition();
-	int X = pos.getX();
-	int Y = pos.getY();
+	const int X = pos.getX();
+	const int Y = pos.getY();
 
 	Cell* target_cell = nullptr;
 
@@ -614,13 +616,14 @@ vector<Cell*> Maze::getVisitedNeighbors(Cell* cell) {
 }
 
 //needs to be called from a wall, does only one step in each direction
-vector<Cell*> Maze::getWalkableNeighborsFromWall(Cell* cell) {
+vector<Cell*> Maze::getWalkableNeighborsFromWall(const Cell* cell) const
+{
 
 	vector<Cell*> directions;
 
 	Point pos = cell->getPosition();
-	int X = pos.getX();
-	int Y = pos.getY();
+	const int X = pos.getX();
+	const int Y = pos.getY();
 
 	Cell* target_cell = nullptr;
 
@@ -664,21 +667,21 @@ vector<Cell*> Maze::getWalkableNeighborsFromWall(Cell* cell) {
 	return directions;
 }
 
-Cell* Maze::connectCells(Cell* first, Cell* second)
+Cell* Maze::connectCells(Cell* first, Cell* second) const
 {
 	int x1 = first->getPosition().getX();
 	int y1 = first->getPosition().getY();
 	int x2 = second->getPosition().getX();
 	int y2 = second->getPosition().getY();
 
-	//get diff values to determin directions
+	//get diff values to determine directions
 	int diff_x = first->getPosition().getX() - second->getPosition().getX();
 	int diff_y = first->getPosition().getY() - second->getPosition().getY();
 
 	Cell* CellInBetween = nullptr;
 
 	if (x1 == x2) {
-		int midY = (y1 + y2) / 2;
+		const int midY = (y1 + y2) / 2;
 		CellInBetween = Cell_Grid[x1][midY];
 		CellInBetween->breakWall();
 		
@@ -696,7 +699,7 @@ Cell* Maze::connectCells(Cell* first, Cell* second)
 		}
 	}
 	else {
-		int midX = (x1 + x2) / 2;
+		const int midX = (x1 + x2) / 2;
 		CellInBetween = Cell_Grid[midX][y1];
 		CellInBetween->breakWall();
 

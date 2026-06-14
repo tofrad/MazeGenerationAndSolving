@@ -6,7 +6,7 @@ Pathsolver::Pathsolver()
 
 }
 
-Pathsolver::Pathsolver(vector<Cell*> Initial, Cell* start, SolvingMethod method)
+Pathsolver::Pathsolver(const vector<Cell*>& Initial, Cell* start, const SolvingMethod method)
 {
 	path_record = Recorder(Initial);
 
@@ -19,7 +19,7 @@ Pathsolver::~Pathsolver()
 
 }
 
-void Pathsolver::solveMaze(Cell* start, SolvingMethod method)
+void Pathsolver::solveMaze(Cell* start, const SolvingMethod method)
 {
 	
 	//start recording
@@ -57,7 +57,7 @@ void Pathsolver::stopRecording()
 	path_record.stopPlaying();
 }
 
-void Pathsolver::displayInitialFrame()
+void Pathsolver::displayInitialFrame() const
 {
 	path_record.playInitialGrid();
 }
@@ -67,7 +67,7 @@ Recorder* Pathsolver::getRecording()
 	return &path_record;
 }
 
-bool Pathsolver::isVisitable(Cell* cell)
+bool Pathsolver::isVisitable(const Cell* cell)
 {
 	if (cell != nullptr && !cell->pathVisited) {
 		return true;
@@ -94,10 +94,10 @@ bool Pathsolver::DFS(Cell* start)
 	//record here#########################################################################################
 	path_record.recordStep(start);
 	
-	//mark it as path, will be delete in recursion
+	//mark it as path, will be deleted in recursion
 	start->isPath = true;
 
-	//add all valid adjecent to list
+	//add all valid adjacent to list
 	vector<Cell*> adjCells;
 
 	Cell* North = start->getNorth();
@@ -119,7 +119,7 @@ bool Pathsolver::DFS(Cell* start)
 	}
 
 	//go through all adj cells
-	while (adjCells.size() > 0) {
+	while (!adjCells.empty()) {
 
 		//get next cell
 		Cell* next = adjCells.back();
@@ -133,7 +133,7 @@ bool Pathsolver::DFS(Cell* start)
 
 			//recursion animation?
 			start->isfinishedPath = true;
-			//next node is onpath to target or is target
+			//next node is on path to target or is the target
 
 			//record path cell
 			path_record.recordStep(start);
@@ -174,9 +174,9 @@ bool Pathsolver::BFS(Cell* start)
 
 		next_cells.clear();
 
-		if (current_cells.size() > 0) {
+		if (!current_cells.empty()) {
 
-			for (auto cell : current_cells) {
+			for (const auto cell : current_cells) {
 
 				if (cell->isTarget) {
 					wasTargetFound = true;

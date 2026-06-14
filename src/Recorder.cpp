@@ -2,12 +2,12 @@
 
 Recorder::Recorder()
 {
-	
+
 }
 
-Recorder::Recorder(const vector<Cell*> cell_list)
+Recorder::Recorder(const vector<Cell*>& cell_list)
 {
-	for (auto cell : cell_list)
+	for (const auto cell : cell_list)
 	{
 		initialState.push_back(cell->get_Base_copy()); 
 	}
@@ -18,12 +18,12 @@ Recorder::~Recorder()
 
 }
 
-int Recorder::getStep()
+int Recorder::getStep() const
 {
 	return current_step;
 }
 
-int Recorder::getSize()
+int Recorder::getSize() const
 {
 	return size;
 }
@@ -52,13 +52,13 @@ void Recorder::recordStep(Cell* modifiedCell)
 	history.push_back(temp);
 }
 
-void Recorder::recordStep(vector<Cell*> modifiedCells)
+void Recorder::recordStep(const vector<Cell*>& modifiedCells)
 {
 	if (!recording)return;
 
 	vector<Base_Cell> temp;
 
-	for (auto cell : modifiedCells) {
+	for (const auto cell : modifiedCells) {
 
 		cell->updateColor();
 		temp.push_back(cell->get_Base_copy()); 
@@ -67,9 +67,9 @@ void Recorder::recordStep(vector<Cell*> modifiedCells)
 	history.push_back(temp);
 }
 
-void Recorder::saveLastFrame(vector<Cell*> LastList)
+void Recorder::saveLastFrame(const vector<Cell*>& LastList)
 {
-	for (auto cell : LastList)
+	for (const auto cell : LastList)
 	{
 		LastState.push_back(cell->get_Base_copy());
 	}
@@ -89,17 +89,17 @@ void Recorder::startPlaying()
 	}
 }
 
-bool Recorder::stopPlaying()
+void Recorder::stopPlaying()
 {
-	return isplaying = false;
+	isplaying = false;
 }
 
-bool Recorder::getPlaystate()
+bool Recorder::getPlaystate() const
 {
 	return isplaying;
 }
 
-void Recorder::setLooping(bool state)
+void Recorder::setLooping(const bool state)
 {
 	islooping = state;
 }
@@ -113,7 +113,7 @@ bool Recorder::playRecording()
 
 void Recorder::loopRecording()
 {
-	bool stillPlaying = stepForward();
+	const bool stillPlaying = stepForward();
 
 	setLooping(true);
 
@@ -126,7 +126,8 @@ bool Recorder::stepForward()
 {
 
 	if (current_step >= history.size()) {
-		return stopPlaying();
+		stopPlaying();
+		return false;
 	}
 	if (isplaying)
 	{
@@ -141,14 +142,14 @@ bool Recorder::stepForward()
 
 }
 
-void Recorder::playLastFrame()
+void Recorder::playLastFrame() const
 {
 	for (auto cell : LastState) {
 		cell.drawCell(); 
 	}
 }
 
-void Recorder::playInitialGrid()
+void Recorder::playInitialGrid() const
 {
 	for (auto cell : initialState) {
 		cell.drawEmptyCell();
@@ -156,7 +157,7 @@ void Recorder::playInitialGrid()
 
 }
 
-void Recorder::playStep(int step)
+void Recorder::playStep(const int step)
 {
 	current_step = step;
 
