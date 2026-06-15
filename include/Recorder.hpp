@@ -11,7 +11,8 @@ class Recorder
 
 public:
 	Recorder();
-	explicit Recorder(const vector<Cell*>& cell_list);
+	Recorder(const int& maze_height, const int& maze_width);
+	explicit Recorder(const vector<Cell*>& cell_list, const int& maze_height, const int& maze_width);
 	~Recorder();
 
 	int getStep() const;
@@ -44,6 +45,9 @@ public:
 private:
 
 	int size = 0;
+
+	int height = 0;
+	int width = 0;
 
 	vector<Base_Cell> initialState;
 

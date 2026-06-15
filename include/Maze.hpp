@@ -14,15 +14,15 @@ class Maze
 {
 	public:
 		Maze();
-		Maze(int width, int screenwidth, int screenheight, GenerationMethod method);
+		Maze(const int w, const int h, GenerationMethod method);
 		~Maze();
 
-		Maze(int screenwidth, int screenheight, const TileMap* custom_maze);
+		explicit Maze(const TileMap* custom_maze);
 
 		Cell* getStart() const;
 		vector<Cell*> getGeneratedMaze();
 
-		int getCellsize() const;
+		//int getCellsize() const;
 		int getHeight() const;
 		int getWidth() const;
 
@@ -46,8 +46,9 @@ class Maze
 
 		int height;
 		int width;
-		int cellsize = 10;
-		Vector2 Offset{10.f, 10.f};
+
+		//int cellsize = 10;
+		//Vector2 Offset{10.f, 10.f};
 
 		vector<vector<Cell*>> Cell_Grid;
 
@@ -72,7 +73,7 @@ class Maze
 
 		void HuntAndKill();
 
-		vector<Cell*> getUnvisitedNeighbors(Cell* cell) const;
+		vector<Cell*> getUnvisitedNeighbors(const Cell* cell) const;
 		vector<Cell*> getVisitedNeighbors(const Cell* cell) const;
 		vector<Cell*> getWalkableNeighborsFromWall(const Cell* cell) const;
 

@@ -10,11 +10,6 @@
 #define MIN_HEIGHT 11
 #define MIN_WIDTH 11
 
-#define OFFSET 30
-
-int usable_height;
-int usable_width;
-
 int start_x;
 int start_y;
 
@@ -26,64 +21,28 @@ Maze::Maze()
 	createConnectedMaze();
 }
 
-Maze::Maze(const int w, const int screenwidth, const int screenheight, const GenerationMethod method)
+Maze::Maze(const int w, const int h, const GenerationMethod method)
 {
-
-	if (w > MAX_WIDTH) {
-		this->width = MAX_WIDTH;
-	}
-	else if (w < MIN_WIDTH) {
-		this->width = MIN_WIDTH;
-	}
-	else {
-		this->width = w;
-	}
-	if (this->width % 2 == 0) {
-		this->width = this->width - 1;
-	}
-
-	int temp_height = (this->width * 9) / 16;
-	if (temp_height % 2 == 0) {
-		temp_height = temp_height - 1;
-	}
-
-	if (temp_height > MAX_HEIGHT) {
-		this->height = MAX_HEIGHT;
-	}
-	else if (temp_height < MIN_HEIGHT) {
-		this->height = MIN_HEIGHT;
-	}
-	else {
-		this->height = temp_height;
-	}
-
-	usable_height = screenheight - (OFFSET);
-	usable_width = screenwidth - (OFFSET);
-
-	this->cellsize = min(usable_width / this->width, usable_height / this->height);
-
-	//this->height = (int)(usable_height / this->cellsize);
-	//this->width = (int)(usable_width / this->cellsize);
+	this->height = h;
+	this->width = w;
 
 	rand_gen.seed(time(nullptr));
 	generateMaze(method);
-	
 }
 
 Maze::~Maze()
 {
-
 }
 
-Maze::Maze(const int screenwidth, const int screenheight, const TileMap* custom_maze)
+Maze::Maze(const TileMap* custom_maze)
 {
 	this->width = custom_maze->size;
 	this->height = custom_maze->height;
 
-	usable_height = screenheight - (OFFSET);
-	usable_width = screenwidth - (OFFSET);
+	// usable_height = screenheight - (OFFSET);
+	// usable_width = screenwidth - (OFFSET);
 
-	this->cellsize = min(usable_width / this->width, usable_height / this->height);
+	//this->cellsize = min(usable_width / this->width, usable_height / this->height);
 	
 	createConnectedMaze();
 
@@ -110,7 +69,6 @@ Maze::Maze(const int screenwidth, const int screenheight, const TileMap* custom_
 
 			case 3:
 				//cell target
-
 				Cell_Grid[x][y]->isTarget = true;
 				Target = Cell_Grid[x][y];
 				break;
@@ -125,7 +83,7 @@ Maze::Maze(const int screenwidth, const int screenheight, const TileMap* custom_
 
 	}
 
-	record = Recorder(Cell_List);
+	record = Recorder(Cell_List, height, width);
 }
 
 Cell* Maze::getStart() const
@@ -138,10 +96,10 @@ vector<Cell*> Maze::getGeneratedMaze()
 	return Cell_List;
 }
 
-int Maze::getCellsize() const
+/*int Maze::getCellsize() const
 {
 	return this->cellsize;
-}
+}*/
 
 int Maze::getHeight() const
 {
@@ -163,10 +121,11 @@ void Maze::createEmptyMaze()
 
 		for (int y = 0; y < height; y++) {
 
-			start_x = OFFSET / 2 + (usable_width - (width * cellsize)) / 2;
-			start_y = OFFSET / 2 + (usable_height - (height * cellsize)) / 2;
-			const Vector2 LocalOffset{ static_cast<float>(start_x), static_cast<float>(start_y) };
-			Cell* C = new Cell(Point(x, y), cellsize, LocalOffset);
+			//start_x = OFFSET / 2 + (usable_width - (width * cellsize)) / 2;
+			//start_y = OFFSET / 2 + (usable_height - (height * cellsize)) / 2;
+			//const Vector2 LocalOffset{ static_cast<float>(start_x), static_cast<float>(start_y) };
+
+			Cell* C = new Cell(Point(x, y));
 
 			if (x % 2 != 0 || y % 2 != 0) {
 				C->makeWall();
@@ -256,7 +215,7 @@ void Maze::generateMaze(const GenerationMethod method)
 	Target = Cell_List[rand2];
 
 
-	record = Recorder(Cell_List);
+	record = Recorder(Cell_List, height, width);
 
 	record.startRecording();
 
@@ -513,13 +472,13 @@ void Maze::HuntAndKill()
 
 }
 
-vector<Cell*> Maze::getUnvisitedNeighbors(Cell* cell) const
+vector<Cell*> Maze::getUnvisitedNeighbors(const Cell* cell) const
 {
 
 	vector<Cell*> directions;
 	
 
-	Point pos = cell->getPosition();
+	const Point pos = cell->getPosition();
 	const int X = pos.getX();
 	const int Y = pos.getY();
 
@@ -570,7 +529,7 @@ vector<Cell*> Maze::getVisitedNeighbors(const Cell* cell) const
 	vector<Cell*> directions;
 
 
-	Point pos = cell->getPosition();
+	const Point pos = cell->getPosition();
 	const int X = pos.getX();
 	const int Y = pos.getY();
 
@@ -621,7 +580,7 @@ vector<Cell*> Maze::getWalkableNeighborsFromWall(const Cell* cell) const
 
 	vector<Cell*> directions;
 
-	Point pos = cell->getPosition();
+	const Point pos = cell->getPosition();
 	const int X = pos.getX();
 	const int Y = pos.getY();
 
@@ -669,14 +628,10 @@ vector<Cell*> Maze::getWalkableNeighborsFromWall(const Cell* cell) const
 
 Cell* Maze::connectCells(Cell* first, Cell* second) const
 {
-	int x1 = first->getPosition().getX();
-	int y1 = first->getPosition().getY();
-	int x2 = second->getPosition().getX();
-	int y2 = second->getPosition().getY();
-
-	//get diff values to determine directions
-	int diff_x = first->getPosition().getX() - second->getPosition().getX();
-	int diff_y = first->getPosition().getY() - second->getPosition().getY();
+	const int x1 = first->getPosition().getX();
+	const int y1 = first->getPosition().getY();
+	const int x2 = second->getPosition().getX();
+	const int y2 = second->getPosition().getY();
 
 	Cell* CellInBetween = nullptr;
 

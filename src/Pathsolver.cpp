@@ -6,12 +6,10 @@ Pathsolver::Pathsolver()
 
 }
 
-Pathsolver::Pathsolver(const vector<Cell*>& Initial, Cell* start, const SolvingMethod method)
+Pathsolver::Pathsolver(Cell* start, const SolvingMethod method, const Recorder& recorder)
 {
-	path_record = Recorder(Initial);
-
+	path_record = recorder;
 	solveMaze(start, method);
-
 }
 
 Pathsolver::~Pathsolver()

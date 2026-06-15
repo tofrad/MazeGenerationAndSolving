@@ -44,10 +44,11 @@ void Program::InitProgram()
     //GuiLoadStyle("src//GUI_Style.rgs");
 
     //--------------------------------------------------------------------------------------
-
-    M = Maze(MazeSize, buffer_width, buffer_height, Generator);
+    CalculateMazeParams(MazeWidth);
+    M = Maze(MazeWidth, MazeHeight, Generator);
     M.resetMaze();
-    S = Pathsolver(M.getGeneratedMaze(), M.getStart(), Solver);
+    Solve_Recorder = Recorder(M.getGeneratedMaze(), M.getHeight(), M.getWidth());
+    S = Pathsolver(M.getStart(), Solver, Solve_Recorder);
 
     //create buffer for drawing
     buffer = LoadRenderTexture(buffer_width, buffer_height);
@@ -189,16 +190,14 @@ void Program::handleGeneratorRequest(int size, const GenerationMethod method)
 {
 
     Generator = method;
-    last_maze_buffer = LoadRenderTexture(screenWidth, screenHeight);
+    // last_maze_buffer = LoadRenderTexture(screenWidth, screenHeight);
 
     if (Generator == CUSTOM) {
 
-        //get TileArray from Editor
-        //TileMap currentEditorMaze = editor->CustomMaze;
-
-        //forward TileArray to Maze
+        //forward TileArray from editor to Maze
         if (editor->CustomMaze.isValid) {
-            M = Maze(buffer_width, buffer_height, &editor->CustomMaze);
+            M = Maze(&editor->CustomMaze);
+            handleSolveRequest(Solver);
         }
         else {
             //TODO
@@ -207,7 +206,9 @@ void Program::handleGeneratorRequest(int size, const GenerationMethod method)
 
     }
     else{
-        M = Maze(MazeSize, buffer_width, buffer_height, Generator);
+        Gen_Recorder = Recorder(MazeHeight,MazeWidth);
+        M = Maze(MazeWidth, MazeHeight, Generator);
+        handleSolveRequest(Solver);
     }
 
 
@@ -219,9 +220,9 @@ void Program::handleSolveRequest(const SolvingMethod method)
     M.resetMaze();
 
     //clear prev buffer
-    last_path_buffer = LoadRenderTexture(screenWidth, screenHeight);
-
-    S = Pathsolver(M.getGeneratedMaze(), M.getStart(), Solver);
+    // last_path_buffer = LoadRenderTexture(screenWidth, screenHeight);
+    Solve_Recorder = Recorder(M.getGeneratedMaze(), M.getHeight(), M.getWidth());
+    S = Pathsolver(M.getStart(), Solver, Solve_Recorder);
 
 }
 
@@ -259,7 +260,7 @@ void Program::handleWindowChange(const Screensize size)
             screenHeight = 540;
             Windowsize = SMALL;
             break;
-
+    
         default:
             handleWindowChange(SMALL);
             break;
@@ -327,9 +328,6 @@ void Program::setState(const ProgramState next_state)
         setState(MENU);
         break;
     }
-
-
-
 }
 
 ProgramCallbacks Program::createCallbacks()
@@ -355,7 +353,7 @@ ProgramCallbacks Program::createCallbacks()
 
 
     callbacks.getGenerator = [this]() {return Generator; };
-    callbacks.getMazeSize = [this]() {return MazeSize; };
+    callbacks.getMazeSize = [this]() {return MazeWidth; };
     callbacks.getSolver = [this]() {return Solver; };
     callbacks.getWindowSize = [this]() {return Windowsize; };
 
@@ -406,5 +404,36 @@ void Program::getLastPathFrame() const
     ClearBackground(LIGHTGRAY);
     DrawTextureRec(last_path_buffer.texture, source, Vector2{ 0, 0 }, WHITE);
     EndTextureMode();
+}
+
+void Program::CalculateMazeParams(const int width)
+{
+    if (MazeWidth > MAX_WIDTH) {
+    	MazeWidth = MAX_WIDTH;
+    }
+    else if (MazeWidth < MIN_WIDTH) {
+    	MazeWidth = MIN_WIDTH;
+    }
+    else {
+    	MazeWidth = width;
+    }
+    if (MazeWidth % 2 == 0) {
+    	MazeWidth = MazeWidth - 1;
+    }
+
+    int temp_height = (MazeWidth* 9) / 16;
+    if (temp_height % 2 == 0) {
+    	temp_height = temp_height - 1;
+    }
+
+    if (temp_height > MAX_HEIGHT) {
+    	MazeHeight = MAX_HEIGHT;
+    }
+    else if (temp_height < MIN_HEIGHT) {
+    	MazeHeight = MIN_HEIGHT;
+    }
+    else {
+    	MazeHeight = temp_height;
+    }
 }
 

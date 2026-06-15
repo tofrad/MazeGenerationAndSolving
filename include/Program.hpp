@@ -2,11 +2,15 @@
 #define RAYGUI_IMPLEMENTATION
 
 #include "../lib/raylib/include/raylib.h"
-
 #include "Maze.hpp"
 #include "Pathsolver.hpp"
-
 #include "ProgramCallbacks.hpp"
+
+#define MAX_HEIGHT 249
+#define MAX_WIDTH 249
+
+#define MIN_HEIGHT 11
+#define MIN_WIDTH 11
 
 class Menu;
 class Editor;
@@ -53,11 +57,14 @@ class Program
 		int buffer_width = 1920;
 		int buffer_height = 1080;
 
-		int MazeSize = 150;
+		int MazeWidth = 50;
+		int MazeHeight = 0;
 
 		Maze M;
+		Recorder Gen_Recorder;
 
 		Pathsolver S;
+		Recorder Solve_Recorder;
 
 		Menu* menu;
 
@@ -86,6 +93,8 @@ class Program
 		void saveLastFrame() const;
 		void getLastMazeFrame() const;
 		void getLastPathFrame() const;
+
+		void CalculateMazeParams(const int width);
 
 };
 

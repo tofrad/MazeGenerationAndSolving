@@ -5,7 +5,13 @@ Recorder::Recorder()
 
 }
 
-Recorder::Recorder(const vector<Cell*>& cell_list)
+Recorder::Recorder(const int& maze_height, const int& maze_width)
+{
+	this->height = maze_height;
+	this->width = maze_width;
+}
+
+Recorder::Recorder(const vector<Cell*>& cell_list, const int& maze_height, const int& maze_width) : Recorder(maze_height, maze_width)
 {
 	for (const auto cell : cell_list)
 	{
@@ -84,7 +90,7 @@ void Recorder::startPlaying()
 		isplaying = true;
 
 		for (auto cell : initialState) {
-			cell.drawCell(); 
+			//cell.drawCell();
 		} 
 	}
 }
@@ -132,7 +138,7 @@ bool Recorder::stepForward()
 	if (isplaying)
 	{
 		for (auto cell : history[current_step]) {
-			cell.drawCell(); 
+			//cell.drawCell();
 		}
 		current_step++;
 		return true;
@@ -145,14 +151,14 @@ bool Recorder::stepForward()
 void Recorder::playLastFrame() const
 {
 	for (auto cell : LastState) {
-		cell.drawCell(); 
+		//cell.drawCell();
 	}
 }
 
 void Recorder::playInitialGrid() const
 {
 	for (auto cell : initialState) {
-		cell.drawEmptyCell();
+		//cell.drawEmptyCell();
 	}
 
 }

@@ -12,7 +12,7 @@ class Pathsolver
 {
 	public:
 		Pathsolver();
-		Pathsolver(const vector<Cell*>& Initial, Cell* start, SolvingMethod method);
+		Pathsolver(Cell* start, SolvingMethod method, const Recorder& recorder);
 		~Pathsolver();
 
 		bool playRecording();
