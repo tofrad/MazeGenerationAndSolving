@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Point.hpp"
-
+#include "raylib.h"
 #include <vector>
 
 //Program-handler

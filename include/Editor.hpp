@@ -68,6 +68,6 @@ private:
 
 	int toggle_group = 2;
 
-	RenderTexture2D buffer;
+	RenderTexture2D buffer = LoadRenderTexture(window_width, window_height);
 
 };

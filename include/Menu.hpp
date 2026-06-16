@@ -1,17 +1,14 @@
 #pragma once
 
-#include "../lib/raylib/include/raylib.h"
-
 #include "ProgramCallbacks.hpp"
 
 class Program;
 
-typedef enum {
+enum class MenuState{
 	OPEN,
 	CLOSED,
 	HOLD
-
-} MenuState;
+} ;
 
 class Menu
 {
@@ -45,7 +42,7 @@ class Menu
 
 		void WindowRequest();*/
 
-		MenuState state = CLOSED;
+		MenuState state = MenuState::CLOSED;
 
 		//GUI Variables-------------------------------------------------------		
 

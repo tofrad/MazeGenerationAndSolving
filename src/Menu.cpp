@@ -25,23 +25,23 @@ void Menu::init(const ProgramCallbacks& callbacks)
 
 void Menu::open()
 {
-    state = OPEN;
+    state = MenuState::OPEN;
     syncToProgram();
 }
 
 void Menu::close()
 {
-    state = CLOSED;
+    state = MenuState::CLOSED;
 }
 
 void Menu::displayGUI()
 {
     ClearBackground(GRAY);
 
-    int window_height = 1080;
-    int window_width = 1920;
+    int window_height;
+    int window_width;
 
-    switch (const Screensize size = menu_callbacks.getWindowSize()) {
+    switch (menu_callbacks.getWindowSize()) {
     case UHD:
         window_height = 1440;
         window_width = 2560;
@@ -68,7 +68,7 @@ void Menu::displayGUI()
 
     const float Labelwidth = (window_width - (4*Label_offset)) / 3;
 
-    if (state == OPEN) {
+    if (state == MenuState::OPEN) {
         constexpr float Label_height = 30;
         constexpr float Labelpos_y = 10;
 
@@ -129,7 +129,7 @@ void Menu::displayGUI()
         if (Generate_Button) {
 
             menu_callbacks.onGenerateRequest(MazeSize, MazeMethod);
-            menu_callbacks.onSolveRequest(PathMethod);
+            //menu_callbacks.onSolveRequest(PathMethod);
 
             Generate_Button = false;
         }

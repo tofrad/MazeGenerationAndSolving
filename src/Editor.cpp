@@ -274,7 +274,7 @@ void Editor::drawGrid(const int tile_size, const int x_tile_offset, const int y_
 }
 void Editor::calculateLandmarks() 
 {
-    switch (Screensize size = callbacks.getWindowSize()) {
+    switch (callbacks.getWindowSize()) {
     case UHD:
         window_height = 1440;
         window_width = 2560;

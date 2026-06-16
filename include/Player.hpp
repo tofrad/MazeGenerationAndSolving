@@ -8,6 +8,13 @@
 
 class Program;
 
+enum class PlayerState
+{
+	OPEN,
+	PLAYING,
+	PAUSED,
+	CLOSED
+};
 
 class Player {
 

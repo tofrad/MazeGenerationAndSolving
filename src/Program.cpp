@@ -45,7 +45,8 @@ void Program::InitProgram()
 
     //--------------------------------------------------------------------------------------
     CalculateMazeParams(MazeWidth);
-    M = Maze(MazeWidth, MazeHeight, Generator);
+    Gen_Recorder = Recorder(MazeHeight, MazeWidth);
+    M = Maze(MazeWidth, MazeHeight, Generator, &Gen_Recorder);
     M.resetMaze();
     Solve_Recorder = Recorder(M.getGeneratedMaze(), M.getHeight(), M.getWidth());
     S = Pathsolver(M.getStart(), Solver, Solve_Recorder);
@@ -58,7 +59,6 @@ void Program::InitProgram()
     last_path_buffer = LoadRenderTexture(screenWidth, screenHeight);
 
     //--------------------------------------------------------------------------------------
-
     scale = min(static_cast<float>(GetScreenWidth()) / screenWidth, static_cast<float>(GetScreenHeight()) / screenHeight);
 }
 
@@ -164,7 +164,6 @@ int Program::Run()
                 WHITE);
            
         }
-       
         EndDrawing();
         //----------------------------------------------------------------------------------
     }
@@ -196,22 +195,21 @@ void Program::handleGeneratorRequest(int size, const GenerationMethod method)
 
         //forward TileArray from editor to Maze
         if (editor->CustomMaze.isValid) {
-            M = Maze(&editor->CustomMaze);
+            //size params at this point unknown, needs to be set in Maze class
+            Gen_Recorder = Recorder(0,0);
+            M = Maze(&editor->CustomMaze, &Gen_Recorder);
             handleSolveRequest(Solver);
         }
         else {
             //TODO
             //throw error and logging
         }
-
     }
     else{
         Gen_Recorder = Recorder(MazeHeight,MazeWidth);
-        M = Maze(MazeWidth, MazeHeight, Generator);
+        M = Maze(MazeWidth, MazeHeight, Generator, &Gen_Recorder);
         handleSolveRequest(Solver);
     }
-
-
 }
 
 void Program::handleSolveRequest(const SolvingMethod method)
