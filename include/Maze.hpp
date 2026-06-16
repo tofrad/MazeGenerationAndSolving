@@ -14,10 +14,10 @@ class Maze
 {
 	public:
 		Maze();
-		Maze(const int w, const int h, GenerationMethod method);
+		Maze(const int w, const int h, GenerationMethod method, Recorder* recorder);
 		~Maze();
 
-		explicit Maze(const TileMap* custom_maze);
+		explicit Maze(const TileMap* custom_maze, Recorder* recorder);
 
 		Cell* getStart() const;
 		vector<Cell*> getGeneratedMaze();
@@ -38,7 +38,7 @@ class Maze
 		void loopRecording();
 		void stopRecording();
 
-		Recorder* getRecording();
+		Recorder* getRecording() const;
 
 		void displayInitialFrame() const;
 
@@ -57,11 +57,11 @@ class Maze
 		Cell* Start = nullptr;
 		Cell* Target = nullptr;
 
-		Recorder record;
+		Recorder* record = nullptr;
 
 		std::mt19937 rand_gen;
 
-		void generateMaze(GenerationMethod method);
+		void generateMaze(GenerationMethod method, Recorder* recorder);
 
 		void drawCells() const;
 

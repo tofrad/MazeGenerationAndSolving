@@ -1,5 +1,4 @@
 #include "Maze.hpp"
-
 #include <algorithm>
 #include <random>
 #include <ctime>
@@ -21,29 +20,24 @@ Maze::Maze()
 	createConnectedMaze();
 }
 
-Maze::Maze(const int w, const int h, const GenerationMethod method)
+Maze::Maze(const int w, const int h, const GenerationMethod method, Recorder* recorder)
 {
 	this->height = h;
 	this->width = w;
 
 	rand_gen.seed(time(nullptr));
-	generateMaze(method);
+	generateMaze(method, recorder);
 }
 
 Maze::~Maze()
 {
 }
 
-Maze::Maze(const TileMap* custom_maze)
+Maze::Maze(const TileMap* custom_maze, Recorder* recorder)
 {
 	this->width = custom_maze->size;
 	this->height = custom_maze->height;
 
-	// usable_height = screenheight - (OFFSET);
-	// usable_width = screenwidth - (OFFSET);
-
-	//this->cellsize = min(usable_width / this->width, usable_height / this->height);
-	
 	createConnectedMaze();
 
 	for (int x = 0; x < this->width; x++) {
@@ -77,13 +71,12 @@ Maze::Maze(const TileMap* custom_maze)
 				//cell clear
 				break;
 			}
-
-
 		}
-
 	}
-
-	record = Recorder(Cell_List, height, width);
+	record = recorder;
+	record->setHeight(this->height);
+	record->setWidth(this->width);
+	record->saveInitialFrame(Cell_List);
 }
 
 Cell* Maze::getStart() const
@@ -95,11 +88,6 @@ vector<Cell*> Maze::getGeneratedMaze()
 {
 	return Cell_List;
 }
-
-/*int Maze::getCellsize() const
-{
-	return this->cellsize;
-}*/
 
 int Maze::getHeight() const
 {
@@ -121,10 +109,6 @@ void Maze::createEmptyMaze()
 
 		for (int y = 0; y < height; y++) {
 
-			//start_x = OFFSET / 2 + (usable_width - (width * cellsize)) / 2;
-			//start_y = OFFSET / 2 + (usable_height - (height * cellsize)) / 2;
-			//const Vector2 LocalOffset{ static_cast<float>(start_x), static_cast<float>(start_y) };
-
 			Cell* C = new Cell(Point(x, y));
 
 			if (x % 2 != 0 || y % 2 != 0) {
@@ -135,8 +119,6 @@ void Maze::createEmptyMaze()
 			Cell_Grid[x][y] = C;
 		}
 	}
-
-
 }
 
 void Maze::createConnectedMaze()
@@ -144,7 +126,6 @@ void Maze::createConnectedMaze()
 	createEmptyMaze();
 
 	//connect with neighbors
-
 	for (int x = 0; x < width; x++) {
 
 		for (int y = 0; y < height; y++) {
@@ -160,7 +141,6 @@ void Maze::createConnectedMaze()
 
 		}
 	}
-
 }
 
 void Maze::resetMaze() const
@@ -168,40 +148,39 @@ void Maze::resetMaze() const
 	for (const auto cell : this->Cell_List) {
 		cell->resetCell();
 	}
-
 }
 
 void Maze::drawMaze() const
 {
-	record.playLastFrame();
+	record->playLastFrame();
 }
 
 bool Maze::playRecording()
 {
-	return record.playRecording();
+	return record->playRecording();
 }
 
 void Maze::loopRecording()
 {
-	record.loopRecording();
+	record->loopRecording();
 }
 
 void Maze::stopRecording()
 {
-	record.stopPlaying();
+	record->stopPlaying();
 }
 
-Recorder* Maze::getRecording()
+Recorder* Maze::getRecording() const
 {
-	return &record;
+	return record;
 }
 
 void Maze::displayInitialFrame() const
 {
-	record.playInitialGrid();
+	record->playInitialGrid();
 }
 
-void Maze::generateMaze(const GenerationMethod method)
+void Maze::generateMaze(const GenerationMethod method, Recorder* recorder)
 {
 	createEmptyMaze();
 
@@ -215,9 +194,9 @@ void Maze::generateMaze(const GenerationMethod method)
 	Target = Cell_List[rand2];
 
 
-	record = Recorder(Cell_List, height, width);
-
-	record.startRecording();
+	record = recorder;
+	record->startRecording();
+	recorder->saveInitialFrame(Cell_List);
 
 	switch (method) {
 
@@ -251,15 +230,14 @@ void Maze::generateMaze(const GenerationMethod method)
 
 	}
 
-	record.stopRecording();
+	record->stopRecording();
 
 	//clear was_visited mark for coloring in pathfinding
 	for (const auto cell : Cell_List) {
 		cell->wasVisited = false;
 		cell->isActive = false;
 	}
-
-	record.saveLastFrame(Cell_List);
+	record->saveLastFrame(Cell_List);
 }
 
 void Maze::drawCells() const
@@ -302,22 +280,19 @@ void Maze::RecursiveBacktracking(Cell& cell)
 			
 			Cell* MiddleCell = connectCells(&cell, target);
 			MiddleCell->wasVisited = true;
-			MiddleCell->isActive = true;
-			record.recordStep(MiddleCell);
-
-			for (int i = 0; i < 5; i++) {
-				record.recordStep(&cell);
-			}
-
+			//clear middle cell from wall to as visited
+			record->recordStep(MiddleCell);
+			//record current cell as active
+			record->recordStep(&cell);
+			//remove active cell flag before entering recursion
 			cell.isActive = false;
-			MiddleCell->isActive = false;
-			record.recordStep(&cell);
+			record->recordStep(&cell);
 			RecursiveBacktracking(*target);
 		}
 	}
-	cell.isActive = false;
-	record.recordStep(&cell);
-	
+	//clearing last active cell flag
+	// cell.isActive = false;
+	// record.recordStep(&cell);
 }
 
 void Maze::Kruskal()
@@ -367,7 +342,7 @@ void Maze::Kruskal()
 				secondCell->isActive = true;
 
 				for (int i = 0; i < 2; i++) {
-					record.recordStep(vector<Cell*>{firstCell, InBetween, secondCell});
+					record->recordStep(vector<Cell*>{firstCell, InBetween, secondCell});
 				}
 
 				//for recording
@@ -377,7 +352,7 @@ void Maze::Kruskal()
 				firstCell->wasVisited = true;
 				InBetween->wasVisited = true;
 				secondCell->wasVisited = true;
-				record.recordStep(vector<Cell*>{firstCell, InBetween, secondCell});
+				record->recordStep(vector<Cell*>{firstCell, InBetween, secondCell});
 			}
 			else {
 				// do nothing, cells already in same union
@@ -414,21 +389,21 @@ void Maze::HuntAndKill()
 
 			current_cell->isActive = true;
 			for (int i = 0; i < 2; i++) {
-				record.recordStep(current_cell);
+				record->recordStep(current_cell);
 			}
 
 			Cell* InBetween = connectCells(current_cell, next_cell);
 			InBetween->wasVisited = true;
 
 			current_cell->isActive = false;
-			record.recordStep({ current_cell, InBetween});
+			record->recordStep({ current_cell, InBetween});
 
 			current_cell = next_cell;
 			found_new_cell = true; //mark to signal found cell
 			continue;
 		}
 		else {
-			record.recordStep(current_cell);//mark visited in recording
+			record->recordStep(current_cell);//mark visited in recording
 			found_new_cell = false;
 			// iterate through all cells till found unvisited with visited Neighbors for new starting point	
 			for (const auto cell : Cell_List) {
@@ -445,7 +420,7 @@ void Maze::HuntAndKill()
 
 						neighbor->isActive = true;
 						for (int i = 0; i < 2; i++) {
-							record.recordStep(neighbor);
+							record->recordStep(neighbor);
 						}
 
 						Cell* InBetween = connectCells(cell, neighbor);
@@ -456,28 +431,24 @@ void Maze::HuntAndKill()
 						found_new_cell = true; //mark to signal found cell
 
 						neighbor->isActive = false;
-						record.recordStep({ neighbor, InBetween });
+						record->recordStep({ neighbor, InBetween });
 
 						break;
 					}
 				}
 			}
 		}
-
 		//no valid cell is left , abort
 		if (found_new_cell == false) {
 			break;
 		}
 	}
-
 }
 
 vector<Cell*> Maze::getUnvisitedNeighbors(const Cell* cell) const
 {
 
 	vector<Cell*> directions;
-	
-
 	const Point pos = cell->getPosition();
 	const int X = pos.getX();
 	const int Y = pos.getY();
@@ -519,16 +490,12 @@ vector<Cell*> Maze::getUnvisitedNeighbors(const Cell* cell) const
 			directions.push_back(target_cell);
 		}
 	}
-
 	return directions;
 }
 
 vector<Cell*> Maze::getVisitedNeighbors(const Cell* cell) const
 {
-
 	vector<Cell*> directions;
-
-
 	const Point pos = cell->getPosition();
 	const int X = pos.getX();
 	const int Y = pos.getY();
@@ -570,16 +537,13 @@ vector<Cell*> Maze::getVisitedNeighbors(const Cell* cell) const
 			directions.push_back(target_cell);
 		}
 	}
-
 	return directions;
 }
 
 //needs to be called from a wall, does only one step in each direction
 vector<Cell*> Maze::getWalkableNeighborsFromWall(const Cell* cell) const
 {
-
 	vector<Cell*> directions;
-
 	const Point pos = cell->getPosition();
 	const int X = pos.getX();
 	const int Y = pos.getY();
@@ -622,7 +586,6 @@ vector<Cell*> Maze::getWalkableNeighborsFromWall(const Cell* cell) const
 			directions.push_back(target_cell);
 		}
 	}
-
 	return directions;
 }
 
@@ -670,7 +633,6 @@ Cell* Maze::connectCells(Cell* first, Cell* second) const
 			CellInBetween->setWest(second);
 			second->setEast(CellInBetween);
 		}
-
 	}
 	return CellInBetween;
 }

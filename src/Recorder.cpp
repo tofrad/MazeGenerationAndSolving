@@ -9,13 +9,19 @@ Recorder::Recorder(const int& maze_height, const int& maze_width)
 {
 	this->height = maze_height;
 	this->width = maze_width;
+
+	cellsize = Texture_width / maze_width;
+
+	BeginTextureMode(last_frame);
+	ClearBackground(LIGHTGRAY);
+	EndTextureMode();
 }
 
 Recorder::Recorder(const vector<Cell*>& cell_list, const int& maze_height, const int& maze_width) : Recorder(maze_height, maze_width)
 {
 	for (const auto cell : cell_list)
 	{
-		initialState.push_back(cell->get_Base_copy()); 
+		InitialState.push_back(RecordCell(*cell));
 	}
 }
 
@@ -51,9 +57,9 @@ void Recorder::recordStep(Cell* modifiedCell)
 {
 	if (!recording)return;
 
-	vector<Base_Cell> temp;
+	vector<RecordCell> temp;
 	modifiedCell->updateColor();
-	temp.push_back(modifiedCell->get_Base_copy());
+	temp.push_back(RecordCell(*modifiedCell));
 
 	history.push_back(temp);
 }
@@ -62,37 +68,47 @@ void Recorder::recordStep(const vector<Cell*>& modifiedCells)
 {
 	if (!recording)return;
 
-	vector<Base_Cell> temp;
+	vector<RecordCell> temp;
 
 	for (const auto cell : modifiedCells) {
-
+		//record cells here
 		cell->updateColor();
-		temp.push_back(cell->get_Base_copy()); 
+		temp.push_back(RecordCell(*cell));
 	}	
 
 	history.push_back(temp);
+}
+
+void Recorder::saveInitialFrame(const vector<Cell*>& FirstCells)
+{
+	for (const auto cell : FirstCells)
+	{
+		InitialState.push_back(RecordCell(*cell));
+	}
 }
 
 void Recorder::saveLastFrame(const vector<Cell*>& LastList)
 {
 	for (const auto cell : LastList)
 	{
-		LastState.push_back(cell->get_Base_copy());
+		LastState.push_back(RecordCell(*cell));
 	}
 
 }
 
 void Recorder::startPlaying()
 {
+	BeginTextureMode(last_frame);
 	if (!isplaying && islooping) {
 
 		current_step = 0;
 		isplaying = true;
 
-		for (auto cell : initialState) {
-			//cell.drawCell();
+		for (auto cell : InitialState) {
+			cell.drawCell(cellsize, cell.getColor());
 		} 
 	}
+	EndTextureMode();
 }
 
 void Recorder::stopPlaying()
@@ -138,7 +154,7 @@ bool Recorder::stepForward()
 	if (isplaying)
 	{
 		for (auto cell : history[current_step]) {
-			//cell.drawCell();
+			cell.drawCell(cellsize, cell.getColor());
 		}
 		current_step++;
 		return true;
@@ -151,14 +167,14 @@ bool Recorder::stepForward()
 void Recorder::playLastFrame() const
 {
 	for (auto cell : LastState) {
-		//cell.drawCell();
+		cell.drawCell(cellsize, cell.getColor());
 	}
 }
 
 void Recorder::playInitialGrid() const
 {
-	for (auto cell : initialState) {
-		//cell.drawEmptyCell();
+	for (auto cell : InitialState) {
+		cell.drawCell(cellsize, cell.getColor());
 	}
 
 }
@@ -168,3 +184,14 @@ void Recorder::playStep(const int step)
 	current_step = step;
 
 }
+
+void Recorder::setHeight(const int maze_height)
+{
+	this->height = maze_height;
+}
+
+void Recorder::setWidth(const int maze_width)
+{
+	this->width = maze_width;
+}
+

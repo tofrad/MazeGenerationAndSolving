@@ -1,8 +1,9 @@
 #pragma once
 
 #include "Cell.hpp"
-
+#include "RecordCell.hpp"
 #include <vector>
+
 
 using namespace std;
 
@@ -23,6 +24,7 @@ public:
 
 	void recordStep(Cell* modifiedCell);
 	void recordStep(const vector<Cell*>& modifiedCells);
+	void saveInitialFrame(const vector<Cell*>& FirstCells);
 	void saveLastFrame(const vector<Cell*>& LastList);
 
 	void startPlaying();
@@ -41,6 +43,8 @@ public:
 
 	void playStep(int step);
 
+	void setHeight(int maze_height);
+	void setWidth(int maze_width);
 
 private:
 
@@ -49,19 +53,21 @@ private:
 	int height = 0;
 	int width = 0;
 
-	vector<Base_Cell> initialState;
+	int cellsize = 10;
+	int Texture_width = 960;
+	int Texture_height = 540;
+	RenderTexture2D last_frame = LoadRenderTexture(Texture_width, Texture_height);
 
-	vector<Base_Cell> LastState;
+	vector<RecordCell> InitialState;
 
-	vector<vector<Base_Cell>> history;
+	vector<RecordCell> LastState;
+
+	vector<vector<RecordCell>> history;
 
 	int current_step = 0;
 	bool recording = false;
 	bool isplaying = false;
 	bool islooping = true;
-
-
-
 
 };
 
