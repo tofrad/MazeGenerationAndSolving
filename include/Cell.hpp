@@ -1,22 +1,31 @@
 #pragma once
 
-#include "Base_Cell.hpp"
-
 #include <cstdint>
-
-#include "../lib/raylib/include/raymath.h"
-
 #include "Point.hpp"
+#include "raylib.h"
 
-class Cell : public Base_Cell
+class Cell
 {
 	public:
+		bool isStart = false;
+		bool isTarget = false;
+
+		bool wasVisited = false;
+		bool isActive = false;
+
+		bool isWall = false;
+
+		bool pathVisited = false;
+		bool isPath = false;  //marker for dfs recursion when dead end was found
+		bool isfinishedPath = false;
+
 		Cell();
+
 		explicit Cell(const Point& p1);
-		Cell(const Point& p1, int cellsize, Vector2 offset);
 		Cell(const Point& p1, int weight);
 
 		~Cell();
+		Point getPosition() const;
 
 		void setNorth(Cell* north);
 		void setEast(Cell* east);
@@ -41,20 +50,17 @@ class Cell : public Base_Cell
 
 		uint64_t getCellID() const;
 
-		bool isStart = false;
-		bool isTarget = false;
-
-		bool wasVisited = false;
-		bool isActive = false;
-
-		bool isWall = false;
-
-		bool pathVisited = false;
-		bool isPath = false;  //marker for dfs recursion when dead end was found
-		bool isfinishedPath = false;
-
+		void setColor(Color Color);
+		Color getColor() const;
+		Color getPrevColor() const;
 
 	private:
+		Point p;
+
+		Color color = LIGHTGRAY;
+		Color prev_color = LIGHTGRAY;
+		void onColorChange();
+
 		Cell* North = nullptr;
 		Cell* East = nullptr;
 		Cell* South = nullptr;

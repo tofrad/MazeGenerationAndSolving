@@ -1,18 +1,14 @@
 #include "Cell.hpp"
 
-Cell::Cell() : Base_Cell()
+Cell::Cell()
 {
 	this->weight = 0;
 }
 
-Cell::Cell(const Point& p1) : Base_Cell(p1)
+Cell::Cell(const Point& p1)
 {
+	this->p = p1;
 	this->weight = 0;
-	setId();
-}
-
-Cell::Cell(const Point& p1, const int cellsize, const Vector2 offset) : Base_Cell(p1, cellsize, offset)
-{
 	setId();
 }
 
@@ -24,6 +20,11 @@ Cell::Cell(const Point& p1, const int w) : Cell(p1)
 
 Cell::~Cell() {
 
+}
+
+Point Cell::getPosition() const
+{
+	return this->p;
 }
 
 void Cell::setNorth(Cell* north)
@@ -87,7 +88,7 @@ Cell* Cell::findRoot()
 
 void Cell::updateColor()
 {
-	Base_Cell::onColorChange();
+	onColorChange();
 
 	if (isActive)		{ color = LIME;      return; }
 	if (isStart)		{ color = BLUE;      return; }
@@ -112,7 +113,6 @@ void Cell::resetCell()
 	this->isfinishedPath = false;
 	this->isActive = false;
 	updateColor();
-	
 }
 
 void Cell::makeWall()
@@ -152,10 +152,30 @@ void Cell::breakWall()
 	this->updateColor();
 }
 
-
 uint64_t Cell::getCellID() const
 {
 	return cell_id;
+}
+
+void Cell::setColor(const Color Color)
+{
+	this->color = Color;
+}
+
+Color Cell::getColor() const
+{
+	return this->color;
+}
+
+Color Cell::getPrevColor() const
+{
+	return this->prev_color;
+}
+
+
+void Cell::onColorChange()
+{
+	this->prev_color = color;
 }
 
 void Cell::setId()
