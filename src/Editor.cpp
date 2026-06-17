@@ -16,7 +16,7 @@ Editor::~Editor()
 
 void Editor::init(const ProgramCallbacks& cb)
 {
-    this->callbacks = cb;
+    this->editor_callbacks = cb;
     createTileMap();
 }
 
@@ -45,7 +45,7 @@ void Editor::displayEditor()
 
     if (GuiButton(Rectangle{ TopRight.Point.x , TopRight.Point.y , WindowSection, Label_height }, "Exit to Menu")) {
 
-        callbacks.onStateRequest(MENU);
+        editor_callbacks.onStateRequest(MENU);
     }
 
     //Right to Canvas #########################################################################################################################################################################
@@ -62,7 +62,7 @@ void Editor::displayEditor()
         //get state of editor 
         //check if state is valid and able to convert in solvable Maze
         //send costum Maze Request to Program
-        callbacks.onStateRequest(MENU);
+        editor_callbacks.onStateRequest(MENU);
     }
 
     // Below Canvas ##########################################################################################################################################################################
@@ -274,7 +274,7 @@ void Editor::drawGrid(const int tile_size, const int x_tile_offset, const int y_
 }
 void Editor::calculateLandmarks() 
 {
-    switch (callbacks.getWindowSize()) {
+    switch (editor_callbacks.getWindowSize()) {
     case UHD:
         window_height = 1440;
         window_width = 2560;

@@ -34,7 +34,7 @@ private:
 
 	void drawGrid(int tile_size, int x_tile_offset, int y_tile_offset) const;
 	
-	ProgramCallbacks callbacks;
+	ProgramCallbacks editor_callbacks;
 	static void syncToProgram();
 
 	//Windows and UI Size Stuff ################################################################################################################################

@@ -4,6 +4,10 @@
 #include "Point.hpp"
 #include "raylib.h"
 
+//TODO:
+//include Cell_State enum to set a flag to determine cell visuals in rendering side of application
+//delete Color handling and raylib from all non recorder or gui elements
+
 class Cell
 {
 	public:
