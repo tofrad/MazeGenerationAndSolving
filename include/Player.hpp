@@ -43,6 +43,8 @@ class Player {
 
 		void setState(PlayerState new_state);
 
+		void resolveRenderAction();
+
 		//GUI Variables-------------------------------------------------------
 		int window_height = 1080;
 		int window_width = 1920;

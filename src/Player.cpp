@@ -21,6 +21,12 @@ void Player::init(const ProgramCallbacks& callbacks) {
 void Player::open(Recorder* Rec) {
     Record_Object = Rec;
     this->state = PlayerState::OPEN;
+
+    if (Record_Object != nullptr) {
+
+        stepValue = Record_Object->getStep();
+        maxValue = Record_Object->getSize();
+    }
 }
 
 void Player::close() {
@@ -34,7 +40,10 @@ void Player::displayPlayerGUI()
     calculateLandmarks();
     ClearBackground(BLACK);
 
-
+    if (state == PlayerState::PAUSED)
+    {
+        helper = true;
+    }
     GuiToggle(Button_Pause, GuiIconText(132, ""), &helper);
     if (helper != prev_helper)
     {
@@ -53,13 +62,6 @@ void Player::displayPlayerGUI()
     {
         player_callbacks.onStateRequest(MENU);
     }
-
-
-    if (Record_Object != nullptr) {
-
-        stepValue = Record_Object->getStep();
-        maxValue = Record_Object->getSize();
-    }
     
     char maxValue_char[8];
     snprintf(maxValue_char, sizeof(maxValue_char), "%d", maxValue);
@@ -71,18 +73,34 @@ void Player::displayPlayerGUI()
     char slide_buffer[8];
     snprintf(slide_buffer, sizeof(slide_buffer), "%d", slider_value_int);
 
-
-
     DrawRectangleRec(Slider_TextBox, RAYWHITE);
     GuiTextBox(Slider_TextBox, slide_buffer, 11, false);
 
     DrawRectangleRec(MaxValue_TextBox, RAYWHITE);
     GuiTextBox(MaxValue_TextBox, maxValue_char, 11, false);
 
-    DrawRectangle(Canvas.Point.x, Canvas.Point.y, Canvas.width, Canvas.height, RAYWHITE);
+    if (Record_Object != nullptr)
+    {
 
+        //every input checked, resolve action if needed
+        resolveRenderAction();
+        auto frame = Record_Object->getFrameTexture().texture;
+
+        auto source = Rectangle{ 0, 0, static_cast<float>(frame.width), static_cast<float>(frame.height)};
+        //draw frame texture to canvas
+        DrawTexturePro(
+            frame,
+            source,
+            Rectangle{ Canvas.Point.x, Canvas.Point.y, static_cast<float>(Canvas.width), static_cast<float>(Canvas.height) },
+            Vector2{ Canvas.Point.x, Canvas.Point.y },
+            0,
+            WHITE);
+    }
+
+    // DrawRectangle(Canvas.Point.x, Canvas.Point.y, Canvas.width, Canvas.height, RAYWHITE);
+
+    //visual debug
     //DrawRectangle(BelowCanvas.Point.x, BelowCanvas.Point.y, BelowCanvas.width, BelowCanvas.height, RED);
-
     //DrawRectangle(BottomRight.Point.x, BottomRight.Point.y, BottomRight.width, BottomRight.height, GREEN);
 
 }
@@ -92,12 +110,36 @@ void Player::setState(const PlayerState new_state)
     if (state == PlayerState::PAUSED && new_state == PlayerState::PAUSED)
     {
         this->state = PlayerState::PLAYING_FORWARD;
+        Record_Object->startPlaying();
     }
     else
     {
         this->state = new_state;
     }
  int i = 0;
+}
+
+void Player::resolveRenderAction()
+{
+    switch (state)
+    {
+        case PlayerState::PLAYING_FORWARD:
+            Record_Object->stepForward();
+            break;
+        case PlayerState::PLAYING_BACKWARD:
+            break;
+        case PlayerState::BACKWARD_ONE:
+            this->setState(PlayerState::PAUSED);
+            break;
+        case PlayerState::FORWARD_ONE:
+
+            Record_Object->stepForward();
+            this->setState(PlayerState::PAUSED);
+            break;
+        default:
+            //do nothing as canvas needs no render
+            break;
+    }
 }
 
 void Player::calculateLandmarks()
