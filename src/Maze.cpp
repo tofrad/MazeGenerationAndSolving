@@ -150,35 +150,35 @@ void Maze::resetMaze() const
 	}
 }
 
-void Maze::drawMaze() const
-{
-	record->playLastFrame();
-}
+// void Maze::drawMaze() const
+// {
+// 	record->playLastFrame();
+// }
+//
+// bool Maze::playRecording()
+// {
+// 	return record->playRecording();
+// }
+//
+// void Maze::loopRecording()
+// {
+// 	record->loopRecording();
+// }
+//
+// void Maze::stopRecording()
+// {
+// 	record->stopPlaying();
+// }
 
-bool Maze::playRecording()
-{
-	return record->playRecording();
-}
+// Recorder* Maze::getRecording() const
+// {
+// 	return record;
+// }
 
-void Maze::loopRecording()
-{
-	record->loopRecording();
-}
-
-void Maze::stopRecording()
-{
-	record->stopPlaying();
-}
-
-Recorder* Maze::getRecording() const
-{
-	return record;
-}
-
-void Maze::displayInitialFrame() const
-{
-	record->playInitialGrid();
-}
+// void Maze::displayInitialFrame() const
+// {
+// 	record->playInitialGrid();
+// }
 
 void Maze::generateMaze(const GenerationMethod method, Recorder* recorder)
 {
@@ -240,13 +240,13 @@ void Maze::generateMaze(const GenerationMethod method, Recorder* recorder)
 	record->saveLastFrame(Cell_List);
 }
 
-void Maze::drawCells() const
-{
-	for (const auto& cell : Cell_List) {
-		
-		cell->drawCell();
-	}
-}
+// void Maze::drawCells() const
+// {
+// 	for (const auto& cell : Cell_List) {
+//
+// 		cell->drawCell();
+// 	}
+// }
 
 void Maze::deleteConnections() const
 {

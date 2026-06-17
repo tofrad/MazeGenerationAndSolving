@@ -2,10 +2,8 @@
 
 #include <random>
 #include <vector>
-
 #include "Cell.hpp"
 #include "Recorder.hpp"
-
 #include "State_Definitions.hpp"
 
 using namespace std;
@@ -32,15 +30,13 @@ class Maze
 
 		void resetMaze() const;
 
-		void drawMaze() const;
-	
-		bool playRecording();
-		void loopRecording();
-		void stopRecording();
-
-		Recorder* getRecording() const;
-
-		void displayInitialFrame() const;
+		//
+		// void drawMaze() const;
+		// void displayInitialFrame() const;
+		// bool playRecording();
+		// void loopRecording();
+		// Recorder* getRecording() const;
+		// void stopRecording();
 
 	private:
 
@@ -63,7 +59,7 @@ class Maze
 
 		void generateMaze(GenerationMethod method, Recorder* recorder);
 
-		void drawCells() const;
+		// void drawCells() const;
 
 		void deleteConnections() const;
 

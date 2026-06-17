@@ -4,20 +4,28 @@
 #include "RecordCell.hpp"
 #include <vector>
 
-
 using namespace std;
+
+enum RecordType
+{
+	MAZE,
+	PATH,
+	NONE
+};
 
 class Recorder
 {
 
 public:
 	Recorder();
-	Recorder(const int& maze_height, const int& maze_width);
-	explicit Recorder(const vector<Cell*>& cell_list, const int& maze_height, const int& maze_width);
+	Recorder(const int& maze_height, const int& maze_width, RecordType r_type);
+	explicit Recorder(const vector<Cell*>& cell_list, const int& maze_height, const int& maze_width, RecordType r_type);
 	~Recorder();
 
+	RecordType getRecordType() const;
 	int getStep() const;
 	int getSize() const;
+	RenderTexture2D getFrameTexture() const;
 
 	void startRecording();
 	void stopRecording();
@@ -48,6 +56,9 @@ public:
 
 private:
 
+	RecordType recording_type = NONE;
+	void setRecordType(RecordType type);
+
 	int size = 0;
 
 	int height = 0;
@@ -56,7 +67,7 @@ private:
 	int cellsize = 10;
 	int Texture_width = 960;
 	int Texture_height = 540;
-	RenderTexture2D last_frame = LoadRenderTexture(Texture_width, Texture_height);
+	RenderTexture2D frame_texture = LoadRenderTexture(Texture_width, Texture_height);
 
 	vector<RecordCell> InitialState;
 

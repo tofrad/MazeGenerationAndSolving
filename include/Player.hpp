@@ -11,8 +11,11 @@ class Program;
 enum class PlayerState
 {
 	OPEN,
-	PLAYING,
+	PLAYING_FORWARD,
+	PLAYING_BACKWARD,
 	PAUSED,
+	FORWARD_ONE,
+	BACKWARD_ONE,
 	CLOSED
 };
 
@@ -35,7 +38,10 @@ class Player {
 
 		ProgramCallbacks player_callbacks;
 
+		PlayerState state = PlayerState::CLOSED;
 		Recorder* Record_Object = nullptr;
+
+		void setState(PlayerState new_state);
 
 		//GUI Variables-------------------------------------------------------
 		int window_height = 1080;

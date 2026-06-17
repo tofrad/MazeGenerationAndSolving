@@ -43,12 +43,15 @@ void Program::InitProgram()
 
     //GuiLoadStyle("src//GUI_Style.rgs");
 
-    //--------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------
     CalculateMazeParams(MazeWidth);
-    Gen_Recorder = Recorder(MazeHeight, MazeWidth);
+
+    Gen_Recorder = Recorder(MazeHeight, MazeWidth, RecordType::MAZE);
     M = Maze(MazeWidth, MazeHeight, Generator, &Gen_Recorder);
+
     M.resetMaze();
-    Solve_Recorder = Recorder(M.getGeneratedMaze(), M.getHeight(), M.getWidth());
+
+    Solve_Recorder = Recorder(M.getGeneratedMaze(), M.getHeight(), M.getWidth(),RecordType::PATH);
     S = Pathsolver(M.getStart(), Solver, Solve_Recorder);
 
     //create buffer for drawing
@@ -89,50 +92,22 @@ int Program::Run()
         }
 
         if (IsKeyPressed(KEY_ONE)) {
-
             setState(PLAY_MAZE);
         }
 
         if (IsKeyPressed(KEY_TWO)) {
-
             setState(PLAY_PATH);
         }
 
         if (IsKeyPressed(KEY_THREE)) {
-
             setState(PLAYER);
-            //open just Mazes for now
-            player->open(M.getRecording());
         }
 
         //write changes into buffer
         //just write recorder stuff - no setStates to preserve TextureMode
         BeginTextureMode(buffer);
-        switch (State) {
 
-        case PLAY_MAZE:
-            if (!M.playRecording()) {
-                //Recorder finished
-            }
-            break;
-
-        case PLAY_PATH:
-            if (!S.playRecording()) {
-                //Recorder finished
-            }
-            if (Generator == CUSTOM) {
-                M.displayInitialFrame();
-            }
-            break;
-
-        case MENU:
-            EndTextureMode();
-            //menu_buffer = menu.displayGUI();
-            break;
-
-        default:
-            break;
-        }
+        //is done in several buffers of the program entities now
 
         EndTextureMode();
 
@@ -143,15 +118,12 @@ int Program::Run()
         ClearBackground(LIGHTGRAY);
 
         if (State == MENU) {
-
             menu->displayGUI();
         }
         else if(State == EDITING) {
-
             editor->displayEditor();
         }
         else if (State == PLAYER) {
-
             player->displayPlayerGUI();
         }
         else {
@@ -162,7 +134,6 @@ int Program::Run()
                 Vector2{ 0, 0 },
                 0,
                 WHITE);
-           
         }
         EndDrawing();
         //----------------------------------------------------------------------------------
@@ -187,16 +158,14 @@ void Program::handleStateRequest(const ProgramState state)
 
 void Program::handleGeneratorRequest(int size, const GenerationMethod method)
 {
-
     Generator = method;
-    // last_maze_buffer = LoadRenderTexture(screenWidth, screenHeight);
 
     if (Generator == CUSTOM) {
 
         //forward TileArray from editor to Maze
         if (editor->CustomMaze.isValid) {
             //size params at this point unknown, needs to be set in Maze class
-            Gen_Recorder = Recorder(0,0);
+            Gen_Recorder = Recorder(0,0, RecordType::MAZE);
             M = Maze(&editor->CustomMaze, &Gen_Recorder);
             handleSolveRequest(Solver);
         }
@@ -206,7 +175,7 @@ void Program::handleGeneratorRequest(int size, const GenerationMethod method)
         }
     }
     else{
-        Gen_Recorder = Recorder(MazeHeight,MazeWidth);
+        Gen_Recorder = Recorder(MazeHeight,MazeWidth, RecordType::MAZE);
         M = Maze(MazeWidth, MazeHeight, Generator, &Gen_Recorder);
         handleSolveRequest(Solver);
     }
@@ -217,16 +186,12 @@ void Program::handleSolveRequest(const SolvingMethod method)
     Solver = method;
     M.resetMaze();
 
-    //clear prev buffer
-    // last_path_buffer = LoadRenderTexture(screenWidth, screenHeight);
-    Solve_Recorder = Recorder(M.getGeneratedMaze(), M.getHeight(), M.getWidth());
+    Solve_Recorder = Recorder(M.getGeneratedMaze(), M.getHeight(), M.getWidth(), RecordType::PATH);
     S = Pathsolver(M.getStart(), Solver, Solve_Recorder);
-
 }
 
 void Program::handleWindowChange(const Screensize size)
 {
-
     SetWindowState(FLAG_WINDOW_RESIZABLE);
 
     if (this->Windowsize == size) {
@@ -270,7 +235,6 @@ void Program::handleWindowChange(const Screensize size)
         centerWindow();
 
         ClearWindowState(FLAG_WINDOW_RESIZABLE);
-
     }
     ClearWindowState(FLAG_WINDOW_RESIZABLE);
 }
@@ -316,6 +280,10 @@ void Program::setState(const ProgramState next_state)
 
     case PLAYER:
         saveLastFrame();
+
+        //open just Mazes for now
+        player->open(&Gen_Recorder);
+
         if (State != STOPPED) {
             LastState = State;
         }
@@ -360,7 +328,6 @@ ProgramCallbacks Program::createCallbacks()
 
 void Program::centerWindow() const
 {
-
     const int monitor = GetCurrentMonitor();
     const int monitor_width = GetMonitorWidth(monitor);
     const int monitor_height = GetMonitorHeight(monitor);
@@ -385,7 +352,6 @@ void Program::saveLastFrame() const
     else {
         //no relevant case yet
     }
-     
 }
 
 void Program::getLastMazeFrame() const

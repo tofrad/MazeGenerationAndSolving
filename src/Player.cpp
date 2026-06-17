@@ -15,29 +15,44 @@ void Player::init(const ProgramCallbacks& callbacks) {
 
     this->player_callbacks = callbacks;
     calculateLandmarks();
+    this->state = PlayerState::CLOSED;
 }
 
 void Player::open(Recorder* Rec) {
     Record_Object = Rec;
+    this->state = PlayerState::OPEN;
 }
 
 void Player::close() {
     Record_Object = nullptr;
+    this->state = PlayerState::CLOSED;
 }
-
+bool helper = false;
+bool prev_helper = false;
 void Player::displayPlayerGUI()
 {
     calculateLandmarks();
-    ClearBackground(GRAY);
+    ClearBackground(BLACK);
 
-    if (GuiButton(Button_FullRewind, GuiIconText(129, ""))) { /* ACTION */ }
-    if (GuiButton(Button_Rewind, GuiIconText(130, ""))) { /* ACTION */ }
-    if (GuiButton(Button_Pause, GuiIconText(132, ""))) { /* ACTION */ }
-    if (GuiButton(Button_Forward, GuiIconText(131, ""))) { /* ACTION */ }
-    if (GuiButton(Button_FullForward, GuiIconText(134, ""))) { /* ACTION */ }
+
+    GuiToggle(Button_Pause, GuiIconText(132, ""), &helper);
+    if (helper != prev_helper)
+    {
+        setState(PlayerState::PAUSED);
+        prev_helper = helper;
+    }
+
+    if (GuiButton(Button_FullRewind, GuiIconText(129, ""))) { /* draw full first frame and pause */ }
+    if (GuiButton(Button_Rewind, GuiIconText(130, ""))) {setState(PlayerState::BACKWARD_ONE); }
+    if (GuiButton(Button_Forward, GuiIconText(131, ""))) { setState(PlayerState::FORWARD_ONE); }
+    if (GuiButton(Button_FullForward, GuiIconText(134, ""))) { /* draw full last frame and pause */ }
 
     //Menu Button
-    if (GuiButton(Rectangle(BottomRight.Point.x, BottomRight.Point.y, BottomRight.width, BottomRight.height), GuiIconText(142, "Menu"))) { /* ACTION */ }
+    if (GuiButton(Rectangle(BottomRight.Point.x, BottomRight.Point.y, BottomRight.width, BottomRight.height),
+                    GuiIconText(142, "Menu")))
+    {
+        player_callbacks.onStateRequest(MENU);
+    }
 
 
     if (Record_Object != nullptr) {
@@ -70,6 +85,19 @@ void Player::displayPlayerGUI()
 
     //DrawRectangle(BottomRight.Point.x, BottomRight.Point.y, BottomRight.width, BottomRight.height, GREEN);
 
+}
+
+void Player::setState(const PlayerState new_state)
+{
+    if (state == PlayerState::PAUSED && new_state == PlayerState::PAUSED)
+    {
+        this->state = PlayerState::PLAYING_FORWARD;
+    }
+    else
+    {
+        this->state = new_state;
+    }
+ int i = 0;
 }
 
 void Player::calculateLandmarks()

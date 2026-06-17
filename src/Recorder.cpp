@@ -5,19 +5,20 @@ Recorder::Recorder()
 
 }
 
-Recorder::Recorder(const int& maze_height, const int& maze_width)
+Recorder::Recorder(const int& maze_height, const int& maze_width,const RecordType r_type)
 {
 	this->height = maze_height;
 	this->width = maze_width;
+	this->setRecordType(r_type);
 
 	cellsize = Texture_width / maze_width;
 
-	BeginTextureMode(last_frame);
+	BeginTextureMode(frame_texture);
 	ClearBackground(LIGHTGRAY);
 	EndTextureMode();
 }
 
-Recorder::Recorder(const vector<Cell*>& cell_list, const int& maze_height, const int& maze_width) : Recorder(maze_height, maze_width)
+Recorder::Recorder(const vector<Cell*>& cell_list, const int& maze_height, const int& maze_width, const RecordType r_type) : Recorder(maze_height, maze_width, r_type)
 {
 	for (const auto cell : cell_list)
 	{
@@ -30,6 +31,11 @@ Recorder::~Recorder()
 
 }
 
+RecordType Recorder::getRecordType() const
+{
+	return this->recording_type;
+}
+
 int Recorder::getStep() const
 {
 	return current_step;
@@ -38,6 +44,11 @@ int Recorder::getStep() const
 int Recorder::getSize() const
 {
 	return size;
+}
+
+RenderTexture2D Recorder::getFrameTexture() const
+{
+	return frame_texture;
 }
 
 void Recorder::startRecording()
@@ -98,7 +109,7 @@ void Recorder::saveLastFrame(const vector<Cell*>& LastList)
 
 void Recorder::startPlaying()
 {
-	BeginTextureMode(last_frame);
+	BeginTextureMode(frame_texture);
 	if (!isplaying && islooping) {
 
 		current_step = 0;
@@ -193,5 +204,10 @@ void Recorder::setHeight(const int maze_height)
 void Recorder::setWidth(const int maze_width)
 {
 	this->width = maze_width;
+}
+
+void Recorder::setRecordType(const RecordType type)
+{
+	this->recording_type = type;
 }
 
