@@ -135,7 +135,6 @@ void Menu::displayGUI()
         }
 
         if (Solve_Button) {
-
             menu_callbacks.onSolveRequest(PathMethod);
 
             Solve_Button = false;
