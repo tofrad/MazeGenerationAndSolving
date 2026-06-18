@@ -11,8 +11,10 @@ Recorder::Recorder(const int& maze_height, const int& maze_width,const RecordTyp
 	this->width = maze_width;
 	this->setRecordType(r_type);
 
-	cellsize = Texture_width / maze_width;
+	Texture_height = maze_height * cellsize;
+	Texture_width = maze_width * cellsize;
 
+	frame_texture = LoadRenderTexture(Texture_width, Texture_height);
 	BeginTextureMode(frame_texture);
 	ClearBackground(LIGHTGRAY);
 	EndTextureMode();

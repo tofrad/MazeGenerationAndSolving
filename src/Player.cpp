@@ -86,23 +86,31 @@ void Player::displayPlayerGUI()
         resolveRenderAction();
         auto frame = Record_Object->getFrameTexture().texture;
 
-        auto source = Rectangle{ 0, 0, static_cast<float>(frame.width), static_cast<float>(frame.height)};
-        //draw frame texture to canvas
+        // Calculate scale to fit canvas
+        float scaleX = (float)Canvas.width / frame.width;
+        float scaleY = (float)Canvas.height / frame.height;
+        float scale = min(scaleX, scaleY);  // Maintain aspect ratio
+
+        auto source = Rectangle{ 0, static_cast<float>(frame.height), static_cast<float>(frame.width), -static_cast<float>(frame.height)};
+        float x = Canvas.Point.x + (Canvas.width - frame.width * scale) / 2;
+        float y = Canvas.Point.y + (Canvas.height - frame.height * scale) / 2;
+        auto dest = Rectangle{ x, y, frame.width * scale,frame.height * scale};
+
+        // draw frame texture to canvas
         DrawTexturePro(
-            frame,
-            source,
-            Rectangle{ Canvas.Point.x, Canvas.Point.y, static_cast<float>(Canvas.width), static_cast<float>(Canvas.height) },
-            Vector2{ Canvas.Point.x, Canvas.Point.y },
-            0,
-            WHITE);
+              frame,
+              source,
+              dest,
+              Vector2{0,0},
+              0,
+              WHITE);
+        //Debug Circle
+        //DrawCircle(x, y, 10, RED);
     }
-
-    // DrawRectangle(Canvas.Point.x, Canvas.Point.y, Canvas.width, Canvas.height, RAYWHITE);
-
     //visual debug
+    // DrawRectangle(Canvas.Point.x, Canvas.Point.y, Canvas.width, Canvas.height, RAYWHITE);
     //DrawRectangle(BelowCanvas.Point.x, BelowCanvas.Point.y, BelowCanvas.width, BelowCanvas.height, RED);
     //DrawRectangle(BottomRight.Point.x, BottomRight.Point.y, BottomRight.width, BottomRight.height, GREEN);
-
 }
 
 void Player::setState(const PlayerState new_state)
@@ -121,6 +129,7 @@ void Player::setState(const PlayerState new_state)
 
 void Player::resolveRenderAction()
 {
+    BeginTextureMode(Record_Object->getFrameTexture());
     switch (state)
     {
         case PlayerState::PLAYING_FORWARD:
@@ -140,6 +149,7 @@ void Player::resolveRenderAction()
             //do nothing as canvas needs no render
             break;
     }
+    EndTextureMode();
 }
 
 void Player::calculateLandmarks()
