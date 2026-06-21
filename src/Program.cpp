@@ -91,14 +91,6 @@ int Program::Run()
             }
         }
 
-        if (IsKeyPressed(KEY_ONE)) {
-            setState(PLAY_MAZE);
-        }
-
-        if (IsKeyPressed(KEY_TWO)) {
-            setState(PLAY_PATH);
-        }
-
         if (IsKeyPressed(KEY_THREE)) {
             setState(PLAYER);
         }
@@ -248,7 +240,7 @@ void Program::setState(const ProgramState next_state)
         break;
 
     case MENU:
-        saveLastFrame();
+
         menu->open();
 
         if (State != STOPPED) {
@@ -258,7 +250,7 @@ void Program::setState(const ProgramState next_state)
         break;
 
     case EDITING:
-        saveLastFrame();
+
         editor->open();
         if (State != STOPPED) {
             LastState = State;
@@ -266,21 +258,7 @@ void Program::setState(const ProgramState next_state)
         State = next_state;
         break;
 
-    case PLAY_MAZE:
-        saveLastFrame();
-        getLastMazeFrame();
-        State = next_state;
-        break;
-
-    case PLAY_PATH:
-        saveLastFrame();
-        getLastPathFrame();
-        State = next_state;
-        break;
-
     case PLAYER:
-        saveLastFrame();
-
         //open just Mazes for now
         player->open(&Gen_Recorder);
 
@@ -317,7 +295,6 @@ ProgramCallbacks Program::createCallbacks()
         this->handleStateRequest(state);
     };
 
-
     callbacks.getGenerator = [this]() {return Generator; };
     callbacks.getMazeSize = [this]() {return MazeWidth; };
     callbacks.getSolver = [this]() {return Solver; };
@@ -333,27 +310,6 @@ void Program::centerWindow() const
     const int monitor_height = GetMonitorHeight(monitor);
     SetWindowPosition((int)(monitor_width / 2) - (int)(screenWidth / 2), (int)(monitor_height / 2) - (int)(screenHeight / 2));
 }
-
-void Program::saveLastFrame() const
-{  
-    //Checks old states before new state is set
-    if (State == PLAY_MAZE) {
-        BeginTextureMode(last_maze_buffer);
-        ClearBackground(LIGHTGRAY);
-        DrawTextureRec(buffer.texture, source, Vector2{ 0, 0 }, WHITE);
-        EndTextureMode();
-
-    }else if (State == PLAY_PATH) {
-        BeginTextureMode(last_path_buffer);
-        ClearBackground(LIGHTGRAY);
-        DrawTextureRec(buffer.texture, source, Vector2{ 0, 0 }, WHITE);
-        EndTextureMode();
-    }
-    else {
-        //no relevant case yet
-    }
-}
-
 void Program::getLastMazeFrame() const
 {
     BeginTextureMode(buffer);

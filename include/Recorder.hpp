@@ -35,31 +35,23 @@ public:
 	void saveInitialFrame(const vector<Cell*>& FirstCells);
 	void saveLastFrame(const vector<Cell*>& LastList);
 
-	void startPlaying();
-	void stopPlaying();
-
-	bool getPlaystate() const;
-	void setLooping(bool state);
-
-	bool playRecording();
-	void loopRecording();
-
 	bool stepForward();
-	void playLastFrame() const;
 
+	void playLastFrame() const;
 	void playInitialGrid() const;
 
-	void playStep(int step);
+	bool stepBackward();
 
-	void setHeight(int maze_height);
-	void setWidth(int maze_width);
+	void playStep(int step);
+	//reloads texture
+	void setRecordSize(int maze_height, int maze_width);
 
 private:
 
 	RecordType recording_type = NONE;
 	void setRecordType(RecordType type);
 
-	int size = 0;
+	int length = 0;
 
 	int height = 0;
 	int width = 0;
@@ -79,6 +71,9 @@ private:
 	bool recording = false;
 	bool isplaying = false;
 	bool islooping = true;
+
+	void setHeight(int maze_height);
+	void setWidth(int maze_width);
 
 };
 

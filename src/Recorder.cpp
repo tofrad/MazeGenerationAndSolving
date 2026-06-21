@@ -45,7 +45,7 @@ int Recorder::getStep() const
 
 int Recorder::getSize() const
 {
-	return size;
+	return length;
 }
 
 RenderTexture2D Recorder::getFrameTexture() const
@@ -63,7 +63,7 @@ void Recorder::startRecording()
 void Recorder::stopRecording()
 {
 	recording = false;
-	size = history.size() - 1;
+	length = history.size() - 1;
 }
 
 void Recorder::recordStep(Cell* modifiedCell)
@@ -98,6 +98,7 @@ void Recorder::saveInitialFrame(const vector<Cell*>& FirstCells)
 	{
 		InitialState.push_back(RecordCell(*cell));
 	}
+	playInitialGrid();
 }
 
 void Recorder::saveLastFrame(const vector<Cell*>& LastList)
@@ -106,96 +107,61 @@ void Recorder::saveLastFrame(const vector<Cell*>& LastList)
 	{
 		LastState.push_back(RecordCell(*cell));
 	}
-
-}
-
-void Recorder::startPlaying()
-{
-	BeginTextureMode(frame_texture);
-	if (!isplaying && islooping) {
-
-		current_step = 0;
-		isplaying = true;
-
-		for (auto cell : InitialState) {
-			cell.drawCell(cellsize, cell.getColor());
-		} 
-	}
-	EndTextureMode();
-}
-
-void Recorder::stopPlaying()
-{
-	isplaying = false;
-}
-
-bool Recorder::getPlaystate() const
-{
-	return isplaying;
-}
-
-void Recorder::setLooping(const bool state)
-{
-	islooping = state;
-}
-
-bool Recorder::playRecording()
-{
-	startPlaying();
-	setLooping(false);
-	return stepForward();
-}
-
-void Recorder::loopRecording()
-{
-	const bool stillPlaying = stepForward();
-
-	setLooping(true);
-
-	if (not stillPlaying) {
-		startPlaying();
-	}
 }
 
 bool Recorder::stepForward()
 {
-
 	if (current_step >= history.size()) {
-		stopPlaying();
 		return false;
 	}
-	if (isplaying)
-	{
-		for (auto cell : history[current_step]) {
-			cell.drawCell(cellsize, cell.getColor());
-		}
-		current_step++;
-		return true;
+	for (auto record_cell : history[current_step]) {
+		record_cell.drawCell(cellsize, record_cell.getColor(), Mode::FORWARD);
 	}
-
+	current_step++;
 	return true;
-
 }
 
 void Recorder::playLastFrame() const
 {
-	for (auto cell : LastState) {
-		cell.drawCell(cellsize, cell.getColor());
+	for (auto record_cell : LastState) {
+		record_cell.drawCell(cellsize, record_cell.getColor(),Mode::FORWARD);
 	}
 }
 
 void Recorder::playInitialGrid() const
 {
-	for (auto cell : InitialState) {
-		cell.drawCell(cellsize, cell.getColor());
-	}
+	BeginTextureMode(this->frame_texture);
 
+	for (auto record_cell : InitialState) {
+		record_cell.drawCell(cellsize, record_cell.getColor(),Mode::FORWARD);
+	}
+	EndTextureMode();
+}
+
+bool Recorder::stepBackward()
+{
+	if (current_step <= 0) {
+		return false;
+	}
+	for (auto record_cell : history[current_step]) {
+		record_cell.drawCell(cellsize, record_cell.getColor(),Mode::BACKWARD);
+	}
+	current_step--;
+	return true;
 }
 
 void Recorder::playStep(const int step)
 {
 	current_step = step;
+}
 
+void Recorder::setRecordSize(int maze_height, int maze_width)
+{
+	setHeight(maze_height);
+	setWidth(maze_width);
+	Texture_height = maze_height * cellsize;
+	Texture_width = maze_width * cellsize;
+	frame_texture = LoadRenderTexture(Texture_height, Texture_width);
 }
 
 void Recorder::setHeight(const int maze_height)
@@ -212,4 +178,3 @@ void Recorder::setRecordType(const RecordType type)
 {
 	this->recording_type = type;
 }
-

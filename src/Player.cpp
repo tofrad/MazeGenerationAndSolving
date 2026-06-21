@@ -26,6 +26,7 @@ void Player::open(Recorder* Rec) {
 
         stepValue = Record_Object->getStep();
         maxValue = Record_Object->getSize();
+        setState(PlayerState::PAUSED);
     }
 }
 
@@ -33,8 +34,8 @@ void Player::close() {
     Record_Object = nullptr;
     this->state = PlayerState::CLOSED;
 }
-bool helper = false;
-bool prev_helper = false;
+bool helper = true;
+bool prev_helper = true;
 void Player::displayPlayerGUI()
 {
     calculateLandmarks();
@@ -118,13 +119,11 @@ void Player::setState(const PlayerState new_state)
     if (state == PlayerState::PAUSED && new_state == PlayerState::PAUSED)
     {
         this->state = PlayerState::PLAYING_FORWARD;
-        Record_Object->startPlaying();
     }
     else
     {
         this->state = new_state;
     }
- int i = 0;
 }
 
 void Player::resolveRenderAction()
@@ -133,18 +132,33 @@ void Player::resolveRenderAction()
     switch (state)
     {
         case PlayerState::PLAYING_FORWARD:
-            Record_Object->stepForward();
+            if (!Record_Object->stepForward())
+            {
+                setState(PlayerState::PAUSED);
+            }
             break;
-        case PlayerState::PLAYING_BACKWARD:
-            break;
-        case PlayerState::BACKWARD_ONE:
-            this->setState(PlayerState::PAUSED);
-            break;
-        case PlayerState::FORWARD_ONE:
 
-            Record_Object->stepForward();
-            this->setState(PlayerState::PAUSED);
+        case PlayerState::PLAYING_BACKWARD:
+            if (!Record_Object->stepBackward())
+            {
+                setState(PlayerState::PAUSED);
+            }
             break;
+
+        case PlayerState::BACKWARD_ONE:
+            if (Record_Object->stepBackward())
+            {
+                this->setState(PlayerState::PAUSED);
+            }
+            break;
+
+        case PlayerState::FORWARD_ONE:
+            if (Record_Object->stepForward())
+            {
+                this->setState(PlayerState::PAUSED);
+            }
+            break;
+
         default:
             //do nothing as canvas needs no render
             break;

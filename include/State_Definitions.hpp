@@ -9,8 +9,6 @@ typedef enum {
 	STOPPED,
 	MENU,
 	EDITING,
-	PLAY_MAZE,
-	PLAY_PATH,
 	PLAYER
 
 } ProgramState;

@@ -57,14 +57,14 @@ class Program
 		int buffer_width = 1920;
 		int buffer_height = 1080;
 
-		int MazeWidth = 80;
-		int MazeHeight = 0;
+		int MazeWidth = 40;
+		int MazeHeight = 10;
 
-		Maze M;
 		Recorder Gen_Recorder;
+		Maze M;
 
-		Pathsolver S;
 		Recorder Solve_Recorder;
+		Pathsolver S;
 
 		Menu* menu;
 
@@ -72,7 +72,7 @@ class Program
 
 		Player* player;
 
-		int FrameRate = 120;
+		int FrameRate = 30;
 
 		float scale = 1.0f;
 
@@ -89,8 +89,6 @@ class Program
 
 		Rectangle source;
 
-
-		void saveLastFrame() const;
 		void getLastMazeFrame() const;
 		void getLastPathFrame() const;
 

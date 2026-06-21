@@ -12,7 +12,7 @@ RecordCell::~RecordCell()
 
 }
 
-void RecordCell::drawCell(const float cellsize, const Color color) const
+void RecordCell::drawCell(const float cellsize, const Color color, Mode m) const
 {
     const Point P = p;
 
@@ -28,8 +28,13 @@ void RecordCell::drawCell(const float cellsize, const Color color) const
     // Vector2 bottomright = Vector2Add(Vector2{ right, bottom }, offset);
 
     const auto size = Vector2{ static_cast<float>(cellsize), static_cast<float>(cellsize) };
-
-    DrawRectangleV(topleft, size, color);
+	if (m == FORWARD)
+	{
+		DrawRectangleV(topleft, size, this->getColor());
+	}else
+	{
+		DrawRectangleV(topleft, size, this->getPrevColor());
+	}
 
 }
 
