@@ -14,10 +14,7 @@ int start_y;
 
 Maze::Maze()
 {
-	this->height = MIN_HEIGHT;
-	this->width = MIN_WIDTH;
-	rand_gen.seed(time(nullptr));
-	createConnectedMaze();
+
 }
 
 Maze::Maze(const int w, const int h, const GenerationMethod method, Recorder* recorder)
@@ -38,7 +35,7 @@ Maze::Maze(const TileMap* custom_maze, Recorder* recorder)
 	this->width = custom_maze->size;
 	this->height = custom_maze->height;
 
-	createConnectedMaze();
+	createNoWallMaze();
 
 	for (int x = 0; x < this->width; x++) {
 
@@ -74,8 +71,7 @@ Maze::Maze(const TileMap* custom_maze, Recorder* recorder)
 		}
 	}
 	record = recorder;
-	record->setHeight(this->height);
-	record->setWidth(this->width);
+	record->setRecordSize(this->height, this->width);
 	record->saveInitialFrame(Cell_List);
 }
 
@@ -121,24 +117,21 @@ void Maze::createEmptyMaze()
 	}
 }
 
-void Maze::createConnectedMaze()
+void Maze::createNoWallMaze()
 {
-	createEmptyMaze();
+	Cell_List.clear();
 
-	//connect with neighbors
+	Cell_Grid = vector<vector<Cell*>>(width, vector<Cell*>(height, nullptr));
+
 	for (int x = 0; x < width; x++) {
 
 		for (int y = 0; y < height; y++) {
 
-			Cell* currentCell = Cell_Grid[x][y];
+			Cell* C = new Cell(Point(x, y));
 
-			//set borders 
-			currentCell->setNorth((y > 0) ? Cell_Grid[x][y -1] : nullptr);
-			currentCell->setWest((x > 0) ? Cell_Grid[x-1][y] : nullptr);
-
-			currentCell->setEast((x < width-1) ? Cell_Grid[x+1][y] : nullptr);
-			currentCell->setSouth((y < height-1) ? Cell_Grid[x][y+1] : nullptr);
-
+			C->setParent(C);
+			Cell_List.push_back(C);
+			Cell_Grid[x][y] = C;
 		}
 	}
 }
@@ -159,10 +152,11 @@ void Maze::generateMaze(const GenerationMethod method, Recorder* recorder)
 
 	Cell_List[rand]->isStart = true;
 	Start = Cell_List[rand];
+	Start->updateColor();
 
 	Cell_List[rand2]->isTarget = true;
 	Target = Cell_List[rand2];
-
+	Target->updateColor();
 
 	record = recorder;
 	record->startRecording();
@@ -171,7 +165,7 @@ void Maze::generateMaze(const GenerationMethod method, Recorder* recorder)
 	switch (method) {
 
 	case REC_BACKTRACKING:
-		RecursiveBacktracking(*Start);
+		RecursiveBacktracking(*Start, 0);
 		break;
 
 	case KRUSKAL:
@@ -183,10 +177,6 @@ void Maze::generateMaze(const GenerationMethod method, Recorder* recorder)
 		break;
 
 	case CUSTOM:
-		//TODO
-		// error logging
-		//shouldn't land here
-
 		//Cell_List[rand]->isStart = false;
 		//Start = nullptr;
 
@@ -220,41 +210,62 @@ void Maze::deleteConnections() const
 	}
 }
 
-void Maze::RecursiveBacktracking(Cell& cell)
+void Maze::RecursiveBacktracking(Cell& cell, const uint step)
 {
 	vector<Cell*> directions;
 	Point pos = cell.getPosition();
 
-	cell.isActive = true;
-
 	if (!cell.wasVisited) {
 		directions = getUnvisitedNeighbors(&cell);
-		
 	}
 	// //mark as visited
 	cell.wasVisited = true;
 
 	ranges::shuffle(directions, rand_gen);
-	
-	for (const auto target : directions) {
 
-		if (!target->wasVisited) {
-			
-			Cell* MiddleCell = connectCells(&cell, target);
-			MiddleCell->wasVisited = true;
-			//clear middle cell from wall to as visited
-			record->recordStep(MiddleCell);
-			//record current cell as active
-			record->recordStep(&cell);
-			//remove active cell flag before entering recursion
-			cell.isActive = false;
-			record->recordStep(&cell);
-			RecursiveBacktracking(*target);
+	if (directions.size() == 0)
+	{
+		//record active once, is dead end,
+		record->recordStep(&cell);
+		cell.isActive = false;
+		record->recordStep(&cell);
+	}
+	else
+	{
+		int cell_cnt = 0;
+		for (const auto target : directions) {
+
+			cell_cnt++;
+
+			if (!target->wasVisited) {
+
+				Cell* MiddleCell = connectCells(&cell, target);
+				MiddleCell->wasVisited = true;
+				MiddleCell->isActive = true;
+				target->isActive = true;
+
+				//record current cells as active
+				record->recordStep({&cell, MiddleCell, target});
+
+				RecursiveBacktracking(*target, step + 1);
+
+				//if last cell in iteration clear active and record, also check neighbors again
+				//because they could have been visited in the meantime
+				if (cell_cnt == directions.size() || getUnvisitedNeighbors(&cell).size() == 0)
+				{
+					cell.isActive = false;
+					MiddleCell->isActive = false;
+					target->isActive = false;
+					record->recordStep({&cell, MiddleCell, target});
+				}
+				else
+				{
+					MiddleCell->isActive = false;
+					record->recordStep(MiddleCell);
+				}
+			}
 		}
 	}
-	//clearing last active cell flag, because dead end was hit
-	cell.isActive = false;
-	record->recordStep(&cell);
 }
 
 void Maze::Kruskal()

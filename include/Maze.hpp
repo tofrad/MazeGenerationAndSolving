@@ -20,31 +20,19 @@ class Maze
 		Cell* getStart() const;
 		vector<Cell*> getGeneratedMaze();
 
-		//int getCellsize() const;
 		int getHeight() const;
 		int getWidth() const;
 
 		void createEmptyMaze();
 
-		void createConnectedMaze();
+		void createNoWallMaze();
 
 		void resetMaze() const;
 
-		//
-		// void drawMaze() const;
-		// void displayInitialFrame() const;
-		// bool playRecording();
-		// void loopRecording();
-		// Recorder* getRecording() const;
-		// void stopRecording();
-
 	private:
 
-		int height;
-		int width;
-
-		//int cellsize = 10;
-		//Vector2 Offset{10.f, 10.f};
+		int height = 10;
+		int width = 10;
 
 		vector<vector<Cell*>> Cell_Grid;
 
@@ -59,11 +47,9 @@ class Maze
 
 		void generateMaze(GenerationMethod method, Recorder* recorder);
 
-		// void drawCells() const;
-
 		void deleteConnections() const;
 
-		void RecursiveBacktracking(Cell& cell);
+		void RecursiveBacktracking(Cell& cell, uint step);
 
 		void Kruskal();
 

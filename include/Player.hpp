@@ -59,6 +59,9 @@ class Player {
 
 		UI_Rectangle BottomRight;
 
+		bool paused = true;
+		bool forward = true;
+
 		Rectangle Button_FullRewind{};
 		Rectangle Button_Rewind{};
 		Rectangle Button_Pause{};
@@ -76,7 +79,6 @@ class Player {
 		float slider_value_float = 0;
 		int slider_value_int = 0;
 
-
 		float General_Offset = 10; //10 px Offset
 
 		//windows split into parts ( 7 parts Canvas, 1 Part Right Column, with Offset from Borders and between)
@@ -85,7 +87,5 @@ class Player {
 
 		float Label_height = 30;
 
-		
 		//--------------------------------------------------------------------
-
 };
