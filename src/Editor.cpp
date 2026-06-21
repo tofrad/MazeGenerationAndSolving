@@ -1,8 +1,6 @@
 #include "Editor.hpp"
 #include "../lib/raylib/include/raygui.h"
-
 #include <iostream>
-
 
 Editor::Editor()
 {
@@ -83,7 +81,6 @@ void Editor::displayEditor()
     {
         createTileMap();
         old_slider_value_int = slider_value_int;
-
     }
 
     // Check Canvas Interact #################################################################################################################################################################
@@ -144,7 +141,6 @@ void Editor::displayEditor()
         }
         else {
             highlight_tile = false;
-
         }
         
         //handle edit events
@@ -198,11 +194,7 @@ void Editor::displayEditor()
             
             CustomMaze.Start.setX(temp_x);
             CustomMaze.Start.setY(temp_y);
-
             CustomMaze.TileArray[temp_x][temp_y] = 2;
-
-
-
         }
 
         //set target
@@ -354,7 +346,6 @@ void Editor::createTileMap()
         vector<char> temp(tile_map_height, 0); 
         
         CustomMaze.TileArray.push_back(temp);
-
     }
 }
 
@@ -370,6 +361,4 @@ void Editor::isValid()
     {
         CustomMaze.isValid = false;
     }
-
-
 }
