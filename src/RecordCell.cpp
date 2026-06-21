@@ -1,10 +1,13 @@
 #include "RecordCell.hpp"
 
-RecordCell::RecordCell(const Cell& cell)
+RecordCell::RecordCell(Cell* const cell)
 {
-    this->p = cell.getPosition();
-    this->currentColor = cell.getColor();
-    this->prevColor = cell.getPrevColor();
+	//TODO
+	//Update Cell color, implement flags to cell and just control color in record cells by updating colors from flags only on call
+    this->p = cell->getPosition();
+    this->currentColor = getColorFromFlags(cell->getCellFlags_Current());
+    this->nextColor = getColorFromFlags(cell->getCellFlags_Next());
+	cell->updateCellFlags();
 }
 
 RecordCell::~RecordCell()
@@ -23,19 +26,15 @@ void RecordCell::drawCell(const float cellsize, const Color color, Mode m) const
     const float bottom = top + static_cast<float>(cellsize);
 
     const Vector2 topleft = Vector2{ left, top };
-    //Vector2 topright = Vector2Add(Vector2{ right, top }, offset);
-    // Vector2 bottomleft = Vector2Add(Vector2{ left, bottom }, offset);
-    // Vector2 bottomright = Vector2Add(Vector2{ right, bottom }, offset);
 
     const auto size = Vector2{ static_cast<float>(cellsize), static_cast<float>(cellsize) };
 	if (m == FORWARD)
 	{
-		DrawRectangleV(topleft, size, this->getColor());
+		DrawRectangleV(topleft, size, this->getNextColor());
 	}else
 	{
-		DrawRectangleV(topleft, size, this->getPrevColor());
+		DrawRectangleV(topleft, size, this->getCurrentColor());
 	}
-
 }
 
 void RecordCell::drawEmptyCell(const float cellsize) const
@@ -48,15 +47,29 @@ void RecordCell::drawEmptyCell(const float cellsize) const
 	const float top = static_cast<float>(P.getY()) * static_cast<float>(cellsize);
 	const float bottom = top + static_cast<float>(cellsize);
 
-
 }
 
-Color RecordCell::getColor() const
+Color RecordCell::getCurrentColor() const
 {
 	return this->currentColor;
 }
 
-Color RecordCell::getPrevColor() const
+Color RecordCell::getNextColor() const
 {
-	return this->prevColor;
+	return this->nextColor;
+}
+
+Color RecordCell::getColorFromFlags(const CellFlags *flags)
+{
+	if (flags->isStart){ return BLUE;}
+	if (flags->isTarget){ return RED;}
+	if (flags->isActive){ return LIME;}
+	if (flags->isWall){ return BLACK;}
+	if (flags->isfinishedPath){ return MAGENTA;}
+	if (flags->isPath){ return GOLD;}
+	if (flags->pathVisited){ return BEIGE;}
+	if (flags->wasVisited){ return DARKGRAY;}
+
+	// Default
+	return LIGHTGRAY;
 }

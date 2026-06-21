@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Cell.hpp"
+#include"raylib.h"
 
 enum Mode
 {
@@ -10,18 +11,19 @@ enum Mode
 class RecordCell
 {
     public:
-        explicit RecordCell(const Cell& cell);
+        explicit RecordCell( Cell* const cell);
         ~RecordCell();
         void drawCell(float cellsize, Color color,Mode m) const;
         void drawEmptyCell(float cellsize) const;
 
-        Color getColor() const;
-        Color getPrevColor() const;
+        Color getCurrentColor() const;
+        Color getNextColor() const;
 
     private:
+        static Color getColorFromFlags(const CellFlags *flags);
         Point p;
         Color currentColor;
-        Color prevColor;
+        Color nextColor;
 };
 
 

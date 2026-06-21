@@ -2,34 +2,35 @@
 
 #include <cstdint>
 #include "Point.hpp"
-#include "raylib.h"
 
-//TODO:
-//include Cell_State enum to set a flag to determine cell visuals in rendering side of application
-//delete Color handling and raylib from all non recorder or gui elements
+struct CellFlags
+{
+	//special states
+	bool isStart = false;
+	bool isTarget = false;
+	bool isWall = false;
+	//states for maze generating and solving behavior
+	bool wasVisited = false;
+	bool isActive = false;
+	bool pathVisited = false;
+	bool isPath = false;  //marker for dfs recursion when dead end was found
+	bool isfinishedPath = false;
+};
 
 class Cell
 {
 	public:
-		bool isStart = false;
-		bool isTarget = false;
-
-		bool wasVisited = false;
-		bool isActive = false;
-
-		bool isWall = false;
-
-		bool pathVisited = false;
-		bool isPath = false;  //marker for dfs recursion when dead end was found
-		bool isfinishedPath = false;
+		CellFlags next_flags;
 
 		Cell();
-
 		explicit Cell(const Point& p1);
 		Cell(const Point& p1, int weight);
 
 		~Cell();
 		Point getPosition() const;
+		const CellFlags* getCellFlags_Current() const;
+		const CellFlags* getCellFlags_Next() const;
+		void updateCellFlags();
 
 		void setNorth(Cell* north);
 		void setEast(Cell* east);
@@ -45,8 +46,6 @@ class Cell
 
 		Cell* findRoot();
 
-		void updateColor();
-
 		static void drawCell() {};
 		void resetCell();
 		void makeWall();
@@ -54,16 +53,10 @@ class Cell
 
 		uint64_t getCellID() const;
 
-		void setColor(Color Color);
-		Color getColor() const;
-		Color getPrevColor() const;
-
 	private:
 		Point p;
 
-		Color color = LIGHTGRAY;
-		Color prev_color = LIGHTGRAY;
-		void onColorChange();
+		CellFlags current_flags;
 
 		Cell* North = nullptr;
 		Cell* East = nullptr;
@@ -77,7 +70,6 @@ class Cell
 		int weight{};
 
 		void setId();
-
 };
 
 

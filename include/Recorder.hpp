@@ -30,7 +30,6 @@ public:
 	void startRecording();
 	void stopRecording();
 
-	void recordStep(Cell* modifiedCell);
 	void recordStep(const vector<Cell*>& modifiedCells);
 	void saveInitialFrame(const vector<Cell*>& FirstCells);
 	void saveLastFrame(const vector<Cell*>& LastList);
@@ -74,6 +73,5 @@ private:
 
 	void setHeight(int maze_height);
 	void setWidth(int maze_width);
-
 };
 

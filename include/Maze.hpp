@@ -49,7 +49,7 @@ class Maze
 
 		void deleteConnections() const;
 
-		void RecursiveBacktracking(Cell& cell, uint step);
+		void RecursiveBacktracking(Cell* cell, uint step);
 
 		void Kruskal();
 

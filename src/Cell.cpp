@@ -27,6 +27,27 @@ Point Cell::getPosition() const
 	return this->p;
 }
 
+const CellFlags* Cell::getCellFlags_Current() const
+{
+	return &this->current_flags;
+}
+
+const CellFlags* Cell::getCellFlags_Next() const
+{
+	return &this->next_flags;
+}
+
+void Cell::updateCellFlags()
+{
+	//do not touch start or target
+	this->current_flags.isActive = this->next_flags.isActive;
+	this->current_flags.isfinishedPath = this->next_flags.isfinishedPath;
+	this->current_flags.isPath = this->next_flags.isPath;
+	this->current_flags.isWall = this->next_flags.isWall;
+	this->current_flags.pathVisited = this->next_flags.pathVisited;
+	this->current_flags.wasVisited = this->next_flags.wasVisited;
+}
+
 void Cell::setNorth(Cell* north)
 {
 	this->North = north;
@@ -86,33 +107,15 @@ Cell* Cell::findRoot()
 	return Parent;
 }
 
-void Cell::updateColor()
-{
-	onColorChange();
-
-	if (isActive)		{ color = LIME;      return; }
-	if (isStart)		{ color = BLUE;      return; }
-	if (isTarget)		{ color = RED;       return; }
-	if (isfinishedPath) { color = MAGENTA;   return; }
-	if (isPath)			{ color = GOLD;      return; }
-
-	if (pathVisited)	{ color = BEIGE;     return; }
-	if (wasVisited)		{ color = DARKGRAY;  return; }
-	if (isWall)			{ color = BLACK;     return; }
-
-	// Default
-	color = LIGHTGRAY;
-}
-
 void Cell::resetCell()
 {
-	this->wasVisited = false;
+	this->next_flags.wasVisited = false;
+	this->next_flags.pathVisited = false;
+	this->next_flags.isPath = false;
+	this->next_flags.isfinishedPath = false;
+	this->next_flags.isActive = false;
+
 	this->Parent = nullptr;
-	this->pathVisited = false;
-	this->isPath = false;
-	this->isfinishedPath = false;
-	this->isActive = false;
-	updateColor();
 }
 
 void Cell::makeWall()
@@ -141,15 +144,13 @@ void Cell::makeWall()
 		this->setWest(nullptr);
 	}
 
-	this->isWall = true;
-	this->updateColor();
+	this->next_flags.isWall = true;
 
 }
 
 void Cell::breakWall()
 {
-	this->isWall = false;
-	this->updateColor();
+	this->next_flags.isWall = false;
 }
 
 uint64_t Cell::getCellID() const
@@ -157,28 +158,7 @@ uint64_t Cell::getCellID() const
 	return cell_id;
 }
 
-void Cell::setColor(const Color Color)
-{
-	this->color = Color;
-}
-
-Color Cell::getColor() const
-{
-	return this->color;
-}
-
-Color Cell::getPrevColor() const
-{
-	return this->prev_color;
-}
-
-
-void Cell::onColorChange()
-{
-	this->prev_color = color;
-}
-
 void Cell::setId()
 {
-	cell_id = (uint64_t) (static_cast<uint64_t>(p.getX())	<< 32) | static_cast<uint64_t>(p.getY());
+	cell_id = (static_cast<uint64_t>(p.getX())	<< 32) | static_cast<uint64_t>(p.getY());
 }
