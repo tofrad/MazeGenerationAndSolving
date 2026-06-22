@@ -189,13 +189,13 @@ void Maze::generateMaze(const GenerationMethod method, Recorder* recorder)
 	}
 
 	record->stopRecording();
+	record->saveLastFrame(Cell_List);
 
 	//clear was_visited mark for coloring in pathfinding
 	for (const auto cell : Cell_List) {
 		cell->next_flags.wasVisited = false;
 		cell->next_flags.isActive = false;
 	}
-	record->saveLastFrame(Cell_List);
 }
 
 void Maze::deleteConnections() const
