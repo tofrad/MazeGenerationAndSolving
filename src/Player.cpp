@@ -33,8 +33,7 @@ void Player::close() {
     Record_Object = nullptr;
     this->state = PlayerState::CLOSED;
 }
-bool helper = true;
-bool prev_helper = true;
+
 void Player::displayPlayerGUI()
 {
     calculateLandmarks();
@@ -42,16 +41,27 @@ void Player::displayPlayerGUI()
 
     if (Record_Object != nullptr)
     {
-        if (state == PlayerState::PAUSED)
+        //set pause design depending on status
+        if (is_paused)
         {
-            helper = true;
-        }
-        GuiToggle(Button_Pause, GuiIconText(132, ""), &helper);
-        if (helper != prev_helper)
+            GuiSetState(STATE_PRESSED);
+        }else
         {
-            setState(PlayerState::PAUSED);
-            prev_helper = helper;
+            GuiSetState(STATE_NORMAL);
         }
+
+        if (GuiButton(Button_Pause, GuiIconText(132, is_paused? "RESUME" : "PAUSE")))
+        {
+            //program was paused and now needs to resume
+            if (is_paused)
+            {
+                setState(PlayerState::PLAYING_FORWARD);
+            }else
+            {
+                setState(PlayerState::PAUSED);
+            }
+        }
+        GuiSetState(STATE_NORMAL);
 
         if (GuiButton(Button_FullRewind, GuiIconText(129, ""))) { setState(PlayerState::INITIAL); }
         if (GuiButton(Button_Rewind, GuiIconText(130, ""))) {setState(PlayerState::BACKWARD_ONE); }
@@ -94,6 +104,12 @@ void Player::displayPlayerGUI()
         GuiSliderBar(Slider, "", "", &slider_value_float, 0, static_cast<float>(maxValue));
         slider_value_int = static_cast<int>(slider_value_float);
 
+        //slider is dragged keep up the frame with the dragging
+        if (slider_dragging)
+        {
+            setState(PlayerState::FRAME_REQUEST);
+        }
+        //when dragging stopped resole last action
         if (!slider_dragging && current_step != slider_value_int && slider_was_dragged)
         {
             setState(PlayerState::FRAME_REQUEST);
@@ -144,13 +160,17 @@ void Player::displayPlayerGUI()
 
 void Player::setState(const PlayerState new_state)
 {
-    if (state == PlayerState::PAUSED && new_state == PlayerState::PAUSED)
+    this->state = new_state;
+    if (this->state == PlayerState::PAUSED)
     {
-        this->state = PlayerState::PLAYING_FORWARD;
-    }
-    else
+        //for pause button
+        is_paused = true;
+    }else if (  state == PlayerState::PLAYING_FORWARD ||
+                state == PlayerState::FORWARD_ONE ||
+                state == PlayerState::PLAYING_BACKWARD ||
+                state == PlayerState::BACKWARD_ONE)
     {
-        this->state = new_state;
+        is_paused = false;
     }
 }
 

@@ -17,6 +17,7 @@ enum class PlayerState
 	PLAYING_FORWARD,
 	PLAYING_BACKWARD,
 	FRAME_REQUEST,
+	UNPAUSE,
 	PAUSED,
 	END,
 	CLOSED
@@ -42,6 +43,7 @@ class Player {
 		ProgramCallbacks player_callbacks;
 
 		PlayerState state = PlayerState::CLOSED;
+
 		Recorder* Record_Object = nullptr;
 
 		void setState(PlayerState new_state);
@@ -63,8 +65,7 @@ class Player {
 
 		UI_Rectangle BottomRight;
 
-		bool paused = true;
-		bool forward = true;
+		bool is_paused = true;
 
 		Rectangle Button_FullRewind{};
 		Rectangle Button_Rewind{};
