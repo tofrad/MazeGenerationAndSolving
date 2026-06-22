@@ -13,7 +13,7 @@ RecordCell::~RecordCell()
 
 }
 
-void RecordCell::drawCell(const float cellsize, const Color color, Mode m) const
+void RecordCell::drawCell(const float cellsize, const Color color, const Mode m) const
 {
     const Point P = p;
 

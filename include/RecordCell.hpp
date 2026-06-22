@@ -13,7 +13,7 @@ class RecordCell
     public:
         explicit RecordCell( Cell* const cell);
         ~RecordCell();
-        void drawCell(float cellsize, Color color,Mode m) const;
+        void drawCell(float cellsize, Color color,const Mode m) const;
         void drawEmptyCell(float cellsize) const;
 
         Color getCurrentColor() const;

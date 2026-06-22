@@ -312,9 +312,7 @@ void Maze::Kruskal()
 				InBetween->next_flags.isActive = true;
 				secondCell->next_flags.isActive = true;
 
-				for (int i = 0; i < 2; i++) {
-					record->recordStep(vector<Cell*>{firstCell, InBetween, secondCell});
-				}
+				record->recordStep(vector<Cell*>{firstCell, InBetween, secondCell});
 
 				//for recording
 				firstCell->next_flags.isActive = false;
@@ -345,35 +343,50 @@ void Maze::HuntAndKill()
 {
 	Cell* current_cell = Start;
 	current_cell->next_flags.wasVisited = true;
+	vector<Cell*> carvedPath;
 
 	while(true){
 
 		vector<Cell*> neighbor_list = getUnvisitedNeighbors(current_cell);
+
 		current_cell->next_flags.wasVisited = true;
 		bool found_new_cell = false;
-		//get next cell
+
+		//get next cell from neighbors
 		if (!neighbor_list.empty()) {
-			
+
+			if (neighbor_list.size() )
 			ranges::shuffle(neighbor_list, rand_gen);
 
 			Cell* next_cell = neighbor_list[0];
 
 			current_cell->next_flags.isActive = true;
-			for (int i = 0; i < 2; i++) {
-				record->recordStep({current_cell});
-			}
+			next_cell->next_flags.isActive = true;
 
 			Cell* InBetween = connectCells(current_cell, next_cell);
 			InBetween->next_flags.wasVisited = true;
+			InBetween->next_flags.isActive = true;
+
+			record->recordStep({ current_cell, InBetween, next_cell});
+
+			carvedPath.push_back(current_cell);
+			carvedPath.push_back(InBetween);
 
 			current_cell->next_flags.isActive = false;
-			record->recordStep({ current_cell, InBetween});
+			InBetween->next_flags.isActive = false;
 
 			current_cell = next_cell;
 			continue;
 		}
+		//current cell is an active cell in a dead end
+		current_cell->next_flags.isActive = false;
+		carvedPath.push_back(current_cell);
 
-		record->recordStep({current_cell});//mark visited in recording
+		//record and clear carved path
+		record->recordStep({carvedPath});
+		carvedPath.clear();
+
+		//mark visited in recording
 		found_new_cell = false;
 		// iterate through all cells till found unvisited with visited Neighbors for new starting point
 		for (const auto cell : Cell_List) {
@@ -389,19 +402,20 @@ void Maze::HuntAndKill()
 					Cell* neighbor = VisitedNeighbors[0];
 
 					neighbor->next_flags.isActive = true;
-					for (int i = 0; i < 2; i++) {
-						record->recordStep({neighbor});
-					}
 
 					Cell* InBetween = connectCells(cell, neighbor);
 					InBetween->next_flags.wasVisited = true;
+					InBetween->next_flags.isActive = true;
 
 					current_cell = cell;
 
 					found_new_cell = true; //mark to signal found cell
-
+					current_cell->next_flags.isActive = true;
+					record->recordStep({ neighbor, InBetween, current_cell });
+					InBetween->next_flags.isActive = false;
 					neighbor->next_flags.isActive = false;
-					record->recordStep({ neighbor, InBetween });
+					carvedPath.push_back(neighbor);
+					carvedPath.push_back(InBetween);
 
 					break;
 				}
