@@ -48,6 +48,18 @@ void Cell::updateCellFlags()
 	this->current_flags.wasVisited = this->next_flags.wasVisited;
 }
 
+void Cell::setStart()
+{
+	this->current_flags.isStart = true;
+	this->next_flags.isStart = true;
+}
+
+void Cell::setTarget()
+{
+	this->current_flags.isTarget = true;
+	this->next_flags.isTarget = true;
+}
+
 void Cell::setNorth(Cell* north)
 {
 	this->North = north;

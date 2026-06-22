@@ -150,10 +150,10 @@ void Maze::generateMaze(const GenerationMethod method, Recorder* recorder)
 	constexpr int rand = 0; // GetRandomValue(0, Cell_List.size() - 1);
 	const int rand2 = (height * width) - 1;// GetRandomValue(0, Cell_List.size() - 1); //(height*width) - 1;
 
-	Cell_List[rand]->next_flags.isStart = true;
+	Cell_List[rand]->setStart();
 	Start = Cell_List[rand];
 
-	Cell_List[rand2]->next_flags.isTarget = true;
+	Cell_List[rand2]->setTarget();
 	Target = Cell_List[rand2];
 
 	record = recorder;

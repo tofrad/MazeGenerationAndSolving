@@ -2,8 +2,6 @@
 
 RecordCell::RecordCell(Cell* const cell)
 {
-	//TODO
-	//Update Cell color, implement flags to cell and just control color in record cells by updating colors from flags only on call
     this->p = cell->getPosition();
     this->currentColor = getColorFromFlags(cell->getCellFlags_Current());
     this->nextColor = getColorFromFlags(cell->getCellFlags_Next());

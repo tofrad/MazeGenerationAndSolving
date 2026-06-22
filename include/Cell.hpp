@@ -34,6 +34,8 @@ class Cell
 		const CellFlags* getCellFlags_Current() const;
 		const CellFlags* getCellFlags_Next() const;
 		void updateCellFlags();
+		void setStart();
+		void setTarget();
 
 		void setNorth(Cell* north);
 		void setEast(Cell* east);
