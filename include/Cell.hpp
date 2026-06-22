@@ -3,6 +3,9 @@
 #include <cstdint>
 #include "Point.hpp"
 
+//TODO
+//setCellStart / Target to ensure setting current flags too for correct behav
+
 struct CellFlags
 {
 	//special states
