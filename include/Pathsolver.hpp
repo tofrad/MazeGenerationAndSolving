@@ -15,12 +15,6 @@ class Pathsolver
 		Pathsolver(Cell* start, SolvingMethod method, const Recorder& recorder);
 		~Pathsolver();
 
-		bool playRecording();
-		void loopRecording();
-		void stopRecording();
-
-		void displayInitialFrame() const;
-
 		Recorder* getRecording();
 
 	private:

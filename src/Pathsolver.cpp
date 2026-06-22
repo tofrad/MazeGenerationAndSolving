@@ -37,11 +37,6 @@ void Pathsolver::solveMaze(Cell* start, const SolvingMethod method)
 	path_record.stopRecording();
 }
 
-void Pathsolver::displayInitialFrame() const
-{
-	path_record.playInitialGrid();
-}
-
 Recorder* Pathsolver::getRecording()
 {
 	return &path_record;
