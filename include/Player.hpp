@@ -11,11 +11,14 @@ class Program;
 enum class PlayerState
 {
 	OPEN,
-	PLAYING_FORWARD,
-	PLAYING_BACKWARD,
-	PAUSED,
+	INITIAL,
 	FORWARD_ONE,
 	BACKWARD_ONE,
+	PLAYING_FORWARD,
+	PLAYING_BACKWARD,
+	FRAME_REQUEST,
+	PAUSED,
+	END,
 	CLOSED
 };
 
@@ -44,6 +47,7 @@ class Player {
 		void setState(PlayerState new_state);
 
 		void resolveRenderAction();
+		void updateSliderFloat();
 
 		//GUI Variables-------------------------------------------------------
 		int window_height = 1080;
@@ -78,6 +82,8 @@ class Player {
 
 		float slider_value_float = 0;
 		int slider_value_int = 0;
+		bool slider_dragging = false;
+		bool slider_was_dragged = false;
 
 		float General_Offset = 10; //10 px Offset
 

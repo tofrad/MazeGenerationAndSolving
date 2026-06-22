@@ -2,7 +2,6 @@
 #include "../lib/raylib/include/raygui.h"
 #include<cstdio>
 
-
 Player::Player()
 {
 }
@@ -41,61 +40,89 @@ void Player::displayPlayerGUI()
     calculateLandmarks();
     ClearBackground(BLACK);
 
-    if (state == PlayerState::PAUSED)
-    {
-        helper = true;
-    }
-    GuiToggle(Button_Pause, GuiIconText(132, ""), &helper);
-    if (helper != prev_helper)
-    {
-        setState(PlayerState::PAUSED);
-        prev_helper = helper;
-    }
-
-    if (GuiButton(Button_FullRewind, GuiIconText(129, ""))) { /* draw full first frame and pause */ }
-    if (GuiButton(Button_Rewind, GuiIconText(130, ""))) {setState(PlayerState::BACKWARD_ONE); }
-    if (GuiButton(Button_Forward, GuiIconText(131, ""))) { setState(PlayerState::FORWARD_ONE); }
-    if (GuiButton(Button_FullForward, GuiIconText(134, ""))) { /* draw full last frame and pause */ }
-
-    //Menu Button
-    if (GuiButton(Rectangle(BottomRight.Point.x, BottomRight.Point.y, BottomRight.width, BottomRight.height),
-                    GuiIconText(142, "Menu")))
-    {
-        player_callbacks.onStateRequest(MENU);
-    }
-    
-    char maxValue_char[8];
-    snprintf(maxValue_char, sizeof(maxValue_char), "%d", maxValue);
-
-
-    GuiSlider(Slider, "", "", &slider_value_float, 0, static_cast<float>(maxValue));
-
-    slider_value_int = static_cast<int>(slider_value_float);
-    char slide_buffer[8];
-    snprintf(slide_buffer, sizeof(slide_buffer), "%d", slider_value_int);
-
-    DrawRectangleRec(Slider_TextBox, RAYWHITE);
-    GuiTextBox(Slider_TextBox, slide_buffer, 11, false);
-
-    DrawRectangleRec(MaxValue_TextBox, RAYWHITE);
-    GuiTextBox(MaxValue_TextBox, maxValue_char, 11, false);
-
     if (Record_Object != nullptr)
     {
+        if (state == PlayerState::PAUSED)
+        {
+            helper = true;
+        }
+        GuiToggle(Button_Pause, GuiIconText(132, ""), &helper);
+        if (helper != prev_helper)
+        {
+            setState(PlayerState::PAUSED);
+            prev_helper = helper;
+        }
+
+        if (GuiButton(Button_FullRewind, GuiIconText(129, ""))) { setState(PlayerState::INITIAL); }
+        if (GuiButton(Button_Rewind, GuiIconText(130, ""))) {setState(PlayerState::BACKWARD_ONE); }
+        if (GuiButton(Button_Forward, GuiIconText(131, ""))) { setState(PlayerState::FORWARD_ONE); }
+        if (GuiButton(Button_FullForward, GuiIconText(134, ""))) { setState(PlayerState::END); }
+
+        //Menu Button
+        if (GuiButton(Rectangle(BottomRight.Point.x, BottomRight.Point.y, BottomRight.width, BottomRight.height),
+                        GuiIconText(142, "Menu")))
+        {
+            player_callbacks.onStateRequest(MENU);
+        }
+
+        //max Value of Slider Textbox
+        char maxValue_char[8];
+        snprintf(maxValue_char, sizeof(maxValue_char), "%d", maxValue);
+
+        //Slider handling ----------------------------------------------------------------------------------------------
+        const int current_step = Record_Object->getStep();
+
+        //not used, update from recorder
+        if (!slider_dragging)
+        {
+            slider_value_float = static_cast<float>(current_step);
+        }
+
+        bool mouse_on_slider = CheckCollisionPointRec(GetMousePosition(), Slider);
+        bool mouse_is_clicked = IsMouseButtonDown(MOUSE_BUTTON_LEFT);
+
+        if (mouse_on_slider && mouse_is_clicked)
+        {
+            slider_dragging = true;
+            slider_was_dragged = true;
+
+        }else if (!mouse_is_clicked)
+        {
+            slider_dragging = false;
+        }
+
+        GuiSliderBar(Slider, "", "", &slider_value_float, 0, static_cast<float>(maxValue));
+        slider_value_int = static_cast<int>(slider_value_float);
+
+        if (!slider_dragging && current_step != slider_value_int && slider_was_dragged)
+        {
+            setState(PlayerState::FRAME_REQUEST);
+            slider_was_dragged = false;
+        }
+        char slide_buffer[8];
+        snprintf(slide_buffer, sizeof(slide_buffer), "%d", slider_value_int);
+        //--------------------------------------------------------------------------------------------------------------
+
+        //Display Slider value Boxes
+        DrawRectangleRec(Slider_TextBox, RAYWHITE);
+        GuiTextBox(Slider_TextBox, slide_buffer, 11, false);
+
+        DrawRectangleRec(MaxValue_TextBox, RAYWHITE);
+        GuiTextBox(MaxValue_TextBox, maxValue_char, 11, false);
 
         //every input checked, resolve action if needed
         resolveRenderAction();
-        auto frame = Record_Object->getFrameTexture().texture;
+        const auto frame = Record_Object->getFrameTexture().texture;
 
         // Calculate scale to fit canvas
-        float scaleX = (float)Canvas.width / frame.width;
-        float scaleY = (float)Canvas.height / frame.height;
-        float scale = min(scaleX, scaleY);  // Maintain aspect ratio
+        const float scaleX = (float)Canvas.width / frame.width;
+        const float scaleY = (float)Canvas.height / frame.height;
+        const float scale = min(scaleX, scaleY);  // Maintain aspect ratio
 
-        auto source = Rectangle{ 0, static_cast<float>(frame.height), static_cast<float>(frame.width), -static_cast<float>(frame.height)};
-        float x = Canvas.Point.x + (Canvas.width - frame.width * scale) / 2;
-        float y = Canvas.Point.y + (Canvas.height - frame.height * scale) / 2;
-        auto dest = Rectangle{ x, y, frame.width * scale,frame.height * scale};
+        const auto source = Rectangle{ 0, static_cast<float>(frame.height), static_cast<float>(frame.width), -static_cast<float>(frame.height)};
+        const float x = Canvas.Point.x + (Canvas.width - frame.width * scale) / 2;
+        const float y = Canvas.Point.y + (Canvas.height - frame.height * scale) / 2;
+        const auto dest = Rectangle{ x, y, frame.width * scale,frame.height * scale};
 
         // draw frame texture to canvas
         DrawTexturePro(
@@ -107,11 +134,12 @@ void Player::displayPlayerGUI()
               WHITE);
         //Debug Circle
         //DrawCircle(x, y, 10, RED);
+
+        //visual debug
+        // DrawRectangle(Canvas.Point.x, Canvas.Point.y, Canvas.width, Canvas.height, RAYWHITE);
+        //DrawRectangle(BelowCanvas.Point.x, BelowCanvas.Point.y, BelowCanvas.width, BelowCanvas.height, RED);
+        //DrawRectangle(BottomRight.Point.x, BottomRight.Point.y, BottomRight.width, BottomRight.height, GREEN);
     }
-    //visual debug
-    // DrawRectangle(Canvas.Point.x, Canvas.Point.y, Canvas.width, Canvas.height, RAYWHITE);
-    //DrawRectangle(BelowCanvas.Point.x, BelowCanvas.Point.y, BelowCanvas.width, BelowCanvas.height, RED);
-    //DrawRectangle(BottomRight.Point.x, BottomRight.Point.y, BottomRight.width, BottomRight.height, GREEN);
 }
 
 void Player::setState(const PlayerState new_state)
@@ -136,6 +164,7 @@ void Player::resolveRenderAction()
             {
                 setState(PlayerState::PAUSED);
             }
+            updateSliderFloat();
             break;
 
         case PlayerState::PLAYING_BACKWARD:
@@ -143,12 +172,14 @@ void Player::resolveRenderAction()
             {
                 setState(PlayerState::PAUSED);
             }
+            updateSliderFloat();
             break;
 
         case PlayerState::BACKWARD_ONE:
             if (Record_Object->stepBackward())
             {
                 this->setState(PlayerState::PAUSED);
+                updateSliderFloat();
             }
             break;
 
@@ -156,7 +187,28 @@ void Player::resolveRenderAction()
             if (Record_Object->stepForward())
             {
                 this->setState(PlayerState::PAUSED);
+                updateSliderFloat();
             }
+            break;
+
+        case PlayerState::FRAME_REQUEST:
+            Record_Object->playStep(slider_value_int);
+            this->setState(PlayerState::PAUSED);
+            updateSliderFloat();
+
+            break;
+
+        case PlayerState::INITIAL:
+            Record_Object->playInitialGrid();
+            this->setState(PlayerState::PAUSED);
+            updateSliderFloat();
+
+            break;
+
+        case PlayerState::END:
+            Record_Object->playLastFrame();
+            this->setState(PlayerState::PAUSED);
+            updateSliderFloat();
             break;
 
         default:
@@ -164,6 +216,12 @@ void Player::resolveRenderAction()
             break;
     }
     EndTextureMode();
+}
+
+void Player::updateSliderFloat()
+{
+    slider_value_int = Record_Object->getStep();
+    slider_value_float = static_cast<float>(slider_value_int);
 }
 
 void Player::calculateLandmarks()

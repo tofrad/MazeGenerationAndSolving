@@ -36,8 +36,8 @@ public:
 
 	bool stepForward();
 
-	void playLastFrame() const;
-	void playInitialGrid() const;
+	void playLastFrame();
+	void playInitialGrid();
 
 	bool stepBackward();
 

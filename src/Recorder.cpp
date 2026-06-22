@@ -82,7 +82,7 @@ void Recorder::recordStep(const vector<Cell*>& modifiedCells)
 
 void Recorder::saveInitialFrame(const vector<Cell*>& FirstCells)
 {
-	for ( auto cell : FirstCells)
+	for ( const auto cell : FirstCells)
 	{
 		InitialState.push_back(RecordCell(cell));
 	}
@@ -91,7 +91,7 @@ void Recorder::saveInitialFrame(const vector<Cell*>& FirstCells)
 
 void Recorder::saveLastFrame(const vector<Cell*>& LastList)
 {
-	for ( auto cell : LastList)
+	for ( const auto cell : LastList)
 	{
 		LastState.push_back(RecordCell(cell));
 	}
@@ -99,24 +99,34 @@ void Recorder::saveLastFrame(const vector<Cell*>& LastList)
 
 bool Recorder::stepForward()
 {
-	if (current_step >= history.size()) {
-		return false;
+	if (current_step < history.size()-1)
+	{
+		for (auto record_cell : history[current_step]) {
+			record_cell.drawCell(cellsize, record_cell.getCurrentColor(), Mode::FORWARD);
+		}
+		current_step++;
+		return true;
 	}
-	for (auto record_cell : history[current_step]) {
-		record_cell.drawCell(cellsize, record_cell.getCurrentColor(), Mode::FORWARD);
+	else if(current_step == history.size()-1)
+	{
+		for (auto record_cell : history[current_step]) {
+			record_cell.drawCell(cellsize, record_cell.getCurrentColor(), Mode::FORWARD);
+		}
+		return true;
 	}
-	current_step++;
-	return true;
+
+	return false;
 }
 
-void Recorder::playLastFrame() const
+void Recorder::playLastFrame()
 {
 	for (auto record_cell : LastState) {
 		record_cell.drawCell(cellsize, record_cell.getCurrentColor(),Mode::FORWARD);
 	}
+	current_step = length;
 }
 
-void Recorder::playInitialGrid() const
+void Recorder::playInitialGrid()
 {
 	BeginTextureMode(this->frame_texture);
 
@@ -124,11 +134,16 @@ void Recorder::playInitialGrid() const
 		record_cell.drawCell(cellsize, record_cell.getCurrentColor(),Mode::FORWARD);
 	}
 	EndTextureMode();
+	current_step = 0;
 }
 
 bool Recorder::stepBackward()
 {
-	if (current_step <= 0) {
+	if (current_step == 0) {
+		for (auto record_cell : history[current_step])
+		{
+			record_cell.drawCell(cellsize, record_cell.getCurrentColor(),Mode::BACKWARD);
+		}
 		return false;
 	}
 	for (auto record_cell : history[current_step]) {
