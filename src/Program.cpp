@@ -260,7 +260,7 @@ void Program::setState(const ProgramState next_state)
 
     case PLAYER:
         //open just Mazes for now
-        player->open(&Gen_Recorder);
+        player->open(&Gen_Recorder, &Solve_Recorder);
 
         if (State != STOPPED) {
             LastState = State;

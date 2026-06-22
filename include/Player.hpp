@@ -33,6 +33,7 @@ class Player {
 		void init(const ProgramCallbacks& callbacks);
 
 		void open(Recorder* Rec);
+		void open(Recorder* Rec_Maze, Recorder* Rec_Path);
 		void close();
 
 		void displayPlayerGUI();
@@ -43,6 +44,9 @@ class Player {
 		ProgramCallbacks player_callbacks;
 
 		PlayerState state = PlayerState::CLOSED;
+
+		Recorder* Record_Maze = nullptr;
+		Recorder* Record_Path = nullptr;
 
 		Recorder* Record_Object = nullptr;
 
@@ -73,6 +77,8 @@ class Player {
 		Rectangle Button_Forward{};
 		Rectangle Button_FullForward{};
 
+		Rectangle ToggleSlider_Recordtype{};
+
 		Rectangle Slider{};
 		Rectangle Slider_TextBox{};
 		Rectangle MaxValue_TextBox{};
@@ -80,6 +86,9 @@ class Player {
 		//GUI Values-------------------------------------------------
 		int stepValue = 0;
 		int maxValue = 0;
+
+		int toggle_slider_val = 0;
+		int toggle_slider_val_prev = 0;
 
 		float slider_value_float = 0;
 		int slider_value_int = 0;

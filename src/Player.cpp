@@ -29,6 +29,22 @@ void Player::open(Recorder* Rec) {
     }
 }
 
+void Player::open(Recorder* Rec_Maze, Recorder* Rec_Path) {
+    Record_Maze = Rec_Maze;
+    Record_Path = Rec_Path;
+
+    Record_Object = Rec_Maze;
+
+    this->state = PlayerState::OPEN;
+
+    if (Record_Object != nullptr) {
+
+        stepValue = Record_Object->getStep();
+        maxValue = Record_Object->getSize();
+        setState(PlayerState::PAUSED);
+    }
+}
+
 void Player::close() {
     Record_Object = nullptr;
     this->state = PlayerState::CLOSED;
@@ -39,6 +55,19 @@ void Player::displayPlayerGUI()
     calculateLandmarks();
     ClearBackground(BLACK);
 
+    GuiToggleSlider(ToggleSlider_Recordtype, "MAZE ; PATH", &toggle_slider_val);
+    if (toggle_slider_val != toggle_slider_val_prev)
+    {
+        //switch record object
+        if (toggle_slider_val == 0)
+        {
+            Record_Object = Record_Maze;
+        }else
+        {
+            Record_Object = Record_Path;
+        }
+        toggle_slider_val_prev = toggle_slider_val;
+    }
     if (Record_Object != nullptr)
     {
         //set pause design depending on status
@@ -155,6 +184,10 @@ void Player::displayPlayerGUI()
         // DrawRectangle(Canvas.Point.x, Canvas.Point.y, Canvas.width, Canvas.height, RAYWHITE);
         //DrawRectangle(BelowCanvas.Point.x, BelowCanvas.Point.y, BelowCanvas.width, BelowCanvas.height, RED);
         //DrawRectangle(BottomRight.Point.x, BottomRight.Point.y, BottomRight.width, BottomRight.height, GREEN);
+    }else
+    {
+        //no valid record object here
+        DrawRectangle(Canvas.Point.x, Canvas.Point.y, Canvas.width, Canvas.height, MAROON);
     }
 }
 
@@ -277,7 +310,7 @@ void Player::calculateLandmarks()
 
     //BelowCanvas Field
     BelowCanvas.width = WindowSection_x * 7;
-    BelowCanvas.Point = Vector2{ General_Offset, Canvas.Point.y + Canvas.height};
+    BelowCanvas.Point = Vector2{ General_Offset, Canvas.Point.y + Canvas.height + General_Offset};
     BelowCanvas.height = WindowSection_y * 1 - General_Offset; // window_height - General_Offset - BelowCanvas.Point.y;
 
 
@@ -303,6 +336,8 @@ void Player::calculateLandmarks()
     const int Button_Resume_x = Button_Pause_x + Button_Size_x + BetweenOffset;
     const int Button_LastFrame_x = Button_Resume_x + Button_Size_x + BetweenOffset;
 
+    const int ToggleSlider_x = Button_LastFrame_x + Button_Size_x + BetweenOffset;
+
     
     Button_FullRewind = Rectangle(Button_FirstFrame_x, BelowCanvas.Point.y + Button_Y, Button_Size_x, ButtonSize_y);
     Button_Rewind = Rectangle(Button_Rewind_x, BelowCanvas.Point.y + Button_Y, Button_Size_x, ButtonSize_y);
@@ -310,7 +345,9 @@ void Player::calculateLandmarks()
     Button_Forward = Rectangle(Button_Resume_x, BelowCanvas.Point.y + Button_Y, Button_Size_x, ButtonSize_y);
     Button_FullForward = Rectangle(Button_LastFrame_x, BelowCanvas.Point.y + Button_Y, Button_Size_x, ButtonSize_y);
 
-    Slider = Rectangle(BelowCanvas.Point.x, BelowCanvas.Point.y, Bottom_Split_x * 7 ,Bottom_Split_y * 4);
+    ToggleSlider_Recordtype = Rectangle(ToggleSlider_x, BelowCanvas.Point.y + Button_Y, Button_Size_x, ButtonSize_y);
+
+    Slider = Rectangle(BelowCanvas.Point.x, BelowCanvas.Point.y, Bottom_Split_x * 8,Bottom_Split_y * 3);
     Slider_TextBox = Rectangle(BelowCanvas.Point.x + Bottom_Split_x * 8, BelowCanvas.Point.y, Bottom_Split_x, Bottom_Split_y * 4 );
     MaxValue_TextBox = Rectangle(BelowCanvas.Point.x + Bottom_Split_x * 9, BelowCanvas.Point.y, Bottom_Split_x, Bottom_Split_y * 4);
 
