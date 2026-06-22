@@ -1,4 +1,6 @@
 #include "Recorder.hpp"
+#include <cmath>
+#include <algorithm>
 
 Recorder::Recorder()
 {
@@ -99,12 +101,16 @@ void Recorder::saveLastFrame(const vector<Cell*>& LastList)
 
 bool Recorder::stepForward()
 {
+	BeginTextureMode(this->frame_texture);
+
 	if (current_step < history.size()-1)
 	{
 		for (auto record_cell : history[current_step]) {
 			record_cell.drawCell(cellsize, record_cell.getCurrentColor(), Mode::FORWARD);
 		}
 		current_step++;
+
+		EndTextureMode();
 		return true;
 	}
 	else if(current_step == history.size()-1)
@@ -112,18 +118,24 @@ bool Recorder::stepForward()
 		for (auto record_cell : history[current_step]) {
 			record_cell.drawCell(cellsize, record_cell.getCurrentColor(), Mode::FORWARD);
 		}
+
+		EndTextureMode();
 		return true;
 	}
 
+	EndTextureMode();
 	return false;
 }
 
 void Recorder::playLastFrame()
 {
+	BeginTextureMode(this->frame_texture);
+
 	for (auto record_cell : LastState) {
 		record_cell.drawCell(cellsize, record_cell.getCurrentColor(),Mode::FORWARD);
 	}
 	current_step = length;
+	EndTextureMode();
 }
 
 void Recorder::playInitialGrid()
@@ -139,23 +151,59 @@ void Recorder::playInitialGrid()
 
 bool Recorder::stepBackward()
 {
+	BeginTextureMode(this->frame_texture);
+
 	if (current_step == 0) {
 		for (auto record_cell : history[current_step])
 		{
 			record_cell.drawCell(cellsize, record_cell.getCurrentColor(),Mode::BACKWARD);
 		}
+		EndTextureMode();
 		return false;
 	}
 	for (auto record_cell : history[current_step]) {
 		record_cell.drawCell(cellsize, record_cell.getCurrentColor(),Mode::BACKWARD);
 	}
 	current_step--;
+	EndTextureMode();
 	return true;
 }
 
 void Recorder::playStep(const int step)
 {
-	current_step = step;
+	const int first_dist = step;
+	const int last_dist = std::abs(length - step);
+	const int current_dist = std::abs(current_step - step);
+
+	const int shortest_dist = std::min({first_dist, last_dist, current_dist});
+
+	if (shortest_dist == first_dist)
+	{
+		this->playInitialGrid();
+		draw_till_step(step);
+
+	}else if (shortest_dist == last_dist)
+	{
+		this->playLastFrame();
+		draw_till_step(step);
+	}else
+	{
+		draw_till_step(step);
+	}
+}
+
+void Recorder::draw_till_step( const int step)
+{
+	while (current_step != step)
+	{
+		if (current_step < step)
+		{
+			this->stepForward();
+		}else
+		{
+			this->stepBackward();
+		}
+	}
 }
 
 void Recorder::setRecordSize(const int maze_height, const int maze_width)

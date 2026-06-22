@@ -42,6 +42,7 @@ public:
 	bool stepBackward();
 
 	void playStep(int step);
+	void draw_till_step(int step);
 	//reloads texture
 	void setRecordSize(int maze_height, int maze_width);
 

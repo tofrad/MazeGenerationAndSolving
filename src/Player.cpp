@@ -176,7 +176,6 @@ void Player::setState(const PlayerState new_state)
 
 void Player::resolveRenderAction()
 {
-    BeginTextureMode(Record_Object->getFrameTexture());
     switch (state)
     {
         case PlayerState::PLAYING_FORWARD:
@@ -235,7 +234,6 @@ void Player::resolveRenderAction()
             //do nothing as canvas needs no render
             break;
     }
-    EndTextureMode();
 }
 
 void Player::updateSliderFloat()
