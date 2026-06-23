@@ -54,7 +54,20 @@ void Player::displayPlayerGUI()
 {
     calculateLandmarks();
     ClearBackground(BLACK);
-
+    //checking truth for toggle slider
+    if (Record_Object != nullptr)
+    {
+        if (Record_Object->getRecordType() == MAZE)
+        {
+            toggle_slider_val = 0;
+            toggle_slider_val_prev = 0;
+        }
+        else
+        {
+            toggle_slider_val = 1;
+            toggle_slider_val_prev = 1;
+        }
+    }
     GuiToggleSlider(ToggleSlider_Recordtype, "MAZE ; PATH", &toggle_slider_val);
     if (toggle_slider_val != toggle_slider_val_prev)
     {
