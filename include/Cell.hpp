@@ -12,12 +12,15 @@ struct CellFlags
 	bool isStart = false;
 	bool isTarget = false;
 	bool isWall = false;
-	//states for maze generating and solving behavior
-	bool wasVisited = false;
+	//states for maze generating
+	bool Maze_CellWasVisited = false;
 	bool isActive = false;
-	bool pathVisited = false;
-	bool isPath = false;  //marker for dfs recursion when dead end was found
-	bool isfinishedPath = false;
+
+	//states for solving behavior
+	bool Path_CellWasVisited = false;
+	bool Path_IsCurrentPath = false;  //marker for dfs recursion when dead end was found
+	bool Path_IsFrontier = false;
+	bool Path_IsFinishedPath = false;
 };
 
 class Cell

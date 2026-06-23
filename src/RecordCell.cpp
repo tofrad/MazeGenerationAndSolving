@@ -63,10 +63,10 @@ Color RecordCell::getColorFromFlags(const CellFlags *flags)
 	if (flags->isTarget){ return RED;}
 	if (flags->isActive){ return LIME;}
 	if (flags->isWall){ return BLACK;}
-	if (flags->isfinishedPath){ return MAGENTA;}
-	if (flags->isPath){ return GOLD;}
-	if (flags->pathVisited){ return BEIGE;}
-	if (flags->wasVisited){ return DARKGRAY;}
+	if (flags->Path_IsFinishedPath){ return MAGENTA;}
+	if (flags->Path_IsCurrentPath){ return GOLD;}
+	if (flags->Path_CellWasVisited){ return BEIGE;}
+	if (flags->Maze_CellWasVisited){ return DARKGRAY;}
 
 	// Default
 	return LIGHTGRAY;

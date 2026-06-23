@@ -24,6 +24,7 @@ public:
 
 	RecordType getRecordType() const;
 	int getStep() const;
+	int getVisitedCnt() const;
 	int getSize() const;
 	RenderTexture2D getFrameTexture() const;
 
@@ -68,6 +69,8 @@ private:
 	vector<vector<RecordCell>> history;
 
 	int current_step = 0;
+	int cells_visited = 0;
+
 	bool recording = false;
 	bool isplaying = false;
 	bool islooping = true;

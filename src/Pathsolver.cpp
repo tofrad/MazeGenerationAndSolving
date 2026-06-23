@@ -17,24 +17,28 @@ Pathsolver::~Pathsolver()
 
 }
 
-void Pathsolver::solveMaze(Cell* start, const SolvingMethod method)
+bool Pathsolver::solveMaze(Cell* start, const SolvingMethod method)
 {
 	//start recording
 	path_record->startRecording();
+
+	bool is_solved = false;
 
 	//solve Maze
 	switch (method) {
 
 		case SM_DFS:
-			DFS(start);
+			is_solved = DFS(start);
 			break;
 		case SM_BFS:
-			BFS(start);
+			is_solved = BFS(start);
 			break;
 
 	}
 	//stop Recording
 	path_record->stopRecording();
+
+	return is_solved;
 }
 
 Recorder* Pathsolver::getRecording() const
@@ -44,15 +48,17 @@ Recorder* Pathsolver::getRecording() const
 
 bool Pathsolver::isVisitable(const Cell* cell)
 {
-	if (cell != nullptr && !cell->next_flags.pathVisited) {
+	if (cell != nullptr && !cell->next_flags.Path_CellWasVisited) {
 		return true;
-	}
-	else {
+	}else{
 		return false;
 	}
 }
 
-bool Pathsolver::DFS(Cell* start)
+//TODO
+// Update recording of DFS
+//flickering, marking of leading cell
+bool Pathsolver::DFS(Cell* start) const
 {
 	//abort if target is found
 	if (start->next_flags.isTarget) {
@@ -60,8 +66,8 @@ bool Pathsolver::DFS(Cell* start)
 	}
 	
 	//mark and record cell as visited
-	if (!start->next_flags.pathVisited) {
-		start->next_flags.pathVisited = true;
+	if (!start->next_flags.Path_CellWasVisited) {
+		start->next_flags.Path_CellWasVisited = true;
 	}
 
 	//set cell active and record it
@@ -70,7 +76,7 @@ bool Pathsolver::DFS(Cell* start)
 	path_record->recordStep({start});
 	
 	//mark it as path, will be deleted in recursion
-	start->next_flags.isPath = true;
+	start->next_flags.Path_IsCurrentPath = true;
 
 	//add all valid adjacent to list
 	vector<Cell*> adjCells;
@@ -107,34 +113,35 @@ bool Pathsolver::DFS(Cell* start)
 		if (DFS(next)) {
 
 			//recursion animation?
-			start->next_flags.isfinishedPath = true;
+			start->next_flags.Path_IsFinishedPath = true;
 			//next node is on path to target or is the target
 
 			//record path cell
 			path_record->recordStep({start});
 
 			return true;
-		}	
-
+		}
 		//delete cell from list
 		adjCells.pop_back();
-
 	}
 
 	//cell is not on Path
 	start->next_flags.isActive = false;
-	start->next_flags.isPath = false;
+	start->next_flags.Path_IsCurrentPath = false;
 	//record here#########################################################################################
 	path_record->recordStep({start});
 
 	return false;
 }
 
+//TODO
+// Update BFS
+//add leading edges to frontier cells
 bool Pathsolver::BFS(Cell* start) const
 {
 	queue<vector<Cell*>> tobevisited;
 
-	start->next_flags.pathVisited = true;
+	start->next_flags.Path_CellWasVisited = true;
 	tobevisited.push({start});
 
 	bool wasTargetFound = false;
@@ -171,7 +178,7 @@ bool Pathsolver::BFS(Cell* start) const
 					if (neighbor && isVisitable(neighbor)) {
 
 						neighbor->setParent(cell);
-						neighbor->next_flags.pathVisited = true;
+						neighbor->next_flags.Path_CellWasVisited = true;
 						next_cells.push_back(neighbor);
 					}
 				}
@@ -182,12 +189,12 @@ bool Pathsolver::BFS(Cell* start) const
 		}
 	}
 
-	if (wasTargetFound) {
+	if (wasTargetFound && foundTarget!= nullptr) {
 		Cell* backtrack = foundTarget;
 
 		while (!backtrack->next_flags.isStart) {
 
-			backtrack->next_flags.isfinishedPath = true;
+			backtrack->next_flags.Path_IsFinishedPath = true;
 			//record here####################################################################
 			path_record->recordStep({backtrack});
 

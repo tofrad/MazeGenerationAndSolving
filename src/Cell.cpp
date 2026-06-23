@@ -12,9 +12,9 @@ Cell::Cell(const Point& p1)
 	setId();
 }
 
-Cell::Cell(const Point& p1, const int w) : Cell(p1)
+Cell::Cell(const Point& p1, const int weight) : Cell(p1)
 {
-	this->weight = w;
+	this->weight = weight;
 	setId();
 }
 
@@ -41,11 +41,11 @@ void Cell::updateCellFlags()
 {
 	//do not touch start or target
 	this->current_flags.isActive = this->next_flags.isActive;
-	this->current_flags.isfinishedPath = this->next_flags.isfinishedPath;
-	this->current_flags.isPath = this->next_flags.isPath;
+	this->current_flags.Path_IsFinishedPath = this->next_flags.Path_IsFinishedPath;
+	this->current_flags.Path_IsCurrentPath = this->next_flags.Path_IsCurrentPath;
 	this->current_flags.isWall = this->next_flags.isWall;
-	this->current_flags.pathVisited = this->next_flags.pathVisited;
-	this->current_flags.wasVisited = this->next_flags.wasVisited;
+	this->current_flags.Path_CellWasVisited = this->next_flags.Path_CellWasVisited;
+	this->current_flags.Maze_CellWasVisited = this->next_flags.Maze_CellWasVisited;
 }
 
 void Cell::setStart()
@@ -121,16 +121,16 @@ Cell* Cell::findRoot()
 
 void Cell::resetCell()
 {
-	this->next_flags.wasVisited = false;
-	this->next_flags.pathVisited = false;
-	this->next_flags.isPath = false;
-	this->next_flags.isfinishedPath = false;
+	this->next_flags.Maze_CellWasVisited = false;
+	this->next_flags.Path_CellWasVisited = false;
+	this->next_flags.Path_IsCurrentPath = false;
+	this->next_flags.Path_IsFinishedPath = false;
 	this->next_flags.isActive = false;
 
-	this->current_flags.wasVisited = false;
-	this->current_flags.pathVisited = false;
-	this->current_flags.isPath = false;
-	this->current_flags.isfinishedPath = false;
+	this->current_flags.Maze_CellWasVisited = false;
+	this->current_flags.Path_CellWasVisited = false;
+	this->current_flags.Path_IsCurrentPath = false;
+	this->current_flags.Path_IsFinishedPath = false;
 	this->current_flags.isActive = false;
 
 	this->Parent = nullptr;

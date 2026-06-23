@@ -29,9 +29,9 @@ class Pathsolver
 
 		static bool isVisitable(const Cell* cell);
 
-		void solveMaze(Cell* start, SolvingMethod method);
+		bool solveMaze(Cell* start, SolvingMethod method);
 
-		bool DFS(Cell* start);
+		bool DFS(Cell* start) const;
 
 		bool BFS(Cell* start) const;
 

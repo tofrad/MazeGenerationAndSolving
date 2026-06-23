@@ -193,7 +193,7 @@ void Maze::generateMaze(const GenerationMethod method, Recorder* recorder)
 
 	//clear was_visited mark for coloring in pathfinding
 	for (const auto cell : Cell_List) {
-		cell->next_flags.wasVisited = false;
+		cell->next_flags.Maze_CellWasVisited = false;
 		cell->next_flags.isActive = false;
 	}
 }
@@ -213,11 +213,11 @@ void Maze::RecursiveBacktracking(Cell* cell, const uint step)
 	vector<Cell*> directions;
 	Point pos = cell->getPosition();
 
-	if (!cell->next_flags.wasVisited) {
+	if (!cell->next_flags.Maze_CellWasVisited) {
 		directions = getUnvisitedNeighbors(cell);
 	}
 	// //mark as visited
-	cell->next_flags.wasVisited = true;
+	cell->next_flags.Maze_CellWasVisited = true;
 
 	ranges::shuffle(directions, rand_gen);
 
@@ -235,10 +235,10 @@ void Maze::RecursiveBacktracking(Cell* cell, const uint step)
 
 			cell_cnt++;
 
-			if (!target->next_flags.wasVisited) {
+			if (!target->next_flags.Maze_CellWasVisited) {
 
 				Cell* MiddleCell = connectCells(cell, target);
-				MiddleCell->next_flags.wasVisited = true;
+				MiddleCell->next_flags.Maze_CellWasVisited = true;
 				MiddleCell->next_flags.isActive = true;
 				target->next_flags.isActive = true;
 
@@ -318,9 +318,9 @@ void Maze::Kruskal()
 				firstCell->next_flags.isActive = false;
 				InBetween->next_flags.isActive = false;
 				secondCell->next_flags.isActive = false;
-				firstCell->next_flags.wasVisited = true;
-				InBetween->next_flags.wasVisited = true;
-				secondCell->next_flags.wasVisited = true;
+				firstCell->next_flags.Maze_CellWasVisited = true;
+				InBetween->next_flags.Maze_CellWasVisited = true;
+				secondCell->next_flags.Maze_CellWasVisited = true;
 				record->recordStep(vector<Cell*>{firstCell, InBetween, secondCell});
 			}
 			else {
@@ -342,14 +342,14 @@ void Maze::Kruskal()
 void Maze::HuntAndKill()
 {
 	Cell* current_cell = Start;
-	current_cell->next_flags.wasVisited = true;
+	current_cell->next_flags.Maze_CellWasVisited = true;
 	vector<Cell*> carvedPath;
 
 	while(true){
 
 		vector<Cell*> neighbor_list = getUnvisitedNeighbors(current_cell);
 
-		current_cell->next_flags.wasVisited = true;
+		current_cell->next_flags.Maze_CellWasVisited = true;
 		bool found_new_cell = false;
 
 		//get next cell from neighbors
@@ -364,7 +364,7 @@ void Maze::HuntAndKill()
 			next_cell->next_flags.isActive = true;
 
 			Cell* InBetween = connectCells(current_cell, next_cell);
-			InBetween->next_flags.wasVisited = true;
+			InBetween->next_flags.Maze_CellWasVisited = true;
 			InBetween->next_flags.isActive = true;
 
 			record->recordStep({ current_cell, InBetween, next_cell});
@@ -391,7 +391,7 @@ void Maze::HuntAndKill()
 		// iterate through all cells till found unvisited with visited Neighbors for new starting point
 		for (const auto cell : Cell_List) {
 
-			if (cell->next_flags.wasVisited == false && cell->next_flags.isWall == false) {
+			if (cell->next_flags.Maze_CellWasVisited == false && cell->next_flags.isWall == false) {
 
 				vector<Cell*> VisitedNeighbors = getVisitedNeighbors(cell);
 
@@ -404,7 +404,7 @@ void Maze::HuntAndKill()
 					neighbor->next_flags.isActive = true;
 
 					Cell* InBetween = connectCells(cell, neighbor);
-					InBetween->next_flags.wasVisited = true;
+					InBetween->next_flags.Maze_CellWasVisited = true;
 					InBetween->next_flags.isActive = true;
 
 					current_cell = cell;
@@ -442,7 +442,7 @@ vector<Cell*> Maze::getUnvisitedNeighbors(const Cell* cell) const
 	if (pos.getY() >= 2) {
 		target_cell = Cell_Grid[X][Y - 2];
 
-		if (target_cell->next_flags.wasVisited == false) {
+		if (target_cell->next_flags.Maze_CellWasVisited == false) {
 			directions.push_back(target_cell);
 		}
 	}
@@ -451,7 +451,7 @@ vector<Cell*> Maze::getUnvisitedNeighbors(const Cell* cell) const
 	if (pos.getX() < this->width - 2) {
 		target_cell = Cell_Grid[X + 2][Y];
 
-		if (target_cell->next_flags.wasVisited == false) {
+		if (target_cell->next_flags.Maze_CellWasVisited == false) {
 			directions.push_back(target_cell);
 		}
 	}
@@ -460,7 +460,7 @@ vector<Cell*> Maze::getUnvisitedNeighbors(const Cell* cell) const
 	if (pos.getY() < this->height - 2) {
 		target_cell = Cell_Grid[X][Y + 2];
 
-		if (target_cell->next_flags.wasVisited == false) {
+		if (target_cell->next_flags.Maze_CellWasVisited == false) {
 			directions.push_back(target_cell);
 		}	
 	}
@@ -469,7 +469,7 @@ vector<Cell*> Maze::getUnvisitedNeighbors(const Cell* cell) const
 	if (pos.getX() >= 2) {
 		target_cell = Cell_Grid[X - 2][Y];
 
-		if (target_cell->next_flags.wasVisited == false) {
+		if (target_cell->next_flags.Maze_CellWasVisited == false) {
 			directions.push_back(target_cell);
 		}
 	}
@@ -489,7 +489,7 @@ vector<Cell*> Maze::getVisitedNeighbors(const Cell* cell) const
 	if (pos.getY() >= 2) {
 		target_cell = Cell_Grid[X][Y - 2];
 
-		if (target_cell->next_flags.wasVisited == true) {
+		if (target_cell->next_flags.Maze_CellWasVisited == true) {
 			directions.push_back(target_cell);
 		}
 	}
@@ -498,7 +498,7 @@ vector<Cell*> Maze::getVisitedNeighbors(const Cell* cell) const
 	if (pos.getX() < this->width - 2) {
 		target_cell = Cell_Grid[X + 2][Y];
 
-		if (target_cell->next_flags.wasVisited == true) {
+		if (target_cell->next_flags.Maze_CellWasVisited == true) {
 			directions.push_back(target_cell);
 		}
 	}
@@ -507,7 +507,7 @@ vector<Cell*> Maze::getVisitedNeighbors(const Cell* cell) const
 	if (pos.getY() < this->height - 2) {
 		target_cell = Cell_Grid[X][Y + 2];
 
-		if (target_cell->next_flags.wasVisited == true) {
+		if (target_cell->next_flags.Maze_CellWasVisited == true) {
 			directions.push_back(target_cell);
 		}
 	}
@@ -516,7 +516,7 @@ vector<Cell*> Maze::getVisitedNeighbors(const Cell* cell) const
 	if (pos.getX() >= 2) {
 		target_cell = Cell_Grid[X - 2][Y];
 
-		if (target_cell->next_flags.wasVisited == true) {
+		if (target_cell->next_flags.Maze_CellWasVisited == true) {
 			directions.push_back(target_cell);
 		}
 	}
