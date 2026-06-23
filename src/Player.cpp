@@ -66,6 +66,11 @@ void Player::displayPlayerGUI()
         {
             Record_Object = Record_Path;
         }
+        stepValue = Record_Object->getStep();
+        maxValue = Record_Object->getSize();
+
+        setState(PlayerState::PAUSED);
+
         toggle_slider_val_prev = toggle_slider_val;
     }
     if (Record_Object != nullptr)

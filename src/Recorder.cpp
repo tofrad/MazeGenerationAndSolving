@@ -17,6 +17,7 @@ Recorder::Recorder(const int& maze_height, const int& maze_width,const RecordTyp
 	Texture_width = maze_width * cellsize;
 
 	frame_texture = LoadRenderTexture(Texture_width, Texture_height);
+
 	BeginTextureMode(frame_texture);
 	ClearBackground(LIGHTGRAY);
 	EndTextureMode();
@@ -24,10 +25,7 @@ Recorder::Recorder(const int& maze_height, const int& maze_width,const RecordTyp
 
 Recorder::Recorder(const vector<Cell*>& cell_list, const int& maze_height, const int& maze_width, const RecordType r_type) : Recorder(maze_height, maze_width, r_type)
 {
-	for (const auto cell : cell_list)
-	{
-		InitialState.push_back(RecordCell(cell));
-	}
+	saveInitialFrame(cell_list);
 }
 
 Recorder::~Recorder()

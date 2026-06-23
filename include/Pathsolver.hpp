@@ -12,10 +12,10 @@ class Pathsolver
 {
 	public:
 		Pathsolver();
-		Pathsolver(Cell* start, SolvingMethod method, const Recorder& recorder);
+		Pathsolver(Cell* start, SolvingMethod method, Recorder* recorder);
 		~Pathsolver();
 
-		Recorder* getRecording();
+		Recorder* getRecording() const;
 
 	private:
 
@@ -25,7 +25,7 @@ class Pathsolver
 
 		unordered_map<uint64_t, int> visitedCells;
 
-		Recorder path_record;
+		Recorder* path_record = nullptr;
 
 		static bool isVisitable(const Cell* cell);
 
@@ -33,7 +33,7 @@ class Pathsolver
 
 		bool DFS(Cell* start);
 
-		bool BFS(Cell* start);
+		bool BFS(Cell* start) const;
 
 		
 

@@ -127,6 +127,12 @@ void Cell::resetCell()
 	this->next_flags.isfinishedPath = false;
 	this->next_flags.isActive = false;
 
+	this->current_flags.wasVisited = false;
+	this->current_flags.pathVisited = false;
+	this->current_flags.isPath = false;
+	this->current_flags.isfinishedPath = false;
+	this->current_flags.isActive = false;
+
 	this->Parent = nullptr;
 }
 

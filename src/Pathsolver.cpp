@@ -6,7 +6,7 @@ Pathsolver::Pathsolver()
 
 }
 
-Pathsolver::Pathsolver(Cell* start, const SolvingMethod method, const Recorder& recorder)
+Pathsolver::Pathsolver(Cell* start, const SolvingMethod method, Recorder* recorder)
 {
 	path_record = recorder;
 	solveMaze(start, method);
@@ -20,7 +20,7 @@ Pathsolver::~Pathsolver()
 void Pathsolver::solveMaze(Cell* start, const SolvingMethod method)
 {
 	//start recording
-	path_record.startRecording();
+	path_record->startRecording();
 
 	//solve Maze
 	switch (method) {
@@ -34,12 +34,12 @@ void Pathsolver::solveMaze(Cell* start, const SolvingMethod method)
 
 	}
 	//stop Recording
-	path_record.stopRecording();
+	path_record->stopRecording();
 }
 
-Recorder* Pathsolver::getRecording()
+Recorder* Pathsolver::getRecording() const
 {
-	return &path_record;
+	return path_record;
 }
 
 bool Pathsolver::isVisitable(const Cell* cell)
@@ -67,7 +67,7 @@ bool Pathsolver::DFS(Cell* start)
 	//set cell active and record it
 	start->next_flags.isActive = true;
 	//record here#########################################################################################
-	path_record.recordStep({start});
+	path_record->recordStep({start});
 	
 	//mark it as path, will be deleted in recursion
 	start->next_flags.isPath = true;
@@ -102,7 +102,7 @@ bool Pathsolver::DFS(Cell* start)
 		//delete start from isActive and record it 
 		start->next_flags.isActive = false;
 		//record here#########################################################################################
-		path_record.recordStep({start});
+		path_record->recordStep({start});
 
 		if (DFS(next)) {
 
@@ -111,7 +111,7 @@ bool Pathsolver::DFS(Cell* start)
 			//next node is on path to target or is the target
 
 			//record path cell
-			path_record.recordStep({start});
+			path_record->recordStep({start});
 
 			return true;
 		}	
@@ -125,12 +125,12 @@ bool Pathsolver::DFS(Cell* start)
 	start->next_flags.isActive = false;
 	start->next_flags.isPath = false;
 	//record here#########################################################################################
-	path_record.recordStep({start});
+	path_record->recordStep({start});
 
 	return false;
 }
 
-bool Pathsolver::BFS(Cell* start)
+bool Pathsolver::BFS(Cell* start) const
 {
 	queue<vector<Cell*>> tobevisited;
 
@@ -177,7 +177,7 @@ bool Pathsolver::BFS(Cell* start)
 				}
 			}
 			// record current cells here###############################################################
-			path_record.recordStep(current_cells);
+			path_record->recordStep(current_cells);
 			tobevisited.push(next_cells);
 		}
 	}
@@ -189,7 +189,7 @@ bool Pathsolver::BFS(Cell* start)
 
 			backtrack->next_flags.isfinishedPath = true;
 			//record here####################################################################
-			path_record.recordStep({backtrack});
+			path_record->recordStep({backtrack});
 
 			backtrack = backtrack->getParent();
 		}
