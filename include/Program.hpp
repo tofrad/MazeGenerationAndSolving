@@ -54,9 +54,6 @@ class Program
 		int screenWidth = 1920;
 		int screenHeight = 1080;
 
-		int buffer_width = 1920;
-		int buffer_height = 1080;
-
 		int MazeWidth = 40;
 		int MazeHeight = 10;
 
@@ -74,23 +71,7 @@ class Program
 
 		int FrameRate = 30;
 
-		float scale = 1.0f;
-
 		void centerWindow() const;
-
-		//buffer for displaying program to window
-		RenderTexture2D buffer;
-
-		//buffer to save last maze frame
-		RenderTexture2D last_maze_buffer;
-
-		//buffer to save last path frame
-		RenderTexture2D last_path_buffer;
-
-		Rectangle source;
-
-		void getLastMazeFrame() const;
-		void getLastPathFrame() const;
 
 		void CalculateMazeParams(const int width);
 

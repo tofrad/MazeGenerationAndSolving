@@ -46,15 +46,7 @@ void Program::InitProgram()
     //-------------------------------------------------------------------------------------
     handleGeneratorRequest(MazeWidth, Generator);
 
-    //create buffer for drawing
-    buffer = LoadRenderTexture(buffer_width, buffer_height);
-    source = Rectangle{ 0, 0, static_cast<float>(buffer.texture.width), static_cast<float>(-buffer.texture.height)};
-
-    last_maze_buffer = LoadRenderTexture(screenWidth, screenHeight);
-    last_path_buffer = LoadRenderTexture(screenWidth, screenHeight);
-
     //--------------------------------------------------------------------------------------
-    scale = min(static_cast<float>(GetScreenWidth()) / screenWidth, static_cast<float>(GetScreenHeight()) / screenHeight);
 }
 
 int Program::Run()
@@ -87,19 +79,14 @@ int Program::Run()
             setState(PLAYER);
         }
 
-        //write changes into buffer
-        //just write recorder stuff - no setStates to preserve TextureMode
-        BeginTextureMode(buffer);
-
-        //is done in several buffers of the program entities now
-
-        EndTextureMode();
-
         // Draw
         //----------------------------------------------------------------------------------
         BeginDrawing();
 
         ClearBackground(LIGHTGRAY);
+
+        int window_width = GetScreenWidth();
+        int window_height = GetScreenHeight();
 
         if (State == MENU) {
             menu->displayGUI();
@@ -111,13 +98,13 @@ int Program::Run()
             player->displayPlayerGUI();
         }
         else {
-            DrawTexturePro(
-                buffer.texture,
-                source,
-                Rectangle{ 0, 0, static_cast<float>(screenWidth), static_cast<float>(screenHeight) },
-                Vector2{ 0, 0 },
-                0,
-                WHITE);
+            // DrawTexturePro(
+            //     buffer.texture,
+            //     source,
+            //     Rectangle{ 0, 0, static_cast<float>(screenWidth), static_cast<float>(screenHeight) },
+            //     Vector2{ 0, 0 },
+            //     0,
+            //     WHITE);
         }
         EndDrawing();
         //----------------------------------------------------------------------------------
@@ -304,21 +291,21 @@ void Program::centerWindow() const
     const int monitor_height = GetMonitorHeight(monitor);
     SetWindowPosition((int)(monitor_width / 2) - (int)(screenWidth / 2), (int)(monitor_height / 2) - (int)(screenHeight / 2));
 }
-void Program::getLastMazeFrame() const
-{
-    BeginTextureMode(buffer);
-    ClearBackground(LIGHTGRAY);
-    DrawTextureRec(last_maze_buffer.texture, source, Vector2{ 0, 0 }, WHITE);
-    EndTextureMode();
-}
+// void Program::getLastMazeFrame() const
+// {
+//     BeginTextureMode(buffer);
+//     ClearBackground(LIGHTGRAY);
+//     DrawTextureRec(last_maze_buffer.texture, source, Vector2{ 0, 0 }, WHITE);
+//     EndTextureMode();
+// }
 
-void Program::getLastPathFrame() const
-{
-    BeginTextureMode(buffer);
-    ClearBackground(LIGHTGRAY);
-    DrawTextureRec(last_path_buffer.texture, source, Vector2{ 0, 0 }, WHITE);
-    EndTextureMode();
-}
+// void Program::getLastPathFrame() const
+// {
+//     BeginTextureMode(buffer);
+//     ClearBackground(LIGHTGRAY);
+//     DrawTextureRec(last_path_buffer.texture, source, Vector2{ 0, 0 }, WHITE);
+//     EndTextureMode();
+// }
 
 void Program::CalculateMazeParams(const int width)
 {
