@@ -30,18 +30,15 @@ void Editor::close()
 
 void Editor::displayEditor() 
 {
-    calculateLandmarks();
+    layout_manager->UpdateScale();
 
 	ClearBackground(GRAY);
 
-
     //Above Canvas ############################################################################################################################################################################
-
-
 
     //Top Right ###############################################################################################################################################################################
 
-    if (GuiButton(Rectangle{ TopRight.Point.x , TopRight.Point.y , WindowSection, Label_height }, "Exit to Menu")) {
+    if (GuiButton(layout_manager->ScaleRect(Button_Menu), "Exit to Menu") ){
 
         editor_callbacks.onStateRequest(MENU);
     }
@@ -51,31 +48,26 @@ void Editor::displayEditor()
     //separate buttons with newline, #x# exchange x for icons
     //0 = Start, 1 = Target, 2 = Set Wall, 3 = clear Wall
     //height describes height off each button
-    GuiToggleGroup(Rectangle{ RightToCanvas.Point.x, RightToCanvas.Point.y, RightToCanvas.width, (RightToCanvas.height - 4 * General_Offset) / 4 }, "Start\nTarget\nSet\nClear", &toggle_group);
-
+    GuiToggleGroup(layout_manager->ScaleRect(Toggle_Group), "Start\nTarget\nSet\nClear", &toggle_group);
     //Bottom right ###########################################################################################################################################################################
 
-    if (GuiButton(Rectangle{ BottomRight.Point.x, BottomRight.Point.y + (BottomRight.height - Label_height), BottomRight.width, Label_height }, "Generate")) {
+    if (GuiButton(layout_manager->ScaleRect(Button_Generate), "Generate")) {
 
         //get state of editor 
         //check if state is valid and able to convert in solvable Maze
         //send costum Maze Request to Program
         editor_callbacks.onStateRequest(MENU);
     }
-
     // Below Canvas ##########################################################################################################################################################################
 
-    const float slider_width = 2 * WindowSection;
-    GuiSlider(Rectangle{ BelowCanvas.Point.x + 2 * General_Offset, BelowCanvas.Point.y, slider_width, Label_height }, "10", "100", &slider_value_float, 10, 100);
+    GuiSlider(layout_manager->ScaleRect(Slider), "10", "100", &slider_value_float, 10, 100);
 
     slider_value_int = static_cast<int>(slider_value_float);
 
     char slide_buffer[5];
     snprintf(slide_buffer, sizeof(slide_buffer), "%d", slider_value_int);
 
-    GuiTextBox(Rectangle{ BelowCanvas.Point.x + slider_width + 5 * General_Offset, BelowCanvas.Point.y, WindowSection / 3, Label_height }, slide_buffer, 11, false);
-
-    //GuiValueBox(Rectangle{ BelowCanvas.Point.x + slider_width +  4 * General_Offset, BelowCanvas.Point.y, WindowSection / 3, Label_height }, " ", &slider_value_int, 10, 150, false);
+    GuiTextBox(layout_manager->ScaleRect(Slider_Textbox), slide_buffer, 11, false);
 
     if (slider_value_int != old_slider_value_int) 
     {
@@ -100,7 +92,7 @@ void Editor::displayEditor()
     //center drawing
     const int x_tile_offset = Canvas.Point.x + x_offset;
     const int y_tile_offset = Canvas.Point.y + y_offset;
-    //((Canvas.Point.y + Canvas.height) - (CustomMaze.size * tile_size)) / 2;
+
     if(CheckCollisionPointRec(mouse, CanvasRect))
     {   
         //Canvas Borders right and under for bound checking
@@ -131,12 +123,12 @@ void Editor::displayEditor()
             char point_buffer_x[5];
             snprintf(point_buffer_x, sizeof(point_buffer_x), "%d", Mouse_Tile.getX());
 
-            GuiTextBox(Rectangle{ AboveCanvas.Point.x , AboveCanvas.Point.y, WindowSection, Label_height }, point_buffer_x, 11, false);
+            // GuiTextBox(Rectangle{ AboveCanvas.Point.x , AboveCanvas.Point.y, WindowSection, Label_height }, point_buffer_x, 11, false);
 
             char point_buffer_y[5];
             snprintf(point_buffer_y, sizeof(point_buffer_y), "%d", Mouse_Tile.getY());
 
-            GuiTextBox(Rectangle{ AboveCanvas.Point.x + WindowSection , AboveCanvas.Point.y, WindowSection, Label_height }, point_buffer_y, 11, false);
+            // GuiTextBox(Rectangle{ AboveCanvas.Point.x + WindowSection , AboveCanvas.Point.y, WindowSection, Label_height }, point_buffer_y, 11, false);
 
         }
         else {
@@ -262,64 +254,6 @@ void Editor::drawGrid(const int tile_size, const int x_tile_offset, const int y_
 
         }
     }
-
-}
-void Editor::calculateLandmarks() 
-{
-    switch (editor_callbacks.getWindowSize()) {
-    case UHD:
-        window_height = 1440;
-        window_width = 2560;
-        break;
-    case FHD:
-        window_height = 1080;
-        window_width = 1920;
-        break;
-    case WSXGA:
-        window_height = 900;
-        window_width = 1600;
-        break;
-    case SMALL:
-        window_height = 540;
-        window_width = 960;
-        break;
-    default:
-        window_height = 540;
-        window_width = 960;
-        break;
-    }
-
-    WindowSection = (window_width - (3 * General_Offset)) / 8;
-
-    //Calculate Canvas as Center
-    Canvas.width = 7 * WindowSection;
-    Canvas.height = (Canvas.width / 16) * 9;
-    Canvas.Point = Vector2{ General_Offset, (window_height - Canvas.height) / 2 };
-
-    //Above Canvas Field
-    AboveCanvas.width = Canvas.width;
-    AboveCanvas.height = Canvas.Point.y - 2 * General_Offset;
-    AboveCanvas.Point = Vector2{General_Offset, General_Offset};
-
-    //BelowCanvas Field
-    BelowCanvas.width = Canvas.width;
-    BelowCanvas.Point = Vector2{ General_Offset, Canvas.Point.y + Canvas.height + General_Offset };
-    BelowCanvas.height = window_height - General_Offset - BelowCanvas.Point.y ;
-
-    //Top Right Field
-    TopRight.width = 1 * WindowSection;
-    TopRight.height = AboveCanvas.height;
-    TopRight.Point = Vector2{ AboveCanvas.Point.x + AboveCanvas.width + General_Offset, General_Offset};
-
-    //Field right to Canvas
-    RightToCanvas.width = TopRight.width;
-    RightToCanvas.height = Canvas.height;
-    RightToCanvas.Point = Vector2{ TopRight.Point.x , Canvas.Point.y };
-
-    //Bottom right Field
-    BottomRight.width = RightToCanvas.width;
-    BottomRight.height = BelowCanvas.height;
-    BottomRight.Point = Vector2{TopRight.Point.x, BelowCanvas.Point.y};
 
 }
 

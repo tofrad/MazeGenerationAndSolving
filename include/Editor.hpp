@@ -1,10 +1,9 @@
 #pragma once
 
 #include <vector>
-
 #include "../lib/raylib/include/raylib.h"
-
 #include "ProgramCallbacks.hpp"
+#include "LayoutManager.hpp"
 
 using namespace std;
 
@@ -28,7 +27,8 @@ public:
 	TileMap CustomMaze;
 
 private:
-	
+	LayoutManager* layout_manager = LayoutManager::GetInstance();
+
 	void createTileMap();
 	void isValid();
 
@@ -41,21 +41,52 @@ private:
 	int window_height = 1080;
 	int window_width = 1920;
 
-	void calculateLandmarks();
+	float General_Offset = 10.0f;
 
-	UI_Rectangle AboveCanvas;
-	UI_Rectangle Canvas;
-	UI_Rectangle BelowCanvas;
+	Vector2 Anchor = Vector2(General_Offset, General_Offset);
+	UI_Rectangle Canvas = {	Anchor.x,
+							Anchor.y,
+					1660,
+					1030
+	};
 
-	UI_Rectangle TopRight;
-	UI_Rectangle RightToCanvas;
-	UI_Rectangle BottomRight;
+	float padding = 10.0f;
 
-	float General_Offset = 10; //10 px Offset
+	Rectangle Slider = {	Anchor.x,
+							Anchor.y +Canvas.height +padding,
+							220,
+							20
 
-	//windows split into parts ( 7 parts Canvas, 1 Part Right Column, with Offset from Borders and between)
-	float WindowSection = (window_width - (3 * General_Offset)) / 8;
+	};
 
+	Rectangle Slider_Textbox = {	Anchor.x + Slider.width + 3 *padding,
+									Slider.y,
+								40,
+								20
+	};
+
+	Vector2 Anchor_Right_Column = Vector2(General_Offset + Canvas.width + padding, General_Offset);
+
+	float column_width = 240.0f;
+	float buttons_height = 24.0f;
+
+	Rectangle Button_Menu = {	Anchor_Right_Column.x,
+								Anchor_Right_Column.y,
+								column_width,
+								buttons_height
+	};
+
+	Rectangle Toggle_Group = {	Anchor_Right_Column.x,
+								Button_Menu.y + buttons_height + padding,
+								column_width,
+								3 * buttons_height
+	};
+
+	Rectangle Button_Generate{	Anchor_Right_Column.x,
+							Toggle_Group.y + 4 * Toggle_Group.height + padding,
+								column_width,
+								buttons_height
+	};
 
 	float Label_height = 30;
 
