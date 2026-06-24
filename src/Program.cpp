@@ -1,8 +1,13 @@
-#include <iostream>
+#define RAYGUI_IMPLEMENTATION
+#include "../lib/raylib/include/raygui.h"
+
+#include "../lib/raylib/include/RL_Tech.h"
+
 #include "Program.hpp"
 #include "Menu.hpp"
 #include "Editor.hpp"
 #include "Player.hpp"
+
 
 Program::Program()
 {
@@ -41,7 +46,9 @@ void Program::InitProgram()
 
     SetTargetFPS(FrameRate);
 
-    //GuiLoadStyle("src//GUI_Style.rgs");
+    GuiLoadStyleDefault();
+    GuiLoadStyleRLTech();
+    // GuiSetStyle("Dark");
 
     //-------------------------------------------------------------------------------------
     handleGeneratorRequest(MazeWidth, Generator);

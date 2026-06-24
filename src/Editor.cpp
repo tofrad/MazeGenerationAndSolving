@@ -32,7 +32,7 @@ void Editor::displayEditor()
 {
     layout_manager->UpdateScale();
 
-	ClearBackground(GRAY);
+	ClearBackground(LIGHTGRAY);
 
     //Above Canvas ############################################################################################################################################################################
 
@@ -225,6 +225,7 @@ void Editor::displayEditor()
 
 void Editor::drawGrid(const int tile_size, const int x_tile_offset, const int y_tile_offset) const
 {
+    Color GridColor = BLACK;
     //draw full grid
     for (int x = 0; x < CustomMaze.TileArray.size(); x++)
     {
@@ -234,24 +235,22 @@ void Editor::drawGrid(const int tile_size, const int x_tile_offset, const int y_
                                            tile_size);
             if (CustomMaze.TileArray[x][y] == 1) {
                 DrawRectangleRec(draw_rec, BLACK);
-                DrawRectangleLinesEx(draw_rec, 1, SKYBLUE);
+                DrawRectangleLinesEx(draw_rec, 1, GridColor);
             }
             else if (CustomMaze.TileArray[x][y] == 2)
             {
                 DrawRectangleRec(draw_rec, BLUE);
-                DrawRectangleLinesEx(draw_rec, 1, SKYBLUE);
+                DrawRectangleLinesEx(draw_rec, 1, GridColor);
             }
             else if (CustomMaze.TileArray[x][y] == 3)
             {
                 DrawRectangleRec(draw_rec, ORANGE);
-                DrawRectangleLinesEx(draw_rec, 1, SKYBLUE);
+                DrawRectangleLinesEx(draw_rec, 1, GridColor);
             }
             else
             {
-                DrawRectangleLinesEx(draw_rec, 1, SKYBLUE);
+                DrawRectangleLinesEx(draw_rec, 1, GridColor);
             }
-
-
         }
     }
 
