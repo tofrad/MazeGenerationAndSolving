@@ -24,10 +24,10 @@ class LayoutManager
 
         void UpdateScale()
         {
-            float screenWidth = GetScreenWidth();
-            float screenHeight = GetScreenHeight();
-            float scaleX = screenWidth / BASE_WIDTH;
-            float scaleY = screenHeight / BASE_HEIGHT;
+            const float screenWidth = GetScreenWidth();
+            const float screenHeight = GetScreenHeight();
+            const float scaleX = screenWidth / BASE_WIDTH;
+            const float scaleY = screenHeight / BASE_HEIGHT;
 
             m_scale = std::min(scaleX, scaleY);
         }

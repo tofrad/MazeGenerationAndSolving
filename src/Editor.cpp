@@ -77,28 +77,29 @@ void Editor::displayEditor()
 
     // Check Canvas Interact #################################################################################################################################################################
 
-    const auto CanvasRect = Rectangle{ Canvas.Point.x, Canvas.Point.y, Canvas.width, Canvas.height };
+    const auto CanvasRect = layout_manager->ScaleRect(Canvas);//Rectangle{ Canvas.Point.x, Canvas.Point.y, Canvas.width, Canvas.height };
 
-    DrawRectangleRec(CanvasRect, LIGHTGRAY);
+    DrawRectangleRec(CanvasRect, MAROON);
 
     const Vector2  mouse = GetMousePosition();
 
-    const int tile_size = min(static_cast<int>(Canvas.width - General_Offset) / slider_value_int,
-                              static_cast<int>(Canvas.height - General_Offset) / tile_map_height);
+    const int tile_size = min(static_cast<int>(CanvasRect.width - General_Offset) / slider_value_int,
+                              static_cast<int>(CanvasRect.height - General_Offset) / tile_map_height);
 
-    const int x_offset =  (Canvas.width - (CustomMaze.size * tile_size)) / 2;
-    const int y_offset =  (Canvas.height - (CustomMaze.height * tile_size)) / 2;
+    const int x_offset =  (CanvasRect.width - (CustomMaze.size * tile_size)) / 2;
+    const int y_offset =  (CanvasRect.height - (CustomMaze.height * tile_size)) / 2;
 
     //center drawing
-    const int x_tile_offset = Canvas.Point.x + x_offset;
-    const int y_tile_offset = Canvas.Point.y + y_offset;
+    const int x_tile_offset = CanvasRect.x + x_offset;
+    const int y_tile_offset = CanvasRect.y + y_offset;
+
+    //Canvas Borders right and under for bound checking
+    const float canvas_x_right = x_tile_offset + (CustomMaze.size * tile_size);
+    const float canvas_y_under = y_tile_offset + (CustomMaze.height * tile_size);
 
     if(CheckCollisionPointRec(mouse, CanvasRect))
-    {   
-        //Canvas Borders right and under for bound checking
-        const float canvas_x_right = Canvas.Point.x + Canvas.width - x_offset;
-        const float canvas_y_under = Canvas.Point.y + Canvas.height - y_offset;
-
+    {
+        DrawCircle(canvas_x_right, canvas_y_under, 40 , LIME);
         //get corresponding mouse tile
         int temp_x = -1;
         int temp_y = -1;
@@ -115,7 +116,7 @@ void Editor::displayEditor()
 
         //check bounds for valid tile and define rec
         if (temp_x >= 0 && temp_y >= 0 && temp_x < CustomMaze.size && temp_y < CustomMaze.height) {
-            highlighted_tile = Rectangle(x_tile_offset + temp_x * tile_size, y_tile_offset + temp_y * tile_size, tile_size, tile_size);
+            highlighted_tile = (Rectangle(x_tile_offset + temp_x * tile_size, y_tile_offset + temp_y * tile_size, tile_size, tile_size));
             Mouse_Tile = Point(temp_x, temp_y);
             highlight_tile = true;
 
@@ -231,8 +232,8 @@ void Editor::drawGrid(const int tile_size, const int x_tile_offset, const int y_
     {
         for (int y = 0; y < CustomMaze.TileArray[x].size(); y++)
         {
-            const Rectangle draw_rec = Rectangle(x_tile_offset + x * tile_size, y_tile_offset + y * tile_size, tile_size,
-                                           tile_size);
+            const Rectangle draw_rec = (Rectangle(x_tile_offset + x * tile_size, y_tile_offset + y * tile_size, tile_size,
+                                           tile_size));
             if (CustomMaze.TileArray[x][y] == 1) {
                 DrawRectangleRec(draw_rec, BLACK);
                 DrawRectangleLinesEx(draw_rec, 1, GridColor);

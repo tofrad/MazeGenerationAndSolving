@@ -44,7 +44,7 @@ private:
 	float General_Offset = 10.0f;
 
 	Vector2 Anchor = Vector2(General_Offset, General_Offset);
-	UI_Rectangle Canvas = {	Anchor.x,
+	Rectangle Canvas = {	Anchor.x,
 							Anchor.y,
 					1660,
 					1030
