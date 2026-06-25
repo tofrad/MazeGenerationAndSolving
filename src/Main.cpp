@@ -22,21 +22,3 @@ int main()
     }
     return error;
 }
-
-//TODO
-// Round out UI
-//Rescale UI functions while remain static record buffer size
-//
-
-//TODO
-// Fix Custom Maze Handling in Recorder and/or Player
-//draws prev maze when pressing play when there should just be a initial frame
-//no drawing apart from initial in path
-
-
-//TODO
-// Prepare Code for WebAssembly
-
-//TODO
-// Implement Program Element Base Class for Menu, Editor, Player
-//
