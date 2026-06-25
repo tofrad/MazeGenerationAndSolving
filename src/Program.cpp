@@ -40,9 +40,9 @@ void Program::InitProgram()
 
     //SetWindowState(FLAG_WINDOW_UNDECORATED);
 
-    //SetWindowState(FLAG_WINDOW_RESIZABLE);
+    SetWindowState(FLAG_WINDOW_RESIZABLE);
 
-    ClearWindowState(FLAG_WINDOW_RESIZABLE);
+    //ClearWindowState(FLAG_WINDOW_RESIZABLE);
 
     SetTargetFPS(FrameRate);
 

@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include "Maze.hpp"
 #include "Pathsolver.hpp"
 #include "ProgramCallbacks.hpp"
