@@ -43,7 +43,7 @@ class Player {
 
 		ProgramCallbacks player_callbacks;
 
-		LayoutManager* layout_manager = LayoutManager::GetInstance();
+		LayoutManager& layout_manager = LayoutManager::GetInstance();
 
 		PlayerState state = PlayerState::CLOSED;
 
@@ -80,18 +80,18 @@ class Player {
 		Rectangle MaxValue_TextBox{anchor01.x + 1192, anchor01.y + 824, 64, 24};
 		Rectangle ButtonMenu{ anchor01.x + 1464, anchor01.y + 832, 120, 24 };
 		//Scaled Values for updated drawing
-		Rectangle Scaled_Canvas = layout_manager->ScaleRect(Canvas);
-		Rectangle Scaled_Sidebar = layout_manager->ScaleRect(Sidebar);
-		Rectangle Scaled_Button_FullRewind = layout_manager->ScaleRect(Button_FullRewind);
-		Rectangle Scaled_Button_Rewind = layout_manager->ScaleRect(Button_Rewind);
-		Rectangle Scaled_Button_Pause = layout_manager->ScaleRect(Button_Pause);
-		Rectangle Scaled_Button_Forward = layout_manager->ScaleRect(Button_Forward);
-		Rectangle Scaled_Button_FullForward = layout_manager->ScaleRect(Button_FullForward);
-		Rectangle Scaled_ToggleSlider_Recordtype = layout_manager->ScaleRect(ToggleSlider_Recordtype);
-		Rectangle Scaled_Slider = layout_manager->ScaleRect(Slider);
-		Rectangle Scaled_Slider_TextBox = layout_manager->ScaleRect(Slider_TextBox);
-		Rectangle Scaled_MaxValue_TextBox = layout_manager->ScaleRect(MaxValue_TextBox);
-		Rectangle Scaled_ButtonMenu = layout_manager->ScaleRect(ButtonMenu);
+		Rectangle Scaled_Canvas = layout_manager.ScaleRect(Canvas);
+		Rectangle Scaled_Sidebar = layout_manager.ScaleRect(Sidebar);
+		Rectangle Scaled_Button_FullRewind = layout_manager.ScaleRect(Button_FullRewind);
+		Rectangle Scaled_Button_Rewind = layout_manager.ScaleRect(Button_Rewind);
+		Rectangle Scaled_Button_Pause = layout_manager.ScaleRect(Button_Pause);
+		Rectangle Scaled_Button_Forward = layout_manager.ScaleRect(Button_Forward);
+		Rectangle Scaled_Button_FullForward = layout_manager.ScaleRect(Button_FullForward);
+		Rectangle Scaled_ToggleSlider_Recordtype = layout_manager.ScaleRect(ToggleSlider_Recordtype);
+		Rectangle Scaled_Slider = layout_manager.ScaleRect(Slider);
+		Rectangle Scaled_Slider_TextBox = layout_manager.ScaleRect(Slider_TextBox);
+		Rectangle Scaled_MaxValue_TextBox = layout_manager.ScaleRect(MaxValue_TextBox);
+		Rectangle Scaled_ButtonMenu = layout_manager.ScaleRect(ButtonMenu);
 
 		//GUI Values-------------------------------------------------
 		int stepValue = 0;

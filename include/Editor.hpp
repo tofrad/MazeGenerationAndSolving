@@ -27,7 +27,7 @@ public:
 	TileMap CustomMaze;
 
 private:
-	LayoutManager* layout_manager = LayoutManager::GetInstance();
+	LayoutManager& layout_manager = LayoutManager::GetInstance();
 
 	void createTileMap();
 	void isValid();

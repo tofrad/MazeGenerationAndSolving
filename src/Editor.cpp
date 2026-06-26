@@ -30,7 +30,7 @@ void Editor::close()
 
 void Editor::displayEditor() 
 {
-    layout_manager->UpdateScale();
+    layout_manager.UpdateScale();
 
 	ClearBackground(LIGHTGRAY);
 
@@ -38,7 +38,7 @@ void Editor::displayEditor()
 
     //Top Right ###############################################################################################################################################################################
 
-    if (GuiButton(layout_manager->ScaleRect(Button_Menu), "Exit to Menu") ){
+    if (GuiButton(layout_manager.ScaleRect(Button_Menu), "Exit to Menu") ){
 
         editor_callbacks.onStateRequest(MENU);
     }
@@ -48,10 +48,10 @@ void Editor::displayEditor()
     //separate buttons with newline, #x# exchange x for icons
     //0 = Start, 1 = Target, 2 = Set Wall, 3 = clear Wall
     //height describes height off each button
-    GuiToggleGroup(layout_manager->ScaleRect(Toggle_Group), "Start\nTarget\nSet\nClear", &toggle_group);
+    GuiToggleGroup(layout_manager.ScaleRect(Toggle_Group), "Start\nTarget\nSet\nClear", &toggle_group);
     //Bottom right ###########################################################################################################################################################################
 
-    if (GuiButton(layout_manager->ScaleRect(Button_Generate), "Generate")) {
+    if (GuiButton(layout_manager.ScaleRect(Button_Generate), "Generate")) {
 
         //get state of editor 
         //check if state is valid and able to convert in solvable Maze
@@ -60,14 +60,14 @@ void Editor::displayEditor()
     }
     // Below Canvas ##########################################################################################################################################################################
 
-    GuiSlider(layout_manager->ScaleRect(Slider), "10", "100", &slider_value_float, 10, 100);
+    GuiSlider(layout_manager.ScaleRect(Slider), "10", "100", &slider_value_float, 10, 100);
 
     slider_value_int = static_cast<int>(slider_value_float);
 
     char slide_buffer[5];
     snprintf(slide_buffer, sizeof(slide_buffer), "%d", slider_value_int);
 
-    GuiTextBox(layout_manager->ScaleRect(Slider_Textbox), slide_buffer, 11, false);
+    GuiTextBox(layout_manager.ScaleRect(Slider_Textbox), slide_buffer, 11, false);
 
     if (slider_value_int != old_slider_value_int) 
     {
@@ -77,9 +77,9 @@ void Editor::displayEditor()
 
     // Check Canvas Interact #################################################################################################################################################################
 
-    const auto CanvasRect = layout_manager->ScaleRect(Canvas);//Rectangle{ Canvas.Point.x, Canvas.Point.y, Canvas.width, Canvas.height };
+    const auto CanvasRect = layout_manager.ScaleRect(Canvas);//Rectangle{ Canvas.Point.x, Canvas.Point.y, Canvas.width, Canvas.height };
 
-    DrawRectangleRec(CanvasRect, MAROON);
+    DrawRectangleRec(CanvasRect, LIGHTGRAY);
 
     const Vector2  mouse = GetMousePosition();
 

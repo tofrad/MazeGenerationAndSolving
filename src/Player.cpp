@@ -51,20 +51,19 @@ void Player::close() {
 
 void Player::displayPlayerGUI()
 {
-    layout_manager->UpdateScale();
-
-    Scaled_Canvas = layout_manager->ScaleRect(Canvas);
-    Scaled_Sidebar = layout_manager->ScaleRect(Sidebar);
-    Scaled_Button_Rewind = layout_manager->ScaleRect(Button_Rewind);
-    Scaled_Button_FullRewind = layout_manager->ScaleRect(Button_FullRewind);
-    Scaled_Button_Pause = layout_manager->ScaleRect(Button_Pause);
-    Scaled_Button_Forward = layout_manager->ScaleRect(Button_Forward);
-    Scaled_Button_FullForward = layout_manager->ScaleRect(Button_FullForward);
-    Scaled_ToggleSlider_Recordtype = layout_manager->ScaleRect(ToggleSlider_Recordtype);
-    Scaled_Slider = layout_manager->ScaleRect(Slider);
-    Scaled_Slider_TextBox = layout_manager->ScaleRect(Slider_TextBox);
-    Scaled_MaxValue_TextBox = layout_manager->ScaleRect(MaxValue_TextBox);
-    Scaled_ButtonMenu = layout_manager->ScaleRect(ButtonMenu);
+    layout_manager.UpdateScale();
+    Scaled_Canvas = layout_manager.ScaleRect(Canvas);
+    Scaled_Sidebar = layout_manager.ScaleRect(Sidebar);
+    Scaled_Button_FullRewind = layout_manager.ScaleRect(Button_FullRewind);
+    Scaled_Button_Rewind = layout_manager.ScaleRect(Button_Rewind);
+    Scaled_Button_Pause = layout_manager.ScaleRect(Button_Pause);
+    Scaled_Button_Forward = layout_manager.ScaleRect(Button_Forward);
+    Scaled_Button_FullForward = layout_manager.ScaleRect(Button_FullForward);
+    Scaled_ToggleSlider_Recordtype = layout_manager.ScaleRect(ToggleSlider_Recordtype);
+    Scaled_Slider = layout_manager.ScaleRect(Slider);
+    Scaled_Slider_TextBox = layout_manager.ScaleRect(Slider_TextBox);
+    Scaled_MaxValue_TextBox = layout_manager.ScaleRect(MaxValue_TextBox);
+    Scaled_ButtonMenu = layout_manager.ScaleRect(ButtonMenu);
 
     ClearBackground(LIGHTGRAY);
     //checking truth for toggle slider

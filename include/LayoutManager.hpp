@@ -1,8 +1,12 @@
 #pragma once
 
 #include <algorithm>
-
 #include "raylib.h"
+
+#ifndef RAYGUI_IMPLEMENTATION
+#include "raygui.h"
+#endif
+
 
 //a singleton for every ui class to scale its elements
 class LayoutManager
@@ -12,10 +16,10 @@ class LayoutManager
         LayoutManager(const LayoutManager &) = delete;
         LayoutManager &operator=(const LayoutManager &) = delete;
 
-        static LayoutManager* GetInstance()
+        static LayoutManager& GetInstance()
         {
             static LayoutManager instance;  // Static local variable
-            return &instance;
+            return instance;
         }
 
         //Base size of every UI Layout
@@ -52,4 +56,6 @@ class LayoutManager
         LayoutManager(){};
         ~LayoutManager(){};
         float m_scale = 1.0f;
+        // const int base_button_text_size =  GuiGetStyle(BUTTON,TEXT_SIZE);
+        // const int base_value_box_text_size =  GuiGetStyle(VALUEBOX,TEXT_SIZE);
 };
