@@ -19,8 +19,8 @@ class LayoutManager
         }
 
         //Base size of every UI Layout
-        static constexpr float BASE_WIDTH = 1920.0f;
-        static constexpr float BASE_HEIGHT = 1080.0f;
+        static constexpr float BASE_WIDTH = 1600.0f;
+        static constexpr float BASE_HEIGHT = 900.0f;
 
         void UpdateScale()
         {
