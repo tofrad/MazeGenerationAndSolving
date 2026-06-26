@@ -38,59 +38,78 @@ private:
 	static void syncToProgram();
 
 	//Windows and UI Size Stuff ################################################################################################################################
-	int window_height = 1080;
-	int window_width = 1920;
+	int window_height = 1600;
+	int window_width = 900;
 
 	float General_Offset = 10.0f;
-
-	Vector2 Anchor = Vector2(General_Offset, General_Offset);
-	Rectangle Canvas = {	Anchor.x,
-							Anchor.y,
-					1660,
-					1030
-	};
-
 	float padding = 10.0f;
 
-	Rectangle Slider = {	Anchor.x,
-							Anchor.y +Canvas.height +padding,
-							220,
-							20
+	void UpdateRectValues();
 
-	};
+	Vector2 anchor01 = { 0, 0 };
+	//Defining Rects
+	Rectangle Canvas{anchor01.x + 16, anchor01.y + 16, 1400, 792};
+	Rectangle SideRect{ anchor01.x + 1424, anchor01.y + 16, 168, 792};
+	Rectangle Button_Save{anchor01.x + 1448, anchor01.y + 680, 120, 24 };
+	Rectangle ButtonSaveAndGen{ anchor01.x + 1448, anchor01.y + 712, 120, 24 };
+	Rectangle SizeSlider{ anchor01.x + 400, anchor01.y + 824, 576, 16 };
+	//should be toggle group
+	Rectangle ButtonSetStart{ anchor01.x + 1448, anchor01.y + 24, 120, 32 };
+	Rectangle ButtonSetTarget{ anchor01.x + 1448, anchor01.y + 64, 120, 32 };
+	Rectangle ButtonSetWall{ anchor01.x + 1448, anchor01.y + 104, 120, 32 };
+	Rectangle ButtonClear{ anchor01.x + 1448, anchor01.y + 144, 120, 32 };
+	Rectangle ButtonWeightMode{ anchor01.x + 1448, anchor01.y + 184, 120, 32 };
 
-	Rectangle Slider_Textbox = {	Anchor.x + Slider.width + 3 *padding,
-									Slider.y,
-								40,
-								20
-	};
+	Rectangle DividerLineWeights{ anchor01.x + 1448, anchor01.y + 224, 120, 16 };
+	Rectangle TextBoxWeights{ anchor01.x + 1448, anchor01.y + 248, 120, 24 };
+	Rectangle SpinnerWeightAmount{ anchor01.x + 1448, anchor01.y + 280, 120, 24 };
+	Rectangle CheckBoxWithNeighbor{ anchor01.x + 1432, anchor01.y + 312, 24, 24 };
+	//TextBox needed??
+	Rectangle CheckBoxWithColor{ anchor01.x + 1432, anchor01.y + 344, 24, 24 };
+	//Textbox needed?
+	Rectangle DividerLineListView{ anchor01.x + 1448, anchor01.y + 376, 120, 16 };
+	Rectangle ListViewMazeGen{ anchor01.x + 1448, anchor01.y + 400, 128, 184 };
+	Rectangle ButtonGenerate{ anchor01.x + 1448, anchor01.y + 592, 120, 24 };
+	Rectangle ButtonClearMaze{ anchor01.x + 1448, anchor01.y + 624, 120, 24 };
+	Rectangle DividerLineGen{ anchor01.x + 1448, anchor01.y + 656, 120, 16 };
+	Rectangle ButtonMenu{ anchor01.x + 1448, anchor01.y + 816, 128, 40 };
 
-	Vector2 Anchor_Right_Column = Vector2(General_Offset + Canvas.width + padding, General_Offset);
+	//Just for test for now
+	Rectangle StatusBarValidMaze{ anchor01.x + 1104, anchor01.y + 824, 120, 24 };
 
-	float column_width = 240.0f;
-	float buttons_height = 24.0f;
+	// Scaled Values for displaying ####################################################################################
+	Rectangle Scaled_Canvas = layout_manager.ScaleRect(Canvas);
+	Rectangle Scaled_SideRect = layout_manager.ScaleRect(SideRect);
+	Rectangle Scaled_Button_Save = layout_manager.ScaleRect(Button_Save);
+	Rectangle Scaled_ButtonSaveAndGen = layout_manager.ScaleRect(ButtonSaveAndGen);
+	Rectangle Scaled_SizeSlider = layout_manager.ScaleRect(SizeSlider);
+	//should be toggle group
+	Rectangle Scaled_ButtonSetStart = layout_manager.ScaleRect(ButtonSetStart);
+	Rectangle Scaled_ButtonSetTarget = layout_manager.ScaleRect(ButtonSetTarget);
+	Rectangle Scaled_ButtonSetWall = layout_manager.ScaleRect(ButtonSetWall);
+	Rectangle Scaled_ButtonClear = layout_manager.ScaleRect(ButtonClear);
+	Rectangle Scaled_ButtonWeightMode = layout_manager.ScaleRect(ButtonWeightMode);
 
-	Rectangle Button_Menu = {	Anchor_Right_Column.x,
-								Anchor_Right_Column.y,
-								column_width,
-								buttons_height
-	};
+	Rectangle Scaled_DividerLineWeights = layout_manager.ScaleRect(DividerLineWeights);
+	Rectangle Scaled_TextBoxWeights = layout_manager.ScaleRect(TextBoxWeights);
+	Rectangle Scaled_SpinnerWeightAmount = layout_manager.ScaleRect(SpinnerWeightAmount);
+	Rectangle Scaled_CheckBoxWithNeighbor = layout_manager.ScaleRect(CheckBoxWithNeighbor);
+	//TextBox needed??
+	Rectangle Scaled_CheckBoxWithColor = layout_manager.ScaleRect(CheckBoxWithColor);
+	//Textbox needed?
+	Rectangle Scaled_DividerLineListView = layout_manager.ScaleRect(DividerLineListView);
+	Rectangle Scaled_ListViewMazeGen = layout_manager.ScaleRect(ListViewMazeGen);
+	Rectangle Scaled_ButtonGenerate = layout_manager.ScaleRect(ButtonGenerate);
+	Rectangle Scaled_ButtonClearMaze = layout_manager.ScaleRect(ButtonClearMaze);
+	Rectangle Scaled_DividerLineGen = layout_manager.ScaleRect(DividerLineGen);
+	Rectangle Scaled_ButtonMenu = layout_manager.ScaleRect(ButtonMenu);
 
-	Rectangle Toggle_Group = {	Anchor_Right_Column.x,
-								Button_Menu.y + buttons_height + padding,
-								column_width,
-								3 * buttons_height
-	};
+	//Just for test for now
+	Rectangle Scaled_StatusBarValidMaze = layout_manager.ScaleRect(StatusBarValidMaze);
 
-	Rectangle Button_Generate{	Anchor_Right_Column.x,
-							Toggle_Group.y + 4 * Toggle_Group.height + padding,
-								column_width,
-								buttons_height
-	};
+	//end of scaled values #############################################################################################
 
-	float Label_height = 30;
-
-	//References for UI Elements #############################################################################################################################
+	//References for UI Elements #######################################################################################
 	float slider_value_float = 50.0f;
 	int slider_value_int = static_cast<int>(slider_value_float);
 	int old_slider_value_int = static_cast<int>(slider_value_float);
