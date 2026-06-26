@@ -3,9 +3,10 @@
 #include <algorithm>
 #include "raylib.h"
 
-#ifndef RAYGUI_IMPLEMENTATION
-#include "raygui.h"
-#endif
+//maybe needed for future font resizing and loading
+// #ifndef RAYGUI_IMPLEMENTATION
+// #include "raygui.h"
+// #endif
 
 
 //a singleton for every ui class to scale its elements
@@ -25,6 +26,9 @@ class LayoutManager
         //Base size of every UI Layout
         static constexpr float BASE_WIDTH = 1600.0f;
         static constexpr float BASE_HEIGHT = 900.0f;
+
+        // const int BASE_TEXT_SIZE = GuiGetStyle(DEFAULT, TEXT_SIZE);
+        // const int BASE_TEXT_PADDING = GuiGetStyle(DEFAULT, TEXT_PADDING);
 
         void UpdateScale()
         {

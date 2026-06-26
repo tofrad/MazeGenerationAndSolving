@@ -52,7 +52,7 @@ class Program
 		int screenWidth = 1920;
 		int screenHeight = 1080;
 
-		int MazeWidth = 40;
+		int MazeWidth = 60;
 		int MazeHeight = 10;
 
 		Recorder Gen_Recorder;

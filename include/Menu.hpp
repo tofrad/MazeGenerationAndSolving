@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ProgramCallbacks.hpp"
+#include "LayoutManager.hpp"
 
 class Program;
 

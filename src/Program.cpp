@@ -1,5 +1,5 @@
 #define RAYGUI_IMPLEMENTATION
-#include "../lib/raylib/include/raygui.h"
+#include "raygui.h"
 
 #include "../lib/raylib/include/RL_Tech.h"
 
