@@ -51,7 +51,8 @@ void Editor::displayEditor()
     //Bottom right ###########################################################################################################################################################################
 
     if (GuiButton(Scaled_ButtonGenerate, "Generate")) {
-
+        //TODO
+        //chack validity and set it to statusbox
         //get state of editor 
         //check if state is valid and able to convert in solvable Maze
         //send costum Maze Request to Program
