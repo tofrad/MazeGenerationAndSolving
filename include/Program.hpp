@@ -4,11 +4,11 @@
 #include "Pathsolver.hpp"
 #include "ProgramCallbacks.hpp"
 
-#define MAX_HEIGHT 249
-#define MAX_WIDTH 249
-
-#define MIN_HEIGHT 11
-#define MIN_WIDTH 11
+// #define MAX_HEIGHT 249
+// #define MAX_WIDTH 249
+//
+// #define MIN_HEIGHT 9
+// #define MIN_WIDTH 15
 
 class Menu;
 class Editor;

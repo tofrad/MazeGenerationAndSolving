@@ -1,13 +1,12 @@
 #define RAYGUI_IMPLEMENTATION
 #include "raygui.h"
-
 #include "../lib/raylib/include/RL_Tech.h"
 
 #include "Program.hpp"
 #include "Menu.hpp"
 #include "Editor.hpp"
 #include "Player.hpp"
-
+#include "Maze_Config.hpp"
 
 Program::Program()
 {
@@ -316,14 +315,12 @@ void Program::centerWindow() const
 
 void Program::CalculateMazeParams(const int width)
 {
-    if (MazeWidth > MAX_WIDTH) {
-    	MazeWidth = MAX_WIDTH;
+    MazeWidth = width;
+    if (MazeWidth > Maze_Config::MAX_WIDTH) {
+    	MazeWidth = Maze_Config::MAX_WIDTH;
     }
-    else if (MazeWidth < MIN_WIDTH) {
-    	MazeWidth = MIN_WIDTH;
-    }
-    else {
-    	MazeWidth = width;
+    else if (MazeWidth < Maze_Config::MIN_WIDTH) {
+    	MazeWidth = Maze_Config::MIN_WIDTH;
     }
     if (MazeWidth % 2 == 0) {
     	MazeWidth = MazeWidth - 1;
@@ -334,11 +331,11 @@ void Program::CalculateMazeParams(const int width)
     	temp_height = temp_height - 1;
     }
 
-    if (temp_height > MAX_HEIGHT) {
-    	MazeHeight = MAX_HEIGHT;
+    if (temp_height > Maze_Config::MAX_HEIGHT) {
+    	MazeHeight = Maze_Config::MAX_HEIGHT;
     }
-    else if (temp_height < MIN_HEIGHT) {
-    	MazeHeight = MIN_HEIGHT;
+    else if (temp_height < Maze_Config::MIN_HEIGHT) {
+    	MazeHeight = Maze_Config::MIN_HEIGHT;
     }
     else {
     	MazeHeight = temp_height;
