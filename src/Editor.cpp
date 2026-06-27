@@ -61,23 +61,27 @@ void Editor::displayEditor()
 
     GuiTextBox(Scaled_TextBoxWeights, "weight amount",DEFAULT, false);
 
-    int weight_spinner_val = 1;
-    GuiSpinner(Scaled_SpinnerWeightAmount, "", &weight_spinner_val, 1, 20, true);
+    //bug in raygui only limits constraints in false
+    GuiSpinner(Scaled_SpinnerWeightAmount, "", &weight_spinner_val, 1, 20, false);
 
-    bool is_with_neighbors = false;
     GuiCheckBox(Scaled_CheckBoxWithNeighbor, "neighbor degr.", &is_with_neighbors);
 
-    bool is_with_colors = false;
     GuiCheckBox(Scaled_CheckBoxWithColor, "show colors", &is_with_colors);
 
     GuiLine(Scaled_DividerLineListView,"Maze Gen");
 
-    int list_view_scroll_idx = 0;
-    int list_view_active = 0;
     GuiListView(Scaled_ListViewMazeGen, "Recursive Backtracking\nKruskal\nHunt&Kill", &list_view_scroll_idx, &list_view_active);
 
-    if (GuiButton(Scaled_ButtonGenerate, "Generate")) {}
-    if (GuiButton(Scaled_ButtonClearMaze, "Reset")) {}
+    if (GuiButton(Scaled_ButtonGenerate, "Generate"))
+    {
+        //TODO
+        //need a callback to request a temp maze with given constraints and convert to custom maze
+    }
+    if (GuiButton(Scaled_ButtonClearMaze, "Reset"))
+    {
+        //clear whole tile map
+        createTileMap();
+    }
 
     GuiLine(Scaled_DividerLineGen, "");
 
@@ -135,13 +139,13 @@ void Editor::displayEditor()
         Point Mouse_Tile = Point(-3,-3);
 
         Rectangle highlighted_tile = {};
-        bool highlight_tile = false;
+        bool highlight_tile_exists = false;
 
         //check bounds for valid tile and define rec
         if (temp_x >= 0 && temp_y >= 0 && temp_x < CustomMaze.size && temp_y < CustomMaze.height) {
             highlighted_tile = (Rectangle(x_tile_offset + temp_x * tile_size, y_tile_offset + temp_y * tile_size, tile_size, tile_size));
             Mouse_Tile = Point(temp_x, temp_y);
-            highlight_tile = true;
+            highlight_tile_exists = true;
 
             //show tile coord.
             char point_buffer_x[5];
@@ -156,86 +160,104 @@ void Editor::displayEditor()
 
         }
         else {
-            highlight_tile = false;
+            highlight_tile_exists = false;
         }
         
         //handle edit events
         // TODO: capture deletion off start or target to pre check validity
         const Point Invalid_Point = Point(-1, -1);
-        //set walls
-        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && highlight_tile && toggle_group == 2) {
 
-            if (Mouse_Tile == CustomMaze.Start) 
+        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && highlight_tile_exists)
+        {
+            switch (toggle_group)
             {
-                CustomMaze.Start = Point(-1, -1);
-            }
-            else if (Mouse_Tile == CustomMaze.Target) 
-            {
-                CustomMaze.Target = Point(-1, -1);
+            case 0: //set start
+                //if valid start exists and current tile isn't this start
+                if (Mouse_Tile != CustomMaze.Start && CustomMaze.Start != Invalid_Point)
+                {
+                    CustomMaze.TileArray[CustomMaze.Start.getX()][CustomMaze.Start.getY()] = 0;
+                    CustomMaze.Start = Point(-1, -1);
+
+                }
+                else if (Mouse_Tile == CustomMaze.Target)
+                {
+                    CustomMaze.Target = Point(-1, -1);
+
+                }
+                CustomMaze.Start.setX(temp_x);
+                CustomMaze.Start.setY(temp_y);
+                CustomMaze.TileArray[temp_x][temp_y] = 2;
+                break;
+
+            case 1: //set target
+                //if valid target exists and current tile isn't this target
+                if (Mouse_Tile != CustomMaze.Target && CustomMaze.Target != Invalid_Point)
+                {
+                    CustomMaze.TileArray[CustomMaze.Target.getX()][CustomMaze.Target.getY()] = 0;
+                    CustomMaze.Target = Point(-1, -1);
+
+                }
+                else if (Mouse_Tile == CustomMaze.Start)
+                {
+                    CustomMaze.Start = Point(-1, -1);
+                }
+                CustomMaze.Target.setX(temp_x);
+                CustomMaze.Target.setY(temp_y);
+                CustomMaze.TileArray[temp_x][temp_y] = 3;
+
+                break;
+            case 2: // set wall
+                if (Mouse_Tile == CustomMaze.Start)
+                {
+                    CustomMaze.Start = Point(-1, -1);
+                }
+                else if (Mouse_Tile == CustomMaze.Target)
+                {
+                    CustomMaze.Target = Point(-1, -1);
+                }
+
+                CustomMaze.TileArray[temp_x][temp_y] = 1;
+                break;
+
+            case 3: // clear cell
+                if (Mouse_Tile == CustomMaze.Start)
+                {
+                    CustomMaze.Start = Point(-1, -1);
+                }
+                else if (Mouse_Tile == CustomMaze.Target)
+                {
+                    CustomMaze.Target = Point(-1, -1);
+                }
+                CustomMaze.TileArray[temp_x][temp_y] = 0;
+                break;
+
+            case 4: // add weights
+
+                break;
+            default:
+                break;
             }
 
-            CustomMaze.TileArray[temp_x][temp_y] = 1;
-        }
-
-        //clear walls
-        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && highlight_tile && toggle_group == 3 || (IsMouseButtonDown(MOUSE_BUTTON_RIGHT) && highlight_tile)) 
+        //TODO
+        //handle weight behav.
+        //right click delete
+        }else if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT) && highlight_tile_exists)
         {
             if (Mouse_Tile == CustomMaze.Start)
             {
+
                 CustomMaze.Start = Point(-1, -1);
-            }
-            else if (Mouse_Tile == CustomMaze.Target)
+            }else if (Mouse_Tile == CustomMaze.Target)
             {
                 CustomMaze.Target = Point(-1, -1);
             }
-
             CustomMaze.TileArray[temp_x][temp_y] = 0;
-        }
-
-        //set start
-        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && highlight_tile && toggle_group == 0) {
-
-            //if valid start exists and current tile isn't this start
-            if (Mouse_Tile != CustomMaze.Start && CustomMaze.Start != Invalid_Point)
-            {
-                CustomMaze.TileArray[CustomMaze.Start.getX()][CustomMaze.Start.getY()] = 0;
-                CustomMaze.Start = Point(-1, -1);
-                
-            }
-            else if (Mouse_Tile == CustomMaze.Target)
-            {
-                CustomMaze.Target = Point(-1, -1);
-
-            }
-            
-            CustomMaze.Start.setX(temp_x);
-            CustomMaze.Start.setY(temp_y);
-            CustomMaze.TileArray[temp_x][temp_y] = 2;
-        }
-
-        //set target
-        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && highlight_tile && toggle_group == 1) {
-
-            if (Mouse_Tile == CustomMaze.Start)
-            {
-                CustomMaze.Start = Point(-1, -1);
-            }//if valid target exists and current tile isn't this target
-            else if (Mouse_Tile != CustomMaze.Target && CustomMaze.Target != Invalid_Point)
-            {
-                CustomMaze.TileArray[CustomMaze.Target.getX()][CustomMaze.Target.getY()] = 0;
-                CustomMaze.Target = Point(-1, -1);
-            }
-
-            CustomMaze.Target.setX(temp_x);
-            CustomMaze.Target.setY(temp_y);
-
-            CustomMaze.TileArray[temp_x][temp_y] = 3;
         }
 
         drawGrid(tile_size, x_tile_offset, y_tile_offset);
 
         //draw highlighted tile if valid 
-        if (highlight_tile) {           
+        if (highlight_tile_exists) {
             DrawRectangleLinesEx(highlighted_tile, 3, RED);
         }
 

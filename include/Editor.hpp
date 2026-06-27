@@ -110,13 +110,21 @@ private:
 	//end of scaled values #############################################################################################
 
 	//References for UI Elements #######################################################################################
+	//size
 	float slider_value_float = 50.0f;
 	int slider_value_int = static_cast<int>(slider_value_float);
 	int old_slider_value_int = static_cast<int>(slider_value_float);
+	//weights
+	int weight_spinner_val = 1;
+	bool is_with_neighbors = false;
+	bool is_with_colors = false;
+	//generator
+	int list_view_scroll_idx = 0;
+	int list_view_active = 0;
 
 	int tile_map_height = max(10, (slider_value_int / 16) * 9);
 
-	int toggle_group = 2;
+	int toggle_group = 0;
 
 	RenderTexture2D buffer = LoadRenderTexture(window_width, window_height);
 
