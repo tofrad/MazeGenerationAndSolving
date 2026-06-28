@@ -1,9 +1,11 @@
 #pragma once
 
+#include <string>
 #include <vector>
 #include "../lib/raylib/include/raylib.h"
 #include "ProgramCallbacks.hpp"
 #include "LayoutManager.hpp"
+#include "Maze_Config.hpp"
 
 using namespace std;
 
@@ -41,9 +43,6 @@ private:
 	int window_height = 1600;
 	int window_width = 900;
 
-	float General_Offset = 10.0f;
-	float padding = 10.0f;
-
 	void UpdateRectValues();
 
 	Vector2 anchor01 = { 0, 0 };
@@ -53,6 +52,7 @@ private:
 	Rectangle Button_Save{anchor01.x + 1448, anchor01.y + 680, 120, 24 };
 	Rectangle ButtonSaveAndGen{ anchor01.x + 1448, anchor01.y + 712, 120, 24 };
 	Rectangle SizeSlider{ anchor01.x + 400, anchor01.y + 824, 576, 16 };
+	Rectangle TextBoxSize{ anchor01.x + 1008, anchor01.y + 824, 56, 24 };
 	//should be toggle group
 	Rectangle ButtonSetStart{ anchor01.x + 1448, anchor01.y + 24, 120, 32 };
 	Rectangle ButtonSetTarget{ anchor01.x + 1448, anchor01.y + 64, 120, 32 };
@@ -83,6 +83,7 @@ private:
 	Rectangle Scaled_Button_Save = layout_manager.ScaleRect(Button_Save);
 	Rectangle Scaled_ButtonSaveAndGen = layout_manager.ScaleRect(ButtonSaveAndGen);
 	Rectangle Scaled_SizeSlider = layout_manager.ScaleRect(SizeSlider);
+	Rectangle Scaled_TextBoxSize = layout_manager.ScaleRect(TextBoxSize);
 	//should be toggle group
 	Rectangle Scaled_ButtonSetStart = layout_manager.ScaleRect(ButtonSetStart);
 	Rectangle Scaled_ButtonSetTarget = layout_manager.ScaleRect(ButtonSetTarget);
@@ -109,8 +110,15 @@ private:
 
 	//end of scaled values #############################################################################################
 
+	//helping functions for ui values
+	void clamp_sizes_to_uneven();
 	//References for UI Elements #######################################################################################
 	//size
+	const std::string min_width_str = std::to_string(Maze_Config::MIN_WIDTH);
+	const std::string max_width_str = std::to_string(Maze_Config::MAX_WIDTH);
+
+
+
 	float slider_value_float = 50.0f;
 	int slider_value_int = static_cast<int>(slider_value_float);
 	int old_slider_value_int = static_cast<int>(slider_value_float);
@@ -122,7 +130,10 @@ private:
 	int list_view_scroll_idx = 0;
 	int list_view_active = 0;
 
-	int tile_map_height = max(10, (slider_value_int / 16) * 9);
+	int tile_map_width = slider_value_int;
+	int tile_map_height = max(10, (tile_map_width / 16) * 9);
+
+	std::string tile_map_width_str = std::to_string(tile_map_width);
 
 	int toggle_group = 0;
 

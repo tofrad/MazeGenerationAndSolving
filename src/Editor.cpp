@@ -1,6 +1,7 @@
 #include "Editor.hpp"
 #include <iostream>
 #include "raygui.h"
+#include "Maze_Config.hpp"
 
 
 Editor::Editor()
@@ -83,37 +84,38 @@ void Editor::displayEditor()
         //clear whole tile map
         createTileMap();
     }
+    if (GuiButton(Scaled_ButtonSaveAndGen, "Save & Gen"))
+    {
+        //TODO
+        //check valid maze
+        editor_callbacks.onGenerateRequest(slider_value_int, GenerationMethod::CUSTOM);
+    }
 
     GuiLine(Scaled_DividerLineGen, "");
 
     GuiStatusBar(Scaled_StatusBarValidMaze, "Maze Validity");
 
 
-    GuiSlider(Scaled_SizeSlider, "10", "100", &slider_value_float, 10, 100);
+    GuiSlider(Scaled_SizeSlider, min_width_str.c_str(), max_width_str.c_str(), &slider_value_float, Maze_Config::MIN_WIDTH, Maze_Config::MAX_WIDTH);
 
     slider_value_int = static_cast<int>(slider_value_float);
-
-    char slide_buffer[5];
-    snprintf(slide_buffer, sizeof(slide_buffer), "%d", slider_value_int);
-
-    // TODO
-    //needs coords
-    //GuiTextBox(layout_manager.ScaleRect(Slider_Textbox), slide_buffer, 11, false);
 
     if (slider_value_int != old_slider_value_int) 
     {
         createTileMap();
+        clamp_sizes_to_uneven();
         old_slider_value_int = slider_value_int;
     }
 
+    GuiTextBox(Scaled_TextBoxSize, const_cast<char*>(tile_map_width_str.c_str()), 11, false);
     // Check Canvas Interact #################################################################################################################################################################
 
     const auto CanvasRect = Scaled_Canvas;
 
     const Vector2  mouse = GetMousePosition();
 
-    const int tile_size = min(static_cast<int>(CanvasRect.width - General_Offset) / slider_value_int,
-                              static_cast<int>(CanvasRect.height - General_Offset) / tile_map_height);
+    const int tile_size = min(static_cast<int>(CanvasRect.width) / slider_value_int,
+                              static_cast<int>(CanvasRect.height) / tile_map_height);
 
     const int x_offset =  (CanvasRect.width - (CustomMaze.size * tile_size)) / 2;
     const int y_offset =  (CanvasRect.height - (CustomMaze.height * tile_size)) / 2;
@@ -300,7 +302,6 @@ void Editor::drawGrid(const int tile_size, const int x_tile_offset, const int y_
             }
         }
     }
-
 }
 
 void Editor::syncToProgram() 
@@ -315,6 +316,7 @@ void Editor::UpdateRectValues()
          Scaled_Button_Save = layout_manager.ScaleRect(Button_Save);
          Scaled_ButtonSaveAndGen = layout_manager.ScaleRect(ButtonSaveAndGen);
          Scaled_SizeSlider = layout_manager.ScaleRect(SizeSlider);
+        Scaled_TextBoxSize = layout_manager.ScaleRect(TextBoxSize);
 
          Scaled_ButtonSetStart = layout_manager.ScaleRect(ButtonSetStart);
          Scaled_ButtonSetTarget = layout_manager.ScaleRect(ButtonSetTarget);
@@ -338,26 +340,50 @@ void Editor::UpdateRectValues()
          Scaled_StatusBarValidMaze = layout_manager.ScaleRect(StatusBarValidMaze);
 
 }
+//pre-check maze constraints
+void Editor::clamp_sizes_to_uneven()
+{
+    if (slider_value_int % 2 == 0)
+    {
+        tile_map_width = slider_value_int - 1;
+    }else
+    {
+        tile_map_width = slider_value_int;
+    }
+
+    tile_map_height = (tile_map_width / 16) * 9;
+    if (tile_map_height % 2 == 0)
+    {
+        tile_map_height = tile_map_height - 1;
+    }
+    tile_map_width = std::clamp(tile_map_width, Maze_Config::MIN_WIDTH, Maze_Config::MAX_WIDTH);
+    tile_map_height = std::clamp(tile_map_height, Maze_Config::MIN_HEIGHT, Maze_Config::MAX_HEIGHT);
+
+    //update original dependencies
+    slider_value_int = tile_map_width;
+    slider_value_float = static_cast<float>(tile_map_width);
+    tile_map_width_str = std::to_string(tile_map_width);
+}
 
 void Editor::createTileMap()
 {
+    clamp_sizes_to_uneven();
 
     CustomMaze.Start = Point(-1, -1);
     CustomMaze.Target = Point(-1, -1);
 
-    tile_map_height = max(10, (slider_value_int / 16) * 9);
-
-    CustomMaze.size = slider_value_int;
+    CustomMaze.size = tile_map_width;
     CustomMaze.height = tile_map_height;
 
     CustomMaze.TileArray.clear();
 
-    for (int w = 0; w < slider_value_int ; w++)
+    for (int w = 0; w < tile_map_width ; w++)
     {
         vector<char> temp(tile_map_height, 0); 
         
         CustomMaze.TileArray.push_back(temp);
     }
+    int k = 0;
 }
 
 void Editor::isValid()
