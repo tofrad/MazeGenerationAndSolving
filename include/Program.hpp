@@ -31,15 +31,11 @@ class Program
 		void handleGeneratorRequest(int size, GenerationMethod method);
 		void handleSolveRequest(SolvingMethod method);
 
-		void handleWindowChange(Screensize size);
-
 	private:
 
 		void setState(ProgramState next_state);
 
 		ProgramCallbacks createCallbacks();
-
-		Screensize Windowsize = FHD;
 
 		GenerationMethod Generator = REC_BACKTRACKING;
 

@@ -170,55 +170,6 @@ void Program::handleSolveRequest(const SolvingMethod method)
     Solve_Recorder.saveLastFrame(M.getGeneratedMaze());
 }
 
-void Program::handleWindowChange(const Screensize size)
-{
-    SetWindowState(FLAG_WINDOW_RESIZABLE);
-
-    if (this->Windowsize == size) {
-        ClearWindowState(FLAG_WINDOW_RESIZABLE);
-        return;
-    }
-    else {
-        switch (size) {
-        case UHD:
-            screenWidth = 2560;
-            screenHeight = 1440;
-            Windowsize = UHD;
-            break;
-
-        case FHD:
-            screenWidth = 1920;
-            screenHeight = 1080;
-            Windowsize = FHD;
-            break;
-
-        case WSXGA:
-            screenWidth = 1600;
-            screenHeight = 900;
-            Windowsize = WSXGA;
-            break;
-
-        case SMALL:
-            screenWidth = 960;
-            screenHeight = 540;
-            Windowsize = SMALL;
-            break;
-    
-        default:
-            handleWindowChange(SMALL);
-            break;
-        }
-        SetWindowState(FLAG_WINDOW_RESIZABLE);
-
-        SetWindowSize(screenWidth, screenHeight);
-
-        centerWindow();
-
-        ClearWindowState(FLAG_WINDOW_RESIZABLE);
-    }
-    ClearWindowState(FLAG_WINDOW_RESIZABLE);
-}
-
 void Program::setState(const ProgramState next_state)
 {
     switch (next_state) {
@@ -274,10 +225,6 @@ ProgramCallbacks Program::createCallbacks()
         this->handleSolveRequest(method);
     };
 
-    callbacks.onWindowRequest = [this](const Screensize size) {
-        this->handleWindowChange(size);
-    };
-
     callbacks.onStateRequest = [this](const ProgramState state) {
         this->handleStateRequest(state);
     };
@@ -285,7 +232,6 @@ ProgramCallbacks Program::createCallbacks()
     callbacks.getGenerator = [this]() {return Generator; };
     callbacks.getMazeSize = [this]() {return MazeWidth; };
     callbacks.getSolver = [this]() {return Solver; };
-    callbacks.getWindowSize = [this]() {return Windowsize; };
 
     return callbacks;
 }

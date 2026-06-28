@@ -30,14 +30,6 @@ typedef enum {
 
 } SolvingMethod;
 
-typedef enum {
-	UHD = 0,	//2560x1440
-	FHD = 1,	//1920x1080
-	WSXGA = 2,	//1600x900
-	SMALL = 3	//960x540
-
-} Screensize;
-
 struct TileMap{
 
 	int size = 0;
@@ -49,14 +41,5 @@ struct TileMap{
 
 	bool isValid = false;
 	bool isSolvable = false;
-
-};
-
-//Helper to define and calculate positions of Elements to draw inside
-struct UI_Rectangle{
-
-	Vector2 Point{ 0,0 };
-	float width = 0;
-	float height = 0;
 
 };
