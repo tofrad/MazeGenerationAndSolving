@@ -30,6 +30,7 @@ class Program
 
 		void handleGeneratorRequest(int size, GenerationMethod method);
 		void handleSolveRequest(SolvingMethod method);
+		static void handleCustomGenerateRequest(TileMap& custom, GenerationMethod GenMethod);
 
 	private:
 
@@ -44,9 +45,6 @@ class Program
 		ProgramState State = STOPPED;
 
 		ProgramState LastState = MENU;
-
-		int screenWidth = 1920;
-		int screenHeight = 1080;
 
 		int MazeWidth = 60;
 		int MazeHeight = 10;

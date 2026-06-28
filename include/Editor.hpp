@@ -26,10 +26,12 @@ public:
 
 	void displayEditor();
 
-	TileMap CustomMaze;
+	TileMap* getCustomMaze();
 
 private:
 	LayoutManager& layout_manager = LayoutManager::GetInstance();
+
+	TileMap CustomMaze;
 
 	void createTileMap();
 	void isValid();

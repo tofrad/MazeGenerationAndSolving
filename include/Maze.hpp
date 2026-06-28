@@ -17,6 +17,8 @@ class Maze
 
 		explicit Maze(const TileMap* custom_maze, Recorder* recorder);
 
+		void GetTileMapFromMaze( TileMap& custom) const;
+
 		Cell* getStart() const;
 		vector<Cell*> getGeneratedMaze();
 

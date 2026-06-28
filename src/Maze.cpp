@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <random>
 #include <ctime>
+#include <memory>
 
 #define MAX_HEIGHT 249
 #define MAX_WIDTH 249
@@ -73,6 +74,37 @@ Maze::Maze(const TileMap* custom_maze, Recorder* recorder)
 	record = recorder;
 	record->setRecordSize(this->height, this->width);
 	record->saveInitialFrame(Cell_List);
+}
+
+void Maze::GetTileMapFromMaze(TileMap& custom) const
+{
+
+	for (int x = 0; x < this->width; x++)
+	{
+		for (int y = 0; y < this->height; y++)
+		{ auto flags = Cell_Grid[x][y]->getCellFlags_Next();
+			if (flags->isStart )
+			{
+				//set start
+				custom.TileArray[x][y] = 2;
+			}else if (flags->isTarget )
+			{
+				//set target
+				custom.TileArray[x][y] = 3;
+			}else if (flags->isWall )
+			{
+				//set wall
+				custom.TileArray[x][y] = 1;
+			}else
+			{
+				//normal cell
+				custom.TileArray[x][y] = 0;
+			}
+
+		}
+	}
+
+
 }
 
 Cell* Maze::getStart() const
@@ -156,9 +188,16 @@ void Maze::generateMaze(const GenerationMethod method, Recorder* recorder)
 	Cell_List[rand2]->setTarget();
 	Target = Cell_List[rand2];
 
+	std::unique_ptr<Recorder> tempRecorder;
+	if (recorder == nullptr)
+	{
+		tempRecorder = std::make_unique<Recorder>();
+		recorder = tempRecorder.get();
+	}
+	//The address of the local variable tempRecorder may escape the function ->doesn't matter just a temp mock object
 	record = recorder;
 	record->startRecording();
-	recorder->saveInitialFrame(Cell_List);
+	record->saveInitialFrame(Cell_List);
 
 	switch (method) {
 

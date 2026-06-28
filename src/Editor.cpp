@@ -51,14 +51,6 @@ void Editor::displayEditor()
     GuiToggleGroup(Scaled_ButtonSetStart, "Start\nTarget\nSet Wall\nClear\nWeights", &toggle_group);
     //Bottom right ###########################################################################################################################################################################
 
-    if (GuiButton(Scaled_ButtonGenerate, "Generate")) {
-        //TODO
-        //chack validity and set it to statusbox
-        //get state of editor 
-        //check if state is valid and able to convert in solvable Maze
-        //send costum Maze Request to Program
-        editor_callbacks.onStateRequest(MENU);
-    }
     GuiLine(Scaled_DividerLineWeights,"weights");
 
     GuiTextBox(Scaled_TextBoxWeights, "weight amount",DEFAULT, false);
@@ -78,6 +70,7 @@ void Editor::displayEditor()
     {
         //TODO
         //need a callback to request a temp maze with given constraints and convert to custom maze
+        editor_callbacks.onCustomGenerateRequest(CustomMaze, static_cast<GenerationMethod>(list_view_active));
     }
     if (GuiButton(Scaled_ButtonClearMaze, "Reset"))
     {
@@ -95,7 +88,6 @@ void Editor::displayEditor()
 
     GuiStatusBar(Scaled_StatusBarValidMaze, "Maze Validity");
 
-
     GuiSlider(Scaled_SizeSlider, min_width_str.c_str(), max_width_str.c_str(), &slider_value_float, Maze_Config::MIN_WIDTH, Maze_Config::MAX_WIDTH);
 
     slider_value_int = static_cast<int>(slider_value_float);
@@ -106,10 +98,9 @@ void Editor::displayEditor()
         clamp_sizes_to_uneven();
         old_slider_value_int = slider_value_int;
     }
-
     GuiTextBox(Scaled_TextBoxSize, const_cast<char*>(tile_map_width_str.c_str()), 11, false);
-    // Check Canvas Interact #################################################################################################################################################################
 
+    // Check Canvas Interact #################################################################################################################################################################
     const auto CanvasRect = Scaled_Canvas;
 
     const Vector2  mouse = GetMousePosition();
@@ -149,18 +140,6 @@ void Editor::displayEditor()
             highlighted_tile = (Rectangle(x_tile_offset + temp_x * tile_size, y_tile_offset + temp_y * tile_size, tile_size, tile_size));
             Mouse_Tile = Point(temp_x, temp_y);
             highlight_tile_exists = true;
-
-            //show tile coord.
-            char point_buffer_x[5];
-            snprintf(point_buffer_x, sizeof(point_buffer_x), "%d", Mouse_Tile.getX());
-
-            // GuiTextBox(Rectangle{ AboveCanvas.Point.x , AboveCanvas.Point.y, WindowSection, Label_height }, point_buffer_x, 11, false);
-
-            char point_buffer_y[5];
-            snprintf(point_buffer_y, sizeof(point_buffer_y), "%d", Mouse_Tile.getY());
-
-            // GuiTextBox(Rectangle{ AboveCanvas.Point.x + WindowSection , AboveCanvas.Point.y, WindowSection, Label_height }, point_buffer_y, 11, false);
-
         }
         else {
             highlight_tile_exists = false;
@@ -270,6 +249,11 @@ void Editor::displayEditor()
     else {
         drawGrid(tile_size, x_tile_offset, y_tile_offset);
     }
+}
+
+TileMap* Editor::getCustomMaze()
+{
+    return &CustomMaze;
 }
 
 void Editor::drawGrid(const int tile_size, const int x_tile_offset, const int y_tile_offset) const

@@ -35,7 +35,7 @@ void Program::InitProgram()
     // Initialization
     //--------------------------------------------------------------------------------------
 
-    InitWindow(screenWidth, screenHeight, "Maze Generator with raylib");
+    InitWindow(1600, 900, "Maze Generator with raylib");
 
     //SetWindowState(FLAG_WINDOW_UNDECORATED);
 
@@ -91,9 +91,6 @@ int Program::Run()
 
         ClearBackground(LIGHTGRAY);
 
-        int window_width = GetScreenWidth();
-        int window_height = GetScreenHeight();
-
         if (State == MENU) {
             menu->displayGUI();
         }
@@ -142,10 +139,10 @@ void Program::handleGeneratorRequest(const int size, const GenerationMethod meth
     if (Generator == CUSTOM) {
 
         //forward TileArray from editor to Maze
-        if (editor->CustomMaze.isValid) {
+        if (editor->getCustomMaze()->isValid) {
             //size params at this point unknown, needs to be set in Maze class
             Gen_Recorder = Recorder(0,0, RecordType::MAZE);
-            M = Maze(&editor->CustomMaze, &Gen_Recorder);
+            M = Maze(editor->getCustomMaze(), &Gen_Recorder);
             handleSolveRequest(Solver);
         }
         else {
@@ -168,6 +165,15 @@ void Program::handleSolveRequest(const SolvingMethod method)
     Solve_Recorder = Recorder(M.getGeneratedMaze(), M.getHeight(), M.getWidth(), RecordType::PATH);
     S = Pathsolver(M.getStart(), Solver, &Solve_Recorder);
     Solve_Recorder.saveLastFrame(M.getGeneratedMaze());
+}
+
+void Program::handleCustomGenerateRequest(TileMap& custom, const GenerationMethod GenMethod)
+{
+    const int maze_size = custom.size;
+    const int maze_height = custom.height;
+
+    const Maze temp_maze = Maze(maze_size, maze_height, GenMethod, nullptr);
+    temp_maze.GetTileMapFromMaze(custom);
 }
 
 void Program::setState(const ProgramState next_state)
@@ -229,6 +235,10 @@ ProgramCallbacks Program::createCallbacks()
         this->handleStateRequest(state);
     };
 
+    callbacks.onCustomGenerateRequest = [this](TileMap& Custom, GenerationMethod GenMethod){
+        this->handleCustomGenerateRequest(Custom, GenMethod);
+    };
+
     callbacks.getGenerator = [this]() {return Generator; };
     callbacks.getMazeSize = [this]() {return MazeWidth; };
     callbacks.getSolver = [this]() {return Solver; };
@@ -241,7 +251,7 @@ void Program::centerWindow() const
     const int monitor = GetCurrentMonitor();
     const int monitor_width = GetMonitorWidth(monitor);
     const int monitor_height = GetMonitorHeight(monitor);
-    SetWindowPosition((int)(monitor_width / 2) - (int)(screenWidth / 2), (int)(monitor_height / 2) - (int)(screenHeight / 2));
+    // SetWindowPosition((int)(monitor_width / 2) - (int)(screenWidth / 2), (int)(monitor_height / 2) - (int)(screenHeight / 2));
 }
 // void Program::getLastMazeFrame() const
 // {
