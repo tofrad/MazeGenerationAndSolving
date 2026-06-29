@@ -1,7 +1,8 @@
 #include "Maze.hpp"
 #include <algorithm>
+#include <chrono>
 #include <random>
-#include <ctime>
+
 #include <memory>
 
 #define MAX_HEIGHT 249
@@ -23,7 +24,9 @@ Maze::Maze(const int w, const int h, const GenerationMethod method, Recorder* re
 	this->height = h;
 	this->width = w;
 
-	rand_gen.seed(time(nullptr));
+	const auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+	rand_gen.seed(static_cast<unsigned int>(ms));
+
 	generateMaze(method, recorder);
 }
 
@@ -82,15 +85,18 @@ void Maze::GetTileMapFromMaze(TileMap& custom) const
 	for (int x = 0; x < this->width; x++)
 	{
 		for (int y = 0; y < this->height; y++)
-		{ auto flags = Cell_Grid[x][y]->getCellFlags_Next();
+		{
+			const auto flags = Cell_Grid[x][y]->getCellFlags_Next();
 			if (flags->isStart )
 			{
 				//set start
 				custom.TileArray[x][y] = 2;
+				custom.Start = {x,y};
 			}else if (flags->isTarget )
 			{
 				//set target
 				custom.TileArray[x][y] = 3;
+				custom.Target = {x,y};
 			}else if (flags->isWall )
 			{
 				//set wall
