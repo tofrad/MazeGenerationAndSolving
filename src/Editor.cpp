@@ -64,12 +64,10 @@ void Editor::displayEditor()
 
     GuiLine(Scaled_DividerLineListView,"Maze Gen");
 
-    GuiListView(Scaled_ListViewMazeGen, "Recursive Backtracking\nKruskal\nHunt&Kill", &list_view_scroll_idx, &list_view_active);
+    GuiListView(Scaled_ListViewMazeGen, Maze_Config::GEN_INPUT, &list_view_scroll_idx, &list_view_active);
 
     if (GuiButton(Scaled_ButtonGenerate, "Generate"))
     {
-        //TODO
-        //need a callback to request a temp maze with given constraints and convert to custom maze
         editor_callbacks.onCustomGenerateRequest(CustomMaze, static_cast<GenerationMethod>(list_view_active));
     }
     if (GuiButton(Scaled_ButtonClearMaze, "Reset"))
@@ -81,6 +79,7 @@ void Editor::displayEditor()
     {
         //TODO
         //check valid maze
+        isValid();
         editor_callbacks.onGenerateRequest(slider_value_int, GenerationMethod::CUSTOM);
     }
 
@@ -88,7 +87,9 @@ void Editor::displayEditor()
 
     GuiStatusBar(Scaled_StatusBarValidMaze, "Maze Validity");
 
-    GuiSlider(Scaled_SizeSlider, min_width_str.c_str(), max_width_str.c_str(), &slider_value_float, Maze_Config::MIN_WIDTH, Maze_Config::MAX_WIDTH);
+    GuiSlider(Scaled_SizeSlider, Maze_Config::MIN_W_STR.c_str(), Maze_Config::MAX_W_STR.c_str(),
+                                &slider_value_float,
+                                Maze_Config::MIN_WIDTH, Maze_Config::MAX_WIDTH);
 
     slider_value_int = static_cast<int>(slider_value_float);
 

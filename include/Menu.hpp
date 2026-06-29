@@ -86,6 +86,7 @@ class Menu
 		Rectangle Scaled_LinePlayerEditor = layout_manager.ScaleRect(LinePlayerEditor);
 
 		//GUI Variables-------------------------------------------------------
+		void clamp_to_uneven();
 		int ListViewGenerationScrollIndex = 0;
 		int ListViewGenerationActive = 0;
 
@@ -94,7 +95,7 @@ class Menu
 
 		bool CheckBoxWeightsChecked = false;
 
-		float SliderSizeValue = 0.0f;
+		float SliderSizeValue = 50.0f;
 		char TextBoxSizeText[8] = "";
 
 		int SpinnerWeightCntValue = 0;

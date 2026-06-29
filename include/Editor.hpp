@@ -115,12 +115,6 @@ private:
 	//helping functions for ui values
 	void clamp_sizes_to_uneven();
 	//References for UI Elements #######################################################################################
-	//size
-	const std::string min_width_str = std::to_string(Maze_Config::MIN_WIDTH);
-	const std::string max_width_str = std::to_string(Maze_Config::MAX_WIDTH);
-
-
-
 	float slider_value_float = 50.0f;
 	int slider_value_int = static_cast<int>(slider_value_float);
 	int old_slider_value_int = static_cast<int>(slider_value_float);

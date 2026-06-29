@@ -1,7 +1,8 @@
 #include "Menu.hpp"
 #include "Program.hpp"
+#include "Maze_Config.hpp"
 
-#include "../lib/raylib/include/raygui.h"
+#include "raygui.h"
 
 Menu::Menu()
 {
@@ -48,14 +49,14 @@ void Menu::displayGUI()
     ClearBackground(LIGHTGRAY);
     //draw ui ###############################################################################################
     //Maze List View
-    GuiListView(Scaled_ListViewGeneration,"Recursive Backtracking\nKruskal\nHunt&Kill\nCustom", &ListViewGenerationScrollIndex, &Maze_GUI);
+    GuiListView(Scaled_ListViewGeneration,Maze_Config::GEN_INPUT, &ListViewGenerationScrollIndex, &Maze_GUI);
     //Path List View
-    GuiListView(Scaled_ListViewSolving, "DFS\nBFS", &ListViewSolvingScrollIndex, &Path_GUI);
+    GuiListView(Scaled_ListViewSolving, Maze_Config::SOLVE_INPUT, &ListViewSolvingScrollIndex, &Path_GUI);
 
     GuiCheckBox(Scaled_CheckBoxWeights, "with weights", &CheckBoxWeightsChecked);
 
-    GuiSlider(Scaled_SliderSize,"10", "100", &SliderSizeValue, 10, 100);
-    MazeSize = static_cast<int>(SliderSizeValue);
+    GuiSlider(Scaled_SliderSize,Maze_Config::MIN_W_STR.c_str(), Maze_Config::MAX_W_STR.c_str(), &SliderSizeValue, Maze_Config::MIN_WIDTH,Maze_Config::MAX_WIDTH);
+    clamp_to_uneven();
 
     snprintf(TextBoxSizeText, sizeof(TextBoxSizeText), "%d", MazeSize);
     GuiTextBox(Scaled_TextBoxSize, TextBoxSizeText, DEFAULT, false);
@@ -196,4 +197,18 @@ void Menu::UpdateRectValues()
     Scaled_ButtonEditor = layout_manager.ScaleRect(ButtonEditor);
     Scaled_ButtonPlayer = layout_manager.ScaleRect(ButtonPlayer);
     Scaled_LinePlayerEditor = layout_manager.ScaleRect(LinePlayerEditor);
+}
+
+void Menu::clamp_to_uneven()
+{
+    MazeSize = static_cast<int>(SliderSizeValue);
+
+    if (MazeSize % 2 == 0)
+    {
+        MazeSize = MazeSize - 1;
+    }
+    MazeSize = std::clamp(MazeSize, Maze_Config::MIN_WIDTH, Maze_Config::MAX_WIDTH);
+
+    SliderSizeValue = static_cast<float>(MazeSize);
+
 }

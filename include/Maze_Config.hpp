@@ -10,4 +10,12 @@ namespace Maze_Config
 
     //maze weight limits
 
+    //maze strings
+    const std::string MIN_W_STR = std::to_string(MIN_WIDTH);
+    const std::string MAX_W_STR = std::to_string(MAX_WIDTH);
+
+    //Algorithm inputs
+    inline const char* GEN_INPUT = "Recursive Backtracking\nKruskal\nHunt&Kill\nCustom";
+    inline const char* SOLVE_INPUT = "BFS\nDFS";
+
 }
