@@ -27,10 +27,16 @@ void Menu::open()
 {
     state = MenuState::OPEN;
     syncToProgram();
+    last_maze_rec_step = menu_callbacks.getGeneratorRecording()->getStep();
+    menu_callbacks.getGeneratorRecording()->playLastFrame();
+    last_path_rec_step = menu_callbacks.getSolveRecording()->getStep();
+    menu_callbacks.getSolveRecording()->playLastFrame();
 }
 
 void Menu::close()
 {
+    menu_callbacks.getGeneratorRecording()->playStep(last_maze_rec_step);
+    menu_callbacks.getSolveRecording()->playStep(last_path_rec_step);
     state = MenuState::CLOSED;
 }
 
@@ -42,7 +48,7 @@ void Menu::displayGUI()
     ClearBackground(LIGHTGRAY);
     //draw ui ###############################################################################################
     //Maze List View
-    GuiListView(Scaled_ListViewGeneration,"Recursive Backtracking\nKruskal\nHunt & Kill", &ListViewGenerationScrollIndex, &Maze_GUI);
+    GuiListView(Scaled_ListViewGeneration,"Recursive Backtracking\nKruskal\nHunt&Kill\nCustom", &ListViewGenerationScrollIndex, &Maze_GUI);
     //Path List View
     GuiListView(Scaled_ListViewSolving, "DFS\nBFS", &ListViewSolvingScrollIndex, &Path_GUI);
 
@@ -74,19 +80,59 @@ void Menu::displayGUI()
     if (GuiButton(Scaled_ButtonPlayer, "Player")){Player_Button_pressed = true;};
     GuiLine(Scaled_LinePlayerEditor, "");
 
-    DrawRectangleRec(Scaled_GeneratorCanvas, SKYBLUE);
-    DrawRectangleRec(Scaled_SolvingCanvas, BROWN);
+    const auto gen_frame = menu_callbacks.getGeneratorRecording()->getFrameTexture();
+    const auto solve_frame = menu_callbacks.getSolveRecording()->getFrameTexture();
+    // Calculate scale to fit canvas
+    const float scaleX = (float)Scaled_GeneratorCanvas.width / gen_frame.texture.width;
+    const float scaleY = (float)Scaled_GeneratorCanvas.height / gen_frame.texture.height;
+    const float scale = min(scaleX, scaleY);  // Maintain aspect ratio
+
+    const auto source = Rectangle{ 0, static_cast<float>(gen_frame.texture.height), static_cast<float>(gen_frame.texture.width), -static_cast<float>(gen_frame.texture.height)};
+
+    // draw frame texture to canvas
+    DrawTexturePro(
+          gen_frame.texture,
+          source,
+          Scaled_GeneratorCanvas,
+          Vector2{0,0},
+          0,
+          WHITE);
+    DrawRectangleLinesEx(Scaled_GeneratorCanvas, 2,  BLACK);
+
+    DrawTexturePro(
+      solve_frame.texture,
+      source,
+      Scaled_SolvingCanvas,
+      Vector2{0,0},
+      0,
+      WHITE);
+    DrawRectangleLinesEx(Scaled_SolvingCanvas, 2,  BLACK);
+
+    // DrawRectangleRec(Scaled_GeneratorCanvas, SKYBLUE);
+    // DrawRectangleRec(Scaled_SolvingCanvas, BROWN);
 
     // resolve actions ######################################################################################
     if (state == MenuState::OPEN) {
 
         //Resolve Actions here
         if (Generate_Button_pressed) {
+            MazeMethod = static_cast<GenerationMethod>(Maze_GUI);
             menu_callbacks.onGenerateRequest(MazeSize, MazeMethod);
+
+            last_maze_rec_step = menu_callbacks.getGeneratorRecording()->getStep();
+            menu_callbacks.getGeneratorRecording()->playLastFrame();
+            last_path_rec_step = menu_callbacks.getSolveRecording()->getStep();
+            menu_callbacks.getSolveRecording()->playLastFrame();
+
             Generate_Button_pressed = false;
         }
         if (Solve_Button_pressed) {
+            PathMethod = static_cast<SolvingMethod>(Path_GUI);
             menu_callbacks.onSolveRequest(PathMethod);
+
+            last_path_rec_step = menu_callbacks.getSolveRecording()->getStep();
+            menu_callbacks.getSolveRecording()->playLastFrame();
+
             Solve_Button_pressed = false;
         }
         if (Exit_Button_pressed) {
@@ -94,10 +140,12 @@ void Menu::displayGUI()
             Exit_Button_pressed = false;
         }
         if (Editor_Button_pressed) {
+            close();
             requestStateChange(EDITING);
             Editor_Button_pressed = false;
         }
         if (Player_Button_pressed) {
+            close();
             requestStateChange(PLAYER);
             Player_Button_pressed = false;
         }

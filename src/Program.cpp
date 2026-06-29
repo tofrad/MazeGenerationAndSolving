@@ -3,6 +3,11 @@
 #include "../lib/raylib/include/RL_Tech.h"
 
 #include "Program.hpp"
+
+#include <chrono>
+#include <iostream>
+#include <thread>
+
 #include "Menu.hpp"
 #include "Editor.hpp"
 #include "Player.hpp"
@@ -169,11 +174,15 @@ void Program::handleSolveRequest(const SolvingMethod method)
 
 void Program::handleCustomGenerateRequest(TileMap& custom, const GenerationMethod GenMethod)
 {
+    const auto start = std::chrono::system_clock::now();
     const int maze_size = custom.size;
     const int maze_height = custom.height;
 
     const Maze temp_maze = Maze(maze_size, maze_height, GenMethod, nullptr);
     temp_maze.GetTileMapFromMaze(custom);
+    auto end = std::chrono::system_clock::now();
+    std::chrono::duration<double> elapsed_seconds = end-start;
+    std::cout << "Elapsed time: " << elapsed_seconds.count() << " seconds" << std::endl;
 }
 
 void Program::setState(const ProgramState next_state)
@@ -243,31 +252,11 @@ ProgramCallbacks Program::createCallbacks()
     callbacks.getMazeSize = [this]() {return MazeWidth; };
     callbacks.getSolver = [this]() {return Solver; };
 
+    callbacks.getGeneratorRecording = [this]() {return &Gen_Recorder; };
+    callbacks.getSolveRecording = [this]() {return &Solve_Recorder; };
+
     return callbacks;
 }
-
-void Program::centerWindow() const
-{
-    const int monitor = GetCurrentMonitor();
-    const int monitor_width = GetMonitorWidth(monitor);
-    const int monitor_height = GetMonitorHeight(monitor);
-    // SetWindowPosition((int)(monitor_width / 2) - (int)(screenWidth / 2), (int)(monitor_height / 2) - (int)(screenHeight / 2));
-}
-// void Program::getLastMazeFrame() const
-// {
-//     BeginTextureMode(buffer);
-//     ClearBackground(LIGHTGRAY);
-//     DrawTextureRec(last_maze_buffer.texture, source, Vector2{ 0, 0 }, WHITE);
-//     EndTextureMode();
-// }
-
-// void Program::getLastPathFrame() const
-// {
-//     BeginTextureMode(buffer);
-//     ClearBackground(LIGHTGRAY);
-//     DrawTextureRec(last_path_buffer.texture, source, Vector2{ 0, 0 }, WHITE);
-//     EndTextureMode();
-// }
 
 void Program::CalculateMazeParams(const int width)
 {

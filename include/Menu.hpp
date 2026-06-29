@@ -120,5 +120,8 @@ class Menu
 		GenerationMethod MazeMethod = GenerationMethod::REC_BACKTRACKING;
 		//Solver-----------------------------------
 		SolvingMethod PathMethod = SolvingMethod::SM_BFS;
+
+		int last_maze_rec_step = 0;
+		int last_path_rec_step = 0;
 };
 

@@ -60,7 +60,7 @@ private:
 	int cellsize = 10;
 	int Texture_width = 960;
 	int Texture_height = 540;
-	RenderTexture2D frame_texture = LoadRenderTexture(Texture_width, Texture_height);
+	RenderTexture2D frame_texture;
 
 	vector<RecordCell> InitialState;
 

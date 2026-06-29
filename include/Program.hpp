@@ -63,9 +63,6 @@ class Program
 
 		int FrameRate = 30;
 
-		void centerWindow() const;
-
 		void CalculateMazeParams(const int width);
-
 };
 
