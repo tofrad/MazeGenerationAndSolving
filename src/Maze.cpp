@@ -39,14 +39,13 @@ Maze::Maze(const TileMap* custom_maze, Recorder* recorder)
 	this->width = custom_maze->size;
 	this->height = custom_maze->height;
 
-	createNoWallMaze();
+	createConnectedMaze();
 
 	for (int x = 0; x < this->width; x++) {
 
 		for (int y = 0; y < this->height; y++) {
 
 			switch (custom_maze->TileArray[x][y]) {
-
 			case 0:
 				//cell clear
 				break;
@@ -106,11 +105,8 @@ void Maze::GetTileMapFromMaze(TileMap& custom) const
 				//normal cell
 				custom.TileArray[x][y] = 0;
 			}
-
 		}
 	}
-
-
 }
 
 Cell* Maze::getStart() const
@@ -133,6 +129,27 @@ int Maze::getWidth() const
 	return this->width;
 }
 
+void Maze::createConnectedMaze()
+{
+	createNoWallMaze();
+
+	//connect with neighbors
+	for (int x = 0; x < width; x++) {
+
+		for (int y = 0; y < height; y++) {
+
+			Cell* currentCell = Cell_Grid[x][y];
+
+			//set bordering cells
+			currentCell->setNorth((y > 0) ? Cell_Grid[x][y -1] : nullptr);
+			currentCell->setWest((x > 0) ? Cell_Grid[x-1][y] : nullptr);
+
+			currentCell->setEast((x < width-1) ? Cell_Grid[x+1][y] : nullptr);
+			currentCell->setSouth((y < height-1) ? Cell_Grid[x][y+1] : nullptr);
+
+		}
+	}
+}
 void Maze::createEmptyMaze()
 {
 	Cell_List.clear();

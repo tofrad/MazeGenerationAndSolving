@@ -24,6 +24,7 @@ class Maze
 
 		int getHeight() const;
 		int getWidth() const;
+		void createConnectedMaze();
 
 		void createEmptyMaze();
 
