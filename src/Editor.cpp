@@ -77,14 +77,25 @@ void Editor::displayEditor()
     }
     if (GuiButton(Scaled_ButtonSaveAndGen, "Save & Gen"))
     {
+        isValid();
         //TODO
         //check valid maze
-        isValid();
-        editor_callbacks.onGenerateRequest(slider_value_int, GenerationMethod::CUSTOM);
+        if (CustomMaze.isValid)
+        {
+            editor_callbacks.onGenerateRequest(slider_value_int, GenerationMethod::CUSTOM);
+        }
+
     }
 
     GuiLine(Scaled_DividerLineGen, "");
 
+    if (CustomMaze.isValid)
+    {
+        GuiSetStyle(STATUSBAR, BASE_COLOR_NORMAL, greenHex);
+    }else
+    {
+        GuiSetStyle(STATUSBAR, BASE_COLOR_NORMAL, redHex);
+    }
     GuiStatusBar(Scaled_StatusBarValidMaze, "Maze Validity");
 
     GuiSlider(Scaled_SizeSlider, Maze_Config::MIN_W_STR.c_str(), Maze_Config::MAX_W_STR.c_str(),
@@ -222,13 +233,13 @@ void Editor::displayEditor()
             }
 
         //TODO
-        //handle weight behav.
+        //handle weight behav. here
+
         //right click delete
         }else if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT) && highlight_tile_exists)
         {
             if (Mouse_Tile == CustomMaze.Start)
             {
-
                 CustomMaze.Start = Point(-1, -1);
             }else if (Mouse_Tile == CustomMaze.Target)
             {
@@ -243,8 +254,6 @@ void Editor::displayEditor()
         if (highlight_tile_exists) {
             DrawRectangleLinesEx(highlighted_tile, 3, RED);
         }
-
-        this->isValid();
 
     }
     else {
@@ -377,6 +386,7 @@ void Editor::isValid()
 
     if (CustomMaze.Start != Invalid_Point && CustomMaze.Target != Invalid_Point)
     {
+        //callback to generate maze and bfs
         CustomMaze.isValid = true;
     }
     else

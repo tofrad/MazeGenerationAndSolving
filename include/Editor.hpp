@@ -114,6 +114,13 @@ private:
 
 	//helping functions for ui values
 	void clamp_sizes_to_uneven();
+
+	// Define colors
+	Color greenColor = GREEN;
+	Color redColor = RED;
+
+	const unsigned int greenHex = ColorToInt(greenColor);
+	const unsigned int redHex = ColorToInt(redColor);
 	//References for UI Elements #######################################################################################
 	float slider_value_float = 50.0f;
 	int slider_value_int = static_cast<int>(slider_value_float);
