@@ -146,7 +146,7 @@ void Program::handleGeneratorRequest(const int size, const GenerationMethod meth
         //forward TileArray from editor to Maze
         if (editor->getCustomMaze()->isValid) {
             //size params at this point unknown, needs to be set in Maze class
-            Gen_Recorder = Recorder(0,0, RecordType::MAZE);
+            Gen_Recorder.init(0,0, RecordType::MAZE);
             M = Maze(editor->getCustomMaze(), &Gen_Recorder);
             handleSolveRequest(Solver);
         }
@@ -156,7 +156,7 @@ void Program::handleGeneratorRequest(const int size, const GenerationMethod meth
         }
     }
     else{
-        Gen_Recorder = Recorder(MazeHeight,MazeWidth, RecordType::MAZE);
+        Gen_Recorder.init(MazeHeight,MazeWidth, RecordType::MAZE);
         M = Maze(MazeWidth, MazeHeight, Generator, &Gen_Recorder);
         handleSolveRequest(Solver);
     }
@@ -167,7 +167,8 @@ void Program::handleSolveRequest(const SolvingMethod method)
     Solver = method;
     M.resetMaze();
 
-    Solve_Recorder = Recorder(M.getGeneratedMaze(), M.getHeight(), M.getWidth(), RecordType::PATH);
+    Solve_Recorder.init(M.getHeight(), M.getWidth(), RecordType::PATH);
+    Solve_Recorder.saveInitialFrame(M.getGeneratedMaze());
     S = Pathsolver(M.getStart(), Solver, &Solve_Recorder);
     Solve_Recorder.saveLastFrame(M.getGeneratedMaze());
 }

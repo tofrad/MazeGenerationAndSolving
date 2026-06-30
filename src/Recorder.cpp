@@ -1,6 +1,8 @@
 #include "Recorder.hpp"
 #include <cmath>
 #include <algorithm>
+#include <iostream>
+#include <ostream>
 
 Recorder::Recorder()
 {
@@ -9,15 +11,7 @@ Recorder::Recorder()
 
 Recorder::Recorder(const int& maze_height, const int& maze_width,const RecordType r_type)
 {
-	this->height = maze_height;
-	this->width = maze_width;
-	this->setRecordType(r_type);
-
-	Texture_height = maze_height * cellsize;
-	Texture_width = maze_width * cellsize;
-
-	frame_texture = LoadRenderTexture(Texture_width, Texture_height);
-
+	init(maze_height,maze_width,r_type);
 	BeginTextureMode(frame_texture);
 	ClearBackground(LIGHTGRAY);
 	EndTextureMode();
@@ -31,6 +25,40 @@ Recorder::Recorder(const vector<Cell*>& cell_list, const int& maze_height, const
 Recorder::~Recorder()
 {
 
+}
+
+void Recorder::init(const int& maze_height, const int& maze_width, RecordType r_type)
+{
+	recording_type = NONE;
+
+	length = 0;
+
+	this->height = maze_height;
+	this->width = maze_width;
+	this->setRecordType(r_type);
+
+	cellsize = 10;
+	Texture_height = maze_height * cellsize;
+	Texture_width = maze_width * cellsize;
+
+	if (IsRenderTextureValid(frame_texture))
+	{
+		UnloadRenderTexture(frame_texture);
+	}
+	frame_texture = LoadRenderTexture(Texture_width, Texture_height);
+
+	InitialState.clear();
+	InitialState.shrink_to_fit();
+	LastState.clear();
+	LastState.shrink_to_fit();
+	history.clear();
+	history.shrink_to_fit();
+
+	current_step = 0;
+	cells_visited = 0;
+
+	recording = false;
+	isplaying = false;
 }
 
 RecordType Recorder::getRecordType() const
@@ -63,7 +91,7 @@ void Recorder::startRecording()
 void Recorder::stopRecording()
 {
 	recording = false;
-	length = history.size() - 1;
+	length = static_cast<int>(history.size()) - 1;
 }
 
 void Recorder::recordStep(const vector<Cell*>& modifiedCells)
@@ -99,72 +127,85 @@ void Recorder::saveLastFrame(const vector<Cell*>& LastList)
 
 bool Recorder::stepForward()
 {
-	BeginTextureMode(this->frame_texture);
-
-	if (current_step < history.size()-1)
+	if (!history.empty())
 	{
-		for (auto record_cell : history[current_step]) {
-			record_cell.drawCell(cellsize, record_cell.getCurrentColor(), Mode::FORWARD);
+		BeginTextureMode(this->frame_texture);
+
+		if (current_step < length)
+		{
+			for (auto record_cell : history[current_step]) {
+				record_cell.drawCell(cellsize, record_cell.getCurrentColor(), Mode::FORWARD);
+			}
+			current_step++;
+
+			EndTextureMode();
+			return true;
 		}
-		current_step++;
+		else if(current_step == length)
+		{
+			for (auto record_cell : history[current_step]) {
+				record_cell.drawCell(cellsize, record_cell.getCurrentColor(), Mode::FORWARD);
 
-		EndTextureMode();
-		return true;
-	}
-	else if(current_step == history.size()-1)
-	{
-		for (auto record_cell : history[current_step]) {
-			record_cell.drawCell(cellsize, record_cell.getCurrentColor(), Mode::FORWARD);
+			}
+
+			EndTextureMode();
+			return true;
 		}
-
 		EndTextureMode();
-		return true;
 	}
-
-	EndTextureMode();
 	return false;
 }
 
 void Recorder::playLastFrame()
 {
-	BeginTextureMode(this->frame_texture);
+	if (!LastState.empty())
+	{
+		BeginTextureMode(this->frame_texture);
 
-	for (auto record_cell : LastState) {
-		record_cell.drawCell(cellsize, record_cell.getCurrentColor(),Mode::FORWARD);
+		for (auto record_cell : LastState) {
+			record_cell.drawCell(cellsize, record_cell.getCurrentColor(),Mode::FORWARD);
+		}
+		current_step = length;
+		EndTextureMode();
 	}
-	current_step = length;
-	EndTextureMode();
 }
 
 void Recorder::playInitialGrid()
 {
-	BeginTextureMode(this->frame_texture);
+	if (!InitialState.empty())
+	{
+		BeginTextureMode(this->frame_texture);
 
-	for (auto record_cell : InitialState) {
-		record_cell.drawCell(cellsize, record_cell.getCurrentColor(),Mode::FORWARD);
+		for (auto record_cell : InitialState) {
+			record_cell.drawCell(cellsize, record_cell.getCurrentColor(),Mode::FORWARD);
+		}
+		EndTextureMode();
+		current_step = 0;
 	}
-	EndTextureMode();
-	current_step = 0;
 }
 
 bool Recorder::stepBackward()
 {
-	BeginTextureMode(this->frame_texture);
+	if (!history.empty())
+	{
+		BeginTextureMode(this->frame_texture);
 
-	if (current_step == 0) {
-		for (auto record_cell : history[current_step])
-		{
+		if (current_step == 0) {
+			for (auto record_cell : history[current_step])
+			{
+				record_cell.drawCell(cellsize, record_cell.getCurrentColor(),Mode::BACKWARD);
+			}
+			EndTextureMode();
+			return false;
+		}
+		for (auto record_cell : history[current_step]) {
 			record_cell.drawCell(cellsize, record_cell.getCurrentColor(),Mode::BACKWARD);
 		}
+		current_step--;
 		EndTextureMode();
-		return false;
+		return true;
 	}
-	for (auto record_cell : history[current_step]) {
-		record_cell.drawCell(cellsize, record_cell.getCurrentColor(),Mode::BACKWARD);
-	}
-	current_step--;
-	EndTextureMode();
-	return true;
+	return false;
 }
 
 void Recorder::playStep(const int step)

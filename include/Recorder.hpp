@@ -20,7 +20,13 @@ public:
 	Recorder();
 	Recorder(const int& maze_height, const int& maze_width, RecordType r_type);
 	explicit Recorder(const vector<Cell*>& cell_list, const int& maze_height, const int& maze_width, RecordType r_type);
+
+	Recorder(const Recorder&) = delete;
+	Recorder& operator=(const Recorder&) = delete;
+
 	~Recorder();
+
+	void init(const int& maze_height, const int& maze_width, RecordType r_type);
 
 	RecordType getRecordType() const;
 	int getStep() const;
@@ -60,7 +66,7 @@ private:
 	int cellsize = 10;
 	int Texture_width = 960;
 	int Texture_height = 540;
-	RenderTexture2D frame_texture;
+	RenderTexture2D frame_texture{};
 
 	vector<RecordCell> InitialState;
 
@@ -73,7 +79,7 @@ private:
 
 	bool recording = false;
 	bool isplaying = false;
-	bool islooping = true;
+
 
 	void setHeight(int maze_height);
 	void setWidth(int maze_width);
