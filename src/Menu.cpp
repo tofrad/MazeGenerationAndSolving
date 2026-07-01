@@ -28,9 +28,9 @@ void Menu::open()
 {
     state = MenuState::OPEN;
     syncToProgram();
-    last_maze_rec_step = menu_callbacks.getGeneratorRecording()->getStep();
+    last_maze_rec_step = *menu_callbacks.getGeneratorRecording()->getStep();
     menu_callbacks.getGeneratorRecording()->playLastFrame();
-    last_path_rec_step = menu_callbacks.getSolveRecording()->getStep();
+    last_path_rec_step = *menu_callbacks.getSolveRecording()->getStep();
     menu_callbacks.getSolveRecording()->playLastFrame();
 }
 
@@ -120,9 +120,9 @@ void Menu::displayGUI()
             MazeMethod = static_cast<GenerationMethod>(Maze_GUI);
             menu_callbacks.onGenerateRequest(MazeSize, MazeMethod);
 
-            last_maze_rec_step = menu_callbacks.getGeneratorRecording()->getStep();
+            last_maze_rec_step = *menu_callbacks.getGeneratorRecording()->getStep();
             menu_callbacks.getGeneratorRecording()->playLastFrame();
-            last_path_rec_step = menu_callbacks.getSolveRecording()->getStep();
+            last_path_rec_step = *menu_callbacks.getSolveRecording()->getStep();
             menu_callbacks.getSolveRecording()->playLastFrame();
 
             Generate_Button_pressed = false;
@@ -131,7 +131,7 @@ void Menu::displayGUI()
             PathMethod = static_cast<SolvingMethod>(Path_GUI);
             menu_callbacks.onSolveRequest(PathMethod);
 
-            last_path_rec_step = menu_callbacks.getSolveRecording()->getStep();
+            last_path_rec_step = *menu_callbacks.getSolveRecording()->getStep();
             menu_callbacks.getSolveRecording()->playLastFrame();
 
             Solve_Button_pressed = false;

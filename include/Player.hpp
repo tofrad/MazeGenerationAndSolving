@@ -94,7 +94,7 @@ class Player {
 		Rectangle Scaled_ButtonMenu = layout_manager.ScaleRect(ButtonMenu);
 
 		//GUI Values-------------------------------------------------
-		int stepValue = 0;
+		int* stepValue = nullptr;
 		int maxValue = 0;
 
 		int toggle_slider_val = 0;

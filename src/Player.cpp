@@ -46,6 +46,7 @@ void Player::open(Recorder* Rec_Maze, Recorder* Rec_Path) {
 
 void Player::close() {
     Record_Object = nullptr;
+    stepValue = nullptr;
     this->state = PlayerState::CLOSED;
 }
 
@@ -137,7 +138,7 @@ void Player::displayPlayerGUI()
         snprintf(maxValue_char, sizeof(maxValue_char), "%d", maxValue);
 
         //Slider handling ----------------------------------------------------------------------------------------------
-        const int current_step = Record_Object->getStep();
+        const int current_step = *Record_Object->getStep();
 
         //not used, update from recorder
         if (!slider_dragging)
@@ -303,6 +304,6 @@ void Player::resolveRenderAction()
 
 void Player::updateSliderFloat()
 {
-    slider_value_int = Record_Object->getStep();
+    slider_value_int = *Record_Object->getStep();
     slider_value_float = static_cast<float>(slider_value_int);
 }

@@ -29,7 +29,7 @@ public:
 	void init(const int& maze_height, const int& maze_width, RecordType r_type);
 
 	RecordType getRecordType() const;
-	int getStep() const;
+	int* getStep();
 	int getVisitedCnt() const;
 	int getSize() const;
 	RenderTexture2D getFrameTexture() const;

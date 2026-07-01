@@ -27,7 +27,7 @@ Recorder::~Recorder()
 
 }
 
-void Recorder::init(const int& maze_height, const int& maze_width, RecordType r_type)
+void Recorder::init(const int& maze_height, const int& maze_width, const RecordType r_type)
 {
 	recording_type = NONE;
 
@@ -66,9 +66,9 @@ RecordType Recorder::getRecordType() const
 	return this->recording_type;
 }
 
-int Recorder::getStep() const
+int* Recorder::getStep()
 {
-	return current_step;
+	return &current_step;
 }
 
 int Recorder::getSize() const
@@ -131,25 +131,21 @@ bool Recorder::stepForward()
 	{
 		BeginTextureMode(this->frame_texture);
 
-		if (current_step < length)
+		if (current_step <= length)
 		{
 			for (auto record_cell : history[current_step]) {
-				record_cell.drawCell(cellsize, record_cell.getCurrentColor(), Mode::FORWARD);
+				record_cell.drawCell(cellsize, Mode::FORWARD);
+			}
+
+			if(current_step == length)
+			{
+				EndTextureMode();
+				return true;
 			}
 			current_step++;
-
 			EndTextureMode();
 			return true;
-		}
-		else if(current_step == length)
-		{
-			for (auto record_cell : history[current_step]) {
-				record_cell.drawCell(cellsize, record_cell.getCurrentColor(), Mode::FORWARD);
 
-			}
-
-			EndTextureMode();
-			return true;
 		}
 		EndTextureMode();
 	}
@@ -163,7 +159,7 @@ void Recorder::playLastFrame()
 		BeginTextureMode(this->frame_texture);
 
 		for (auto record_cell : LastState) {
-			record_cell.drawCell(cellsize, record_cell.getCurrentColor(),Mode::FORWARD);
+			record_cell.drawCell(cellsize, Mode::FORWARD);
 		}
 		current_step = length;
 		EndTextureMode();
@@ -177,7 +173,7 @@ void Recorder::playInitialGrid()
 		BeginTextureMode(this->frame_texture);
 
 		for (auto record_cell : InitialState) {
-			record_cell.drawCell(cellsize, record_cell.getCurrentColor(),Mode::FORWARD);
+			record_cell.drawCell(cellsize, Mode::FORWARD);
 		}
 		EndTextureMode();
 		current_step = 0;
@@ -190,20 +186,33 @@ bool Recorder::stepBackward()
 	{
 		BeginTextureMode(this->frame_texture);
 
-		if (current_step == 0) {
+		if (current_step >= 0) {
+			//revert current step
 			for (auto record_cell : history[current_step])
 			{
-				record_cell.drawCell(cellsize, record_cell.getCurrentColor(),Mode::BACKWARD);
+				record_cell.drawCell(cellsize,Mode::BACKWARD);
 			}
+			//check edge case first step of recording and terminate
+			if (current_step == 0)
+			{
+				for (auto record_cell : history[current_step-1])
+				{
+					record_cell.drawCell(cellsize,Mode::BACKWARD);
+				}
+				EndTextureMode();
+				return false;
+			}
+			//draw next state from prev step
+			for (auto record_cell : history[current_step-1])
+			{
+				record_cell.drawCell(cellsize,Mode::BACKWARD);
+			}
+			current_step--;
 			EndTextureMode();
-			return false;
+			return true;
+
+
 		}
-		for (auto record_cell : history[current_step]) {
-			record_cell.drawCell(cellsize, record_cell.getCurrentColor(),Mode::BACKWARD);
-		}
-		current_step--;
-		EndTextureMode();
-		return true;
 	}
 	return false;
 }
