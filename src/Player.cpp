@@ -264,16 +264,18 @@ void Player::resolveRenderAction()
             if (Record_Object->stepBackward())
             {
                 this->setState(PlayerState::PAUSED);
-                updateSliderFloat();
+
             }
+            updateSliderFloat();
             break;
 
         case PlayerState::FORWARD_ONE:
             if (Record_Object->stepForward())
             {
                 this->setState(PlayerState::PAUSED);
-                updateSliderFloat();
+
             }
+            updateSliderFloat();
             break;
 
         case PlayerState::FRAME_REQUEST:

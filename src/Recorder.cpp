@@ -137,17 +137,20 @@ bool Recorder::stepForward()
 				record_cell.drawCell(cellsize, Mode::FORWARD);
 			}
 
+			current_step++;
+
 			if(current_step == length)
 			{
 				EndTextureMode();
-				return true;
+				return false;
 			}
-			current_step++;
+
 			EndTextureMode();
 			return true;
 
 		}
 		EndTextureMode();
+		return true;
 	}
 	return false;
 }
@@ -186,33 +189,30 @@ bool Recorder::stepBackward()
 	{
 		BeginTextureMode(this->frame_texture);
 
-		if (current_step >= 0) {
+		if (current_step >= 1) {
 			//revert current step
 			for (auto record_cell : history[current_step])
 			{
 				record_cell.drawCell(cellsize,Mode::BACKWARD);
 			}
-			//check edge case first step of recording and terminate
-			if (current_step == 0)
-			{
-				for (auto record_cell : history[current_step-1])
-				{
-					record_cell.drawCell(cellsize,Mode::BACKWARD);
-				}
-				EndTextureMode();
-				return false;
-			}
-			//draw next state from prev step
 			for (auto record_cell : history[current_step-1])
 			{
 				record_cell.drawCell(cellsize,Mode::BACKWARD);
 			}
+
 			current_step--;
+
+			if (current_step == 0)
+			{
+				EndTextureMode();
+				return false;
+			}
+
 			EndTextureMode();
 			return true;
-
-
 		}
+		EndTextureMode();
+		return false;
 	}
 	return false;
 }

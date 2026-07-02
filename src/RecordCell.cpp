@@ -12,8 +12,12 @@ RecordCell::~RecordCell()
 {
 
 }
-
-void RecordCell::drawCell(const float cellsize, const Color color, const Mode m) const
+// to get to path drawing, maybe get back one step in recording and get coordinates of changed cells, if adjacent prob the needed connection
+//chec edge cases at first and last
+//TODO
+//fix frame overstep
+//when going backwards or changing direction, cellstate is cleared to before drawing but maybe prev state of other cells is still old
+void RecordCell::drawCell(const float cellsize, const Mode m) const
 {
     const Point P = p;
 
