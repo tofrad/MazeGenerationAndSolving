@@ -48,7 +48,7 @@ Recorder* Pathsolver::getRecording() const
 
 bool Pathsolver::isVisitable(const Cell* cell)
 {
-	if (cell != nullptr && !cell->next_flags.Path_CellWasVisited) {
+	if (cell != nullptr && !cell->path_next_flags.Path_CellWasVisited) {
 		return true;
 	}else{
 		return false;
@@ -61,22 +61,22 @@ bool Pathsolver::isVisitable(const Cell* cell)
 bool Pathsolver::DFS(Cell* start) const
 {
 	//abort if target is found
-	if (start->next_flags.isTarget) {
+	if (start->maze_next_flags.isTarget) {
 		return true;
 	}
 	
 	//mark and record cell as visited
-	if (!start->next_flags.Path_CellWasVisited) {
-		start->next_flags.Path_CellWasVisited = true;
+	if (!start->path_next_flags.Path_CellWasVisited) {
+		start->path_next_flags.Path_CellWasVisited = true;
 	}
 
 	//set cell active and record it
-	start->next_flags.isActive = true;
+	start->maze_next_flags.isActive = true;
 	//record here#########################################################################################
 	path_record->recordStep({start});
 	
 	//mark it as path, will be deleted in recursion
-	start->next_flags.Path_IsCurrentPath = true;
+	start->path_next_flags.Path_IsCurrentPath = true;
 
 	//add all valid adjacent to list
 	vector<Cell*> adjCells;
@@ -106,14 +106,14 @@ bool Pathsolver::DFS(Cell* start) const
 		Cell* next = adjCells.back();
 
 		//delete start from isActive and record it 
-		start->next_flags.isActive = false;
+		start->maze_next_flags.isActive = false;
 		//record here#########################################################################################
 		path_record->recordStep({start});
 
 		if (DFS(next)) {
 
 			//recursion animation?
-			start->next_flags.Path_IsFinishedPath = true;
+			start->path_next_flags.Path_IsFinishedPath = true;
 			//next node is on path to target or is the target
 
 			//record path cell
@@ -126,8 +126,8 @@ bool Pathsolver::DFS(Cell* start) const
 	}
 
 	//cell is not on Path
-	start->next_flags.isActive = false;
-	start->next_flags.Path_IsCurrentPath = false;
+	start->maze_next_flags.isActive = false;
+	start->path_next_flags.Path_IsCurrentPath = false;
 	//record here#########################################################################################
 	path_record->recordStep({start});
 
@@ -141,7 +141,7 @@ bool Pathsolver::BFS(Cell* start) const
 {
 	queue<vector<Cell*>> tobevisited;
 
-	start->next_flags.Path_CellWasVisited = true;
+	start->path_next_flags.Path_CellWasVisited = true;
 	tobevisited.push({start});
 
 	bool wasTargetFound = false;
@@ -160,7 +160,7 @@ bool Pathsolver::BFS(Cell* start) const
 
 			for (const auto cell : current_cells) {
 
-				if (cell->next_flags.isTarget) {
+				if (cell->maze_next_flags.isTarget) {
 					wasTargetFound = true;
 					foundTarget = cell;
 					break;
@@ -178,7 +178,7 @@ bool Pathsolver::BFS(Cell* start) const
 					if (neighbor && isVisitable(neighbor)) {
 
 						neighbor->setParent(cell);
-						neighbor->next_flags.Path_CellWasVisited = true;
+						neighbor->path_next_flags.Path_CellWasVisited = true;
 						next_cells.push_back(neighbor);
 					}
 				}
@@ -192,9 +192,9 @@ bool Pathsolver::BFS(Cell* start) const
 	if (wasTargetFound && foundTarget!= nullptr) {
 		Cell* backtrack = foundTarget;
 
-		while (!backtrack->next_flags.isStart) {
+		while (!backtrack->maze_next_flags.isStart) {
 
-			backtrack->next_flags.Path_IsFinishedPath = true;
+			backtrack->path_next_flags.Path_IsFinishedPath = true;
 			//record here####################################################################
 			path_record->recordStep({backtrack});
 

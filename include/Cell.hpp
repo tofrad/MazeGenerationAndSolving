@@ -6,16 +6,20 @@
 //TODO
 //setCellStart / Target to ensure setting current flags too for correct behav
 
-struct CellFlags
+//states for maze generating
+struct MazeFlags
 {
 	//special states
 	bool isStart = false;
 	bool isTarget = false;
 	bool isWall = false;
-	//states for maze generating
 	bool Maze_CellWasVisited = false;
 	bool isActive = false;
+};
 
+//states for path solving
+struct PathFlags
+{
 	//states for solving behavior
 	bool Path_CellWasVisited = false;
 	bool Path_IsCurrentPath = false;  //marker for dfs recursion when dead end was found
@@ -26,7 +30,8 @@ struct CellFlags
 class Cell
 {
 	public:
-		CellFlags next_flags;
+		MazeFlags maze_next_flags;
+		PathFlags path_next_flags;
 
 		Cell();
 		explicit Cell(const Point& p1);
@@ -34,9 +39,12 @@ class Cell
 
 		~Cell();
 		Point getPosition() const;
-		const CellFlags* getCellFlags_Current() const;
-		const CellFlags* getCellFlags_Next() const;
-		void updateCellFlags();
+		const MazeFlags* getMazeFlags_Current() const;
+		const MazeFlags* getMazeFlags_Next() const;
+		const PathFlags* getPathFlags_Current() const;
+		const PathFlags* getPathFlags_Next() const;
+		void updateMazeFlags();
+		void updatePathFlags();
 		void setStart();
 		void setTarget();
 
@@ -64,7 +72,8 @@ class Cell
 	private:
 		Point p;
 
-		CellFlags current_flags;
+		MazeFlags maze_current_flags;
+		PathFlags path_current_flags;
 
 		Cell* North = nullptr;
 		Cell* East = nullptr;

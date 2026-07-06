@@ -27,37 +27,52 @@ Point Cell::getPosition() const
 	return this->p;
 }
 
-const CellFlags* Cell::getCellFlags_Current() const
+const MazeFlags* Cell::getMazeFlags_Current() const
 {
-	return &this->current_flags;
+	return &this->maze_current_flags;
 }
 
-const CellFlags* Cell::getCellFlags_Next() const
+const MazeFlags* Cell::getMazeFlags_Next() const
 {
-	return &this->next_flags;
+	return &this->maze_next_flags;
 }
 
-void Cell::updateCellFlags()
+const PathFlags* Cell::getPathFlags_Current() const
+{
+	return &this->path_current_flags;
+}
+
+const PathFlags* Cell::getPathFlags_Next() const
+{
+	return &this->path_next_flags;
+}
+
+void Cell::updateMazeFlags()
 {
 	//do not touch start or target
-	this->current_flags.isActive = this->next_flags.isActive;
-	this->current_flags.Path_IsFinishedPath = this->next_flags.Path_IsFinishedPath;
-	this->current_flags.Path_IsCurrentPath = this->next_flags.Path_IsCurrentPath;
-	this->current_flags.isWall = this->next_flags.isWall;
-	this->current_flags.Path_CellWasVisited = this->next_flags.Path_CellWasVisited;
-	this->current_flags.Maze_CellWasVisited = this->next_flags.Maze_CellWasVisited;
+	this->maze_current_flags.isActive = this->maze_next_flags.isActive;
+	this->maze_current_flags.isWall = this->maze_next_flags.isWall;
+	this->maze_current_flags.Maze_CellWasVisited = this->maze_next_flags.Maze_CellWasVisited;
+}
+
+void Cell::updatePathFlags()
+{
+	//do not touch start or target
+	this->path_current_flags.Path_IsFinishedPath = this->path_next_flags.Path_IsFinishedPath;
+	this->path_current_flags.Path_IsCurrentPath = this->path_next_flags.Path_IsCurrentPath;
+	this->path_current_flags.Path_CellWasVisited = this->path_next_flags.Path_CellWasVisited;
 }
 
 void Cell::setStart()
 {
-	this->current_flags.isStart = true;
-	this->next_flags.isStart = true;
+	this->maze_current_flags.isStart = true;
+	this->maze_next_flags.isStart = true;
 }
 
 void Cell::setTarget()
 {
-	this->current_flags.isTarget = true;
-	this->next_flags.isTarget = true;
+	this->maze_current_flags.isTarget = true;
+	this->maze_next_flags.isTarget = true;
 }
 
 void Cell::setNorth(Cell* north)
@@ -121,17 +136,19 @@ Cell* Cell::findRoot()
 
 void Cell::resetCell()
 {
-	this->next_flags.Maze_CellWasVisited = false;
-	this->next_flags.Path_CellWasVisited = false;
-	this->next_flags.Path_IsCurrentPath = false;
-	this->next_flags.Path_IsFinishedPath = false;
-	this->next_flags.isActive = false;
+	this->maze_next_flags.Maze_CellWasVisited = false;
+	this->maze_next_flags.isActive = false;
 
-	this->current_flags.Maze_CellWasVisited = false;
-	this->current_flags.Path_CellWasVisited = false;
-	this->current_flags.Path_IsCurrentPath = false;
-	this->current_flags.Path_IsFinishedPath = false;
-	this->current_flags.isActive = false;
+	this->path_next_flags.Path_CellWasVisited = false;
+	this->path_next_flags.Path_IsCurrentPath = false;
+	this->path_next_flags.Path_IsFinishedPath = false;
+
+	this->maze_current_flags.Maze_CellWasVisited = false;
+	this->maze_current_flags.isActive = false;
+
+	this->path_current_flags.Path_CellWasVisited = false;
+	this->path_current_flags.Path_IsCurrentPath = false;
+	this->path_current_flags.Path_IsFinishedPath = false;
 
 	this->Parent = nullptr;
 }
@@ -162,13 +179,13 @@ void Cell::makeWall()
 		this->setWest(nullptr);
 	}
 
-	this->next_flags.isWall = true;
+	this->maze_next_flags.isWall = true;
 
 }
 
 void Cell::breakWall()
 {
-	this->next_flags.isWall = false;
+	this->maze_next_flags.isWall = false;
 }
 
 uint64_t Cell::getCellID() const
