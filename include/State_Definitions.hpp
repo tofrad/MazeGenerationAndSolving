@@ -30,6 +30,12 @@ typedef enum {
 
 } SolvingMethod;
 
+enum Direction
+{
+	FORWARD,
+	BACKWARD
+};
+
 struct TileMap{
 
 	int size = 0;
