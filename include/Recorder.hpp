@@ -1,8 +1,11 @@
 #pragma once
 
 #include "Cell.hpp"
-#include "RecordCell.hpp"
+
 #include <vector>
+#include <memory>
+
+#include"raylib.h"
 
 using namespace std;
 
@@ -12,6 +15,8 @@ enum RecordType
 	PATH,
 	NONE
 };
+
+class Base_RecordCell;
 
 class Recorder
 {
@@ -68,11 +73,11 @@ private:
 	int Texture_height = 540;
 	RenderTexture2D frame_texture{};
 
-	vector<RecordCell> InitialState;
+	vector<std::unique_ptr<Base_RecordCell>>  InitialState;
 
-	vector<RecordCell> LastState;
+	vector<std::unique_ptr<Base_RecordCell>> LastState;
 
-	vector<vector<RecordCell>> history;
+	vector<vector<std::unique_ptr<Base_RecordCell>>> history;
 
 	int current_step = 0;
 	int cells_visited = 0;

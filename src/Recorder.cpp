@@ -1,8 +1,16 @@
 #include "Recorder.hpp"
 #include <cmath>
 #include <algorithm>
+
+#include "MazeRecordCell.hpp"
+#include "PathRecordCell.hpp"
+
 #include <iostream>
 #include <ostream>
+
+#include <variant>
+
+using RecordCellVariant = std::variant<MazeRecordCell, PathRecordCell>;
 
 Recorder::Recorder()
 {
@@ -57,6 +65,8 @@ void Recorder::init(const int& maze_height, const int& maze_width, const RecordT
 	current_step = 0;
 	cells_visited = 0;
 
+	recording_type = r_type;
+
 	recording = false;
 	isplaying = false;
 }
@@ -98,30 +108,79 @@ void Recorder::recordStep(const vector<Cell*>& modifiedCells)
 {
 	if (!recording)return;
 
-	vector<RecordCell> temp;
+	vector<std::unique_ptr<Base_RecordCell>> temp;
 
-	for (const auto cell : modifiedCells) {
-		//record cells here
-		temp.push_back(RecordCell(cell));
-	}	
+	if (recording_type == MAZE)
+	{
+		for (auto cell : modifiedCells) {
+			//record cells here
+			temp.push_back(std::make_unique<MazeRecordCell>(cell));
+		}
+	}else
+	{
+		for (auto cell : modifiedCells) {
+			//record cells here
+			if (not(cell->getMazeFlags_Current()->isStart ||
+					cell->getMazeFlags_Current()->isWall ||
+					cell->getMazeFlags_Current()->isTarget))
+			{
+				temp.push_back(std::make_unique<PathRecordCell>(cell));
+			}
+		}
+	}
 
-	history.push_back(temp);
+	history.push_back(std::move(temp));
 }
 
 void Recorder::saveInitialFrame(const vector<Cell*>& FirstCells)
 {
-	for ( const auto cell : FirstCells)
+	if (recording_type == MAZE)
 	{
-		InitialState.push_back(RecordCell(cell));
+		for (auto cell : FirstCells) {
+			//record cells here
+			InitialState.push_back(std::make_unique<MazeRecordCell>(cell));
+		}
+	}else
+	{
+		for (auto cell : FirstCells) {
+			//record cells here
+			if (cell->getMazeFlags_Current()->isStart ||
+				cell->getMazeFlags_Current()->isWall ||
+				cell->getMazeFlags_Current()->isTarget)
+			{
+				InitialState.push_back(std::make_unique<MazeRecordCell>(cell));
+
+			}else
+			{
+				InitialState.push_back(std::make_unique<PathRecordCell>(cell));
+			}
+		}
 	}
 	playInitialGrid();
 }
 
 void Recorder::saveLastFrame(const vector<Cell*>& LastList)
 {
-	for ( const auto cell : LastList)
+	if (recording_type == MAZE)
 	{
-		LastState.push_back(RecordCell(cell));
+		for (auto cell : LastList) {
+			//record cells here
+			LastState.push_back(std::make_unique<MazeRecordCell>(cell));
+		}
+	}else
+	{
+		for (auto cell : LastList) {
+			//record cells here
+			if (cell->getMazeFlags_Current()->isStart ||
+				cell->getMazeFlags_Current()->isWall ||
+				cell->getMazeFlags_Current()->isTarget)
+			{
+				LastState.push_back(std::make_unique<MazeRecordCell>(cell));
+			}else
+			{
+				LastState.push_back(std::make_unique<PathRecordCell>(cell));
+			}
+		}
 	}
 }
 
@@ -133,8 +192,8 @@ bool Recorder::stepForward()
 
 		if (current_step <= length)
 		{
-			for (auto record_cell : history[current_step]) {
-				record_cell.drawCell(cellsize, Mode::FORWARD);
+			for (const auto& record_cell : history[current_step]) {
+				record_cell->draw(cellsize, Direction::FORWARD);
 			}
 
 			current_step++;
@@ -161,8 +220,8 @@ void Recorder::playLastFrame()
 	{
 		BeginTextureMode(this->frame_texture);
 
-		for (auto record_cell : LastState) {
-			record_cell.drawCell(cellsize, Mode::FORWARD);
+		for (const auto& record_cell : LastState) {
+			record_cell->draw(cellsize, Direction::FORWARD);
 		}
 		current_step = length;
 		EndTextureMode();
@@ -175,8 +234,8 @@ void Recorder::playInitialGrid()
 	{
 		BeginTextureMode(this->frame_texture);
 
-		for (auto record_cell : InitialState) {
-			record_cell.drawCell(cellsize, Mode::FORWARD);
+		for (const auto& record_cell : InitialState) {
+			record_cell->draw(cellsize, Direction::FORWARD);
 		}
 		EndTextureMode();
 		current_step = 0;
@@ -191,13 +250,13 @@ bool Recorder::stepBackward()
 
 		if (current_step >= 1) {
 			//revert current step
-			for (auto record_cell : history[current_step])
+			for (const auto& record_cell : history[current_step])
 			{
-				record_cell.drawCell(cellsize,Mode::BACKWARD);
+				record_cell->draw(cellsize,Direction::BACKWARD);
 			}
-			for (auto record_cell : history[current_step-1])
+			for (const auto& record_cell : history[current_step-1])
 			{
-				record_cell.drawCell(cellsize,Mode::BACKWARD);
+				record_cell->draw(cellsize,Direction::BACKWARD);
 			}
 
 			current_step--;
