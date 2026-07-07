@@ -68,7 +68,7 @@ private:
 	int height = 0;
 	int width = 0;
 
-	int cellsize = 10;
+	int cellsize = 32;
 	int Texture_width = 960;
 	int Texture_height = 540;
 	RenderTexture2D frame_texture{};

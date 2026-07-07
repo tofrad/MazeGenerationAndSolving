@@ -45,7 +45,7 @@ void Recorder::init(const int& maze_height, const int& maze_width, const RecordT
 	this->width = maze_width;
 	this->setRecordType(r_type);
 
-	cellsize = 10;
+	cellsize = 32;
 	Texture_height = maze_height * cellsize;
 	Texture_width = maze_width * cellsize;
 
@@ -196,13 +196,12 @@ bool Recorder::stepForward()
 				record_cell->draw(cellsize, Direction::FORWARD);
 			}
 
-			current_step++;
-
 			if(current_step == length)
 			{
 				EndTextureMode();
 				return false;
 			}
+			current_step++;
 
 			EndTextureMode();
 			return true;
@@ -259,13 +258,13 @@ bool Recorder::stepBackward()
 				record_cell->draw(cellsize,Direction::BACKWARD);
 			}
 
-			current_step--;
-
-			if (current_step == 0)
+			if (current_step - 1 == 0)
 			{
+				current_step--;
 				EndTextureMode();
 				return false;
 			}
+			current_step--;
 
 			EndTextureMode();
 			return true;

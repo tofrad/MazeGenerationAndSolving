@@ -7,7 +7,7 @@ PathRecordCell::PathRecordCell(Cell* cell) : Base_RecordCell(cell)
 {
 	this->currentColor = getColorFromFlags(cell->getPathFlags_Current());
 	this->nextColor = getColorFromFlags(cell->getPathFlags_Next());
-	cell->updateMazeFlags();
+	cell->updatePathFlags();
 }
 
 PathRecordCell::~PathRecordCell()
