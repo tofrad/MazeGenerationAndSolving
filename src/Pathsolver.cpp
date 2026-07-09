@@ -17,7 +17,7 @@ Pathsolver::~Pathsolver()
 
 }
 
-bool Pathsolver::solveMaze(Cell* start, const SolvingMethod method)
+bool Pathsolver::solveMaze(Cell* start, const SolvingMethod method) const
 {
 	//start recording
 	path_record->startRecording();

@@ -1,27 +1,5 @@
 #include "MazeRecordCell.hpp"
 
-// #include "Maze.hpp"
-
-// RecordCell::RecordCell(Cell* cell)
-// {
-//
-// 	this->currentColor = getColorFromFlags(cell->getMazeFlags_Current());
-// 	this->nextColor = getColorFromFlags(cell->getMazeFlags_Next());
-// 	cell->updateMazeFlags();
-//
-// 	if (this->cell_type == MAZE_CELL)
-// 	{
-// 		this->currentColor = getColorFromFlags(cell->getMazeFlags_Current());
-// 		this->nextColor = getColorFromFlags(cell->getMazeFlags_Next());
-// 		cell->updateMazeFlags();
-// 	}else
-// 	{
-// 		this->currentColor = getColorFromFlags(cell->getPathFlags_Current());
-// 		this->nextColor = getColorFromFlags(cell->getPathFlags_Next());
-// 		cell->updatePathFlags();
-// 	}
-// }
-
 MazeRecordCell::MazeRecordCell(Cell* cell) : Base_RecordCell(cell)
 {
 	this->currentColor = getColorFromFlags(cell->getMazeFlags_Current());

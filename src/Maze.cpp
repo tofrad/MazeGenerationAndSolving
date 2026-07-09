@@ -57,13 +57,13 @@ Maze::Maze(const TileMap* custom_maze, Recorder* recorder)
 
 			case 2:
 				//cell start
-				Cell_Grid[x][y]->maze_next_flags.isStart = true;
+				Cell_Grid[x][y]->setStart();
 				Start = Cell_Grid[x][y];
 				break;
 
 			case 3:
 				//cell target
-				Cell_Grid[x][y]->maze_next_flags.isTarget = true;
+				Cell_Grid[x][y]->setTarget();
 				Target = Cell_Grid[x][y];
 				break;
 
@@ -217,7 +217,7 @@ void Maze::generateMaze(const GenerationMethod method, Recorder* recorder)
 		tempRecorder = std::make_unique<Recorder>();
 		recorder = tempRecorder.get();
 	}
-	//The address of the local variable tempRecorder may escape the function ->doesn't matter just a temp mock object
+	//The address of the local variable tempRecorder may escape the function ->case doesn't matter just a temp mock object
 	record = recorder;
 	record->startRecording();
 	record->saveInitialFrame(Cell_List);
@@ -254,10 +254,10 @@ void Maze::generateMaze(const GenerationMethod method, Recorder* recorder)
 	record->saveLastFrame(Cell_List);
 
 	//clear was_visited mark for coloring in pathfinding
-	for (const auto cell : Cell_List) {
-		cell->maze_next_flags.Maze_CellWasVisited = false;
-		cell->maze_next_flags.isActive = false;
-	}
+	// for (const auto cell : Cell_List) {
+	// 	cell->maze_next_flags.Maze_CellWasVisited = false;
+	// 	cell->maze_next_flags.isActive = false;
+	// }
 }
 
 void Maze::deleteConnections() const
