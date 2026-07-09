@@ -73,10 +73,6 @@ private:
 	int Texture_height = 540;
 	RenderTexture2D frame_texture{};
 
-	vector<std::unique_ptr<Base_RecordCell>>  InitialState;
-
-	vector<std::unique_ptr<Base_RecordCell>> LastState;
-
 	vector<vector<std::unique_ptr<Base_RecordCell>>> history;
 
 	int current_step = 0;

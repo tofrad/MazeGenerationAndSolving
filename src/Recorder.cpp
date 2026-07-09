@@ -55,10 +55,6 @@ void Recorder::init(const int& maze_height, const int& maze_width, const RecordT
 	}
 	frame_texture = LoadRenderTexture(Texture_width, Texture_height);
 
-	InitialState.clear();
-	InitialState.shrink_to_fit();
-	LastState.clear();
-	LastState.shrink_to_fit();
 	history.clear();
 	history.shrink_to_fit();
 
@@ -93,9 +89,7 @@ RenderTexture2D Recorder::getFrameTexture() const
 
 void Recorder::startRecording()
 {
-	history.clear();
 	recording = true;
-
 }
 
 void Recorder::stopRecording()
@@ -134,11 +128,13 @@ void Recorder::recordStep(const vector<Cell*>& modifiedCells)
 
 void Recorder::saveInitialFrame(const vector<Cell*>& FirstCells)
 {
+	vector<unique_ptr<Base_RecordCell>> temp;
+
 	if (recording_type == MAZE)
 	{
 		for (auto cell : FirstCells) {
 			//record cells here
-			InitialState.push_back(std::make_unique<MazeRecordCell>(cell));
+			temp.push_back(std::make_unique<MazeRecordCell>(cell));
 		}
 	}else
 	{
@@ -148,24 +144,29 @@ void Recorder::saveInitialFrame(const vector<Cell*>& FirstCells)
 				cell->getMazeFlags_Current()->isWall ||
 				cell->getMazeFlags_Current()->isTarget)
 			{
-				InitialState.push_back(std::make_unique<MazeRecordCell>(cell));
+				temp.push_back(std::make_unique<MazeRecordCell>(cell));
 
 			}else
 			{
-				InitialState.push_back(std::make_unique<PathRecordCell>(cell));
+				temp.push_back(std::make_unique<PathRecordCell>(cell));
 			}
 		}
 	}
+	history.push_back(std::move(temp));
+
 	playInitialGrid();
 }
 
 void Recorder::saveLastFrame(const vector<Cell*>& LastList)
 {
+	startRecording();
+	vector<unique_ptr<Base_RecordCell>> temp;
+
 	if (recording_type == MAZE)
 	{
 		for (auto cell : LastList) {
 			//record cells here
-			LastState.push_back(std::make_unique<MazeRecordCell>(cell));
+			temp.push_back(std::make_unique<MazeRecordCell>(cell));
 		}
 	}else
 	{
@@ -175,13 +176,15 @@ void Recorder::saveLastFrame(const vector<Cell*>& LastList)
 				cell->getMazeFlags_Current()->isWall ||
 				cell->getMazeFlags_Current()->isTarget)
 			{
-				LastState.push_back(std::make_unique<MazeRecordCell>(cell));
+				temp.push_back(std::make_unique<MazeRecordCell>(cell));
 			}else
 			{
-				LastState.push_back(std::make_unique<PathRecordCell>(cell));
+				temp.push_back(std::make_unique<PathRecordCell>(cell));
 			}
 		}
 	}
+	history.push_back(std::move(temp));
+	stopRecording();
 }
 
 bool Recorder::stepForward()
@@ -190,56 +193,48 @@ bool Recorder::stepForward()
 	{
 		BeginTextureMode(this->frame_texture);
 
-		if (current_step <= length)
+		current_step++;
+
+		if (current_step < length)
 		{
 			for (const auto& record_cell : history[current_step]) {
 				record_cell->draw(cellsize, Direction::FORWARD);
 			}
-
-			if(current_step == length)
-			{
-				EndTextureMode();
-				return false;
-			}
-			current_step++;
-
+			// current_step++;
 			EndTextureMode();
 			return true;
-
 		}
+		current_step = length;
 		EndTextureMode();
-		return true;
+		return false;
 	}
 	return false;
 }
 
 void Recorder::playLastFrame()
 {
-	if (!LastState.empty())
-	{
-		BeginTextureMode(this->frame_texture);
 
-		for (const auto& record_cell : LastState) {
-			record_cell->draw(cellsize, Direction::FORWARD);
-		}
-		current_step = length;
-		EndTextureMode();
+	BeginTextureMode(this->frame_texture);
+
+	for (const auto& record_cell : history.back()) {
+		record_cell->draw(cellsize, Direction::FORWARD);
 	}
+	current_step = length;
+	EndTextureMode();
+
 }
 
 void Recorder::playInitialGrid()
 {
-	if (!InitialState.empty())
-	{
-		BeginTextureMode(this->frame_texture);
+	BeginTextureMode(this->frame_texture);
 
-		for (const auto& record_cell : InitialState) {
-			record_cell->draw(cellsize, Direction::FORWARD);
-		}
-		EndTextureMode();
-		current_step = 0;
+	for (const auto& record_cell : history.front()) {
+		record_cell->draw(cellsize, Direction::FORWARD);
 	}
+	EndTextureMode();
+	current_step = 0;
 }
+
 
 bool Recorder::stepBackward()
 {
@@ -253,19 +248,8 @@ bool Recorder::stepBackward()
 			{
 				record_cell->draw(cellsize,Direction::BACKWARD);
 			}
-			for (const auto& record_cell : history[current_step-1])
-			{
-				record_cell->draw(cellsize,Direction::BACKWARD);
-			}
-
-			if (current_step - 1 == 0)
-			{
-				current_step--;
-				EndTextureMode();
-				return false;
-			}
+			
 			current_step--;
-
 			EndTextureMode();
 			return true;
 		}
