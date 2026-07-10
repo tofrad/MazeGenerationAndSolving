@@ -61,14 +61,17 @@ void Menu::displayGUI()
     snprintf(TextBoxSizeText, sizeof(TextBoxSizeText), "%d", MazeSize);
     GuiTextBox(Scaled_TextBoxSize, TextBoxSizeText, DEFAULT, false);
 
+    char nmb_weights_text[] = "number of weights";
     GuiSpinner(Scaled_SpinnerWeightCnt, "", &SpinnerWeightCntValue, 1, 50, false);
-    GuiTextBox(Scaled_TextBoxWeightCnt, "number of weights", DEFAULT, false);
+    GuiTextBox(Scaled_TextBoxWeightCnt, nmb_weights_text, DEFAULT, false);
 
+    char min_weights_text[] = "min weights val";
     GuiSpinner(Scaled_SpinnerMinWeight, "", &SpinnerMinWeightValue, 1, 50, false);
-    GuiTextBox(Scaled_TextBoxMinWeight, "min weights val", DEFAULT, false);
+    GuiTextBox(Scaled_TextBoxMinWeight, min_weights_text, DEFAULT, false);
 
+    char max_weights_text[] = "max weights val";
     GuiSpinner(Scaled_SpinnerMaxWeight, "", &SpinnerMaxWeightValue, 1, 50, false);
-    GuiTextBox(Scaled_TextBoxMaxWeight, "max weights val", DEFAULT, false);
+    GuiTextBox(Scaled_TextBoxMaxWeight, max_weights_text, DEFAULT, false);
 
     GuiLine(Scaled_LineWeightsSeparate, "");
 
