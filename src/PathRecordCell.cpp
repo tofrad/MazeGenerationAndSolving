@@ -1,7 +1,5 @@
 #include "PathRecordCell.hpp"
 
-// #include "Maze.hpp"
-
 
 PathRecordCell::PathRecordCell(Cell* cell) : Base_RecordCell(cell)
 {
