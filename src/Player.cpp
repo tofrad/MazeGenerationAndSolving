@@ -261,20 +261,14 @@ void Player::resolveRenderAction()
             break;
 
         case PlayerState::BACKWARD_ONE:
-            if (Record_Object->stepBackward())
-            {
-                this->setState(PlayerState::PAUSED);
-
-            }
+            Record_Object->stepBackward();
             updateSliderFloat();
+            setState(PlayerState::PAUSED);
             break;
 
         case PlayerState::FORWARD_ONE:
-            if (Record_Object->stepForward())
-            {
-                this->setState(PlayerState::PAUSED);
-
-            }
+            Record_Object->stepForward();
+            setState(PlayerState::PAUSED);
             updateSliderFloat();
             break;
 
