@@ -114,9 +114,7 @@ void Recorder::recordStep(const vector<Cell*>& modifiedCells)
 	{
 		for (auto cell : modifiedCells) {
 			//record cells here
-			if (not(cell->getMazeFlags_Current()->isStart ||
-					cell->getMazeFlags_Current()->isWall ||
-					cell->getMazeFlags_Current()->isTarget))
+			if (not(cell->getMazeFlags_Current()->isWall))
 			{
 				temp.push_back(std::make_unique<PathRecordCell>(cell));
 			}
@@ -138,22 +136,13 @@ void Recorder::saveInitialFrame(const vector<Cell*>& FirstCells)
 		}
 	}else
 	{
+		//no need for recording path cells as original view has no path action
 		for (auto cell : FirstCells) {
 			//record cells here
-			if (cell->getMazeFlags_Current()->isStart ||
-				cell->getMazeFlags_Current()->isWall ||
-				cell->getMazeFlags_Current()->isTarget)
-			{
-				temp.push_back(std::make_unique<MazeRecordCell>(cell));
-
-			}else
-			{
-				temp.push_back(std::make_unique<PathRecordCell>(cell));
-			}
+			temp.push_back(std::make_unique<MazeRecordCell>(cell));
 		}
 	}
 	history.push_back(std::move(temp));
-
 	playInitialGrid();
 }
 
@@ -171,14 +160,12 @@ void Recorder::saveLastFrame(const vector<Cell*>& LastList)
 	}else
 	{
 		for (auto cell : LastList) {
-			//record cells here
-			if (cell->getMazeFlags_Current()->isStart ||
-				cell->getMazeFlags_Current()->isWall ||
-				cell->getMazeFlags_Current()->isTarget)
-			{
-				temp.push_back(std::make_unique<MazeRecordCell>(cell));
-			}else
-			{
+			// record cells here
+			 if (cell->getMazeFlags_Current()->isWall)
+			 {
+			 	temp.push_back(std::make_unique<MazeRecordCell>(cell));
+			 }else
+			 {
 				temp.push_back(std::make_unique<PathRecordCell>(cell));
 			}
 		}

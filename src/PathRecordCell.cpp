@@ -19,7 +19,6 @@ void PathRecordCell::draw(const float cellsize, const Direction dir) const
 	drawPath(cellsize, dir);
 }
 
-// to get to path drawing, maybe get back one step in recording and get coordinates of changed cells, if adjacent prob the needed connection
 void PathRecordCell::drawPath(const float cellsize, const Direction dir) const
 {
 	const Point P = p;
@@ -38,6 +37,7 @@ void PathRecordCell::drawPath(const float cellsize, const Direction dir) const
 	if (dir == FORWARD)
 	{
 		DrawCircleV(center, radius, this->getNextColor());
+		// DrawCircleLinesV(center, radius, BLACK);
 		if (Data.hasConnection)
 		{
 			DrawLineEx(origin, center,radius/2, this->getNextColor());
@@ -46,6 +46,7 @@ void PathRecordCell::drawPath(const float cellsize, const Direction dir) const
 	}else
 	{
 		DrawCircleV(center, radius, this->getCurrentColor());
+		// DrawCircleLinesV(center, radius, BLACK);
 		if (Data.hasConnection)
 		{
 			DrawLineEx(origin, center,radius/2, this->getCurrentColor());

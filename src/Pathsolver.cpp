@@ -54,13 +54,17 @@ bool Pathsolver::isVisitable(const Cell* cell)
 	}
 }
 
-//TODO
-// Update recording of DFS
-//flickering, marking of leading cell
 bool Pathsolver::DFS(Cell* start) const
 {
 	//abort if target is found
 	if (start->maze_next_flags.isTarget) {
+
+		//record last path cell
+		start->path_next_flags.Path_IsCurrentPath = true;
+		path_record->recordStep({start});
+		//turn around and record, true triggers recursion backprop
+		start->path_next_flags.Path_IsFinishedPath = true;
+		path_record->recordStep({start});
 		return true;
 	}
 	
@@ -101,9 +105,12 @@ bool Pathsolver::DFS(Cell* start) const
 
 		//get next cell
 		Cell* next = adjCells.back();
+		//data saving #################################################
+
 		//set origin for path recording
 		next->setPathConnectFrom(start);
 
+		//end data saving #############################################
 		if (DFS(next)) {
 
 			//recursion animation?
@@ -136,6 +143,8 @@ bool Pathsolver::BFS(Cell* start) const
 	queue<vector<Cell*>> tobevisited;
 
 	start->path_next_flags.Path_CellWasVisited = true;
+	path_record->recordStep({start});
+
 	tobevisited.push({start});
 
 	bool wasTargetFound = false;
@@ -157,6 +166,7 @@ bool Pathsolver::BFS(Cell* start) const
 				if (cell->maze_next_flags.isTarget) {
 					wasTargetFound = true;
 					foundTarget = cell;
+					path_record->recordStep({cell});
 					break;
 				}
 				
@@ -171,6 +181,12 @@ bool Pathsolver::BFS(Cell* start) const
 
 					if (neighbor && isVisitable(neighbor)) {
 
+						//data saving #################################################
+
+						//set origin for path recording
+						neighbor->setPathConnectFrom(cell);
+
+						//end data saving #############################################
 						neighbor->setParent(cell);
 						neighbor->path_next_flags.Path_CellWasVisited = true;
 						next_cells.push_back(neighbor);
@@ -194,6 +210,8 @@ bool Pathsolver::BFS(Cell* start) const
 
 			backtrack = backtrack->getParent();
 		}
+		backtrack->path_next_flags.Path_IsFinishedPath = true;
+		path_record->recordStep({backtrack});
 	}
 	return wasTargetFound;
 }
