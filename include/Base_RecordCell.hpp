@@ -7,7 +7,8 @@
 struct ConnectionData
 {
     int ConnectionWeight = 0;
-    Vector2  ConnectsTo{0,0};
+    Vector2  ConnectsFrom{-1.f,-1.f};
+    bool hasConnection = false;
 };
 
 class Base_RecordCell

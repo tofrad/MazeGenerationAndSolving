@@ -17,6 +17,7 @@ public:
 private:
     static Color getColorFromFlags(const PathFlags* flags);
     // static Color getColorFromFlags(const PathFlags* flags);
+    void extractConnectionsData(const Cell* cell);
 
     void drawPath(float cellsize, const Direction dir) const;
 

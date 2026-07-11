@@ -227,7 +227,7 @@ void Recorder::playLastFrame()
 void Recorder::playInitialGrid()
 {
 	BeginTextureMode(this->frame_texture);
-
+	ClearBackground(LIGHTGRAY);
 	for (const auto& record_cell : history.front()) {
 		record_cell->draw(cellsize, Direction::FORWARD);
 	}

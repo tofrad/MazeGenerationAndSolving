@@ -1,6 +1,8 @@
 #pragma once
 
 #include <cstdint>
+#include <memory>
+
 #include "Point.hpp"
 
 //TODO
@@ -54,6 +56,9 @@ class Cell
 		void setWest(Cell* west);
 		void setParent(Cell* parent);
 
+		void setPathConnectFrom(Cell* origin);
+		Cell* getPathConnectFrom() const;
+
 		Cell* getNorth() const;
 		Cell* getEast() const;
 		Cell* getSouth() const;
@@ -83,7 +88,9 @@ class Cell
 		Cell* Parent = this;
 
 		uint64_t cell_id = 0;
-		
+
+		Cell*  PathConnectFrom = nullptr;
+
 		int weight{};
 
 		void setId();

@@ -37,7 +37,6 @@ bool Pathsolver::solveMaze(Cell* start, const SolvingMethod method) const
 	}
 	//stop Recording
 	path_record->stopRecording();
-
 	return is_solved;
 }
 
@@ -66,17 +65,15 @@ bool Pathsolver::DFS(Cell* start) const
 	}
 	
 	//mark and record cell as visited
-	if (!start->path_next_flags.Path_CellWasVisited) {
-		start->path_next_flags.Path_CellWasVisited = true;
-	}
+	start->path_next_flags.Path_CellWasVisited = true;
+
+	//mark it as path, will be deleted in recursion
+	start->path_next_flags.Path_IsCurrentPath = true;
 
 	//set cell active and record it
 	start->maze_next_flags.isActive = true;
 	//record here#########################################################################################
 	path_record->recordStep({start});
-	
-	//mark it as path, will be deleted in recursion
-	start->path_next_flags.Path_IsCurrentPath = true;
 
 	//add all valid adjacent to list
 	vector<Cell*> adjCells;
@@ -104,11 +101,8 @@ bool Pathsolver::DFS(Cell* start) const
 
 		//get next cell
 		Cell* next = adjCells.back();
-
-		//delete start from isActive and record it 
-		start->maze_next_flags.isActive = false;
-		//record here#########################################################################################
-		path_record->recordStep({start});
+		//set origin for path recording
+		next->setPathConnectFrom(start);
 
 		if (DFS(next)) {
 

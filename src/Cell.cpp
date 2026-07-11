@@ -100,6 +100,19 @@ void Cell::setParent(Cell* parent)
 	this->Parent = parent;
 }
 
+void Cell::setPathConnectFrom(Cell* origin)
+{
+	if (origin != nullptr)
+	{
+		PathConnectFrom = origin;
+	}
+}
+
+Cell* Cell::getPathConnectFrom() const
+{
+	return PathConnectFrom;
+}
+
 Cell* Cell::getNorth() const
 {
 	return North;

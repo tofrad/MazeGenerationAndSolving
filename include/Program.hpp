@@ -40,7 +40,7 @@ class Program
 
 		GenerationMethod Generator = REC_BACKTRACKING;
 
-		SolvingMethod Solver = SM_BFS;
+		SolvingMethod Solver = SM_DFS;
 
 		ProgramState State = STOPPED;
 
