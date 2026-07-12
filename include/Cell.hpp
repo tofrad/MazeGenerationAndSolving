@@ -23,9 +23,9 @@ struct MazeFlags
 struct PathFlags
 {
 	//states for solving behavior
+	bool Path_IsFrontier = false;
 	bool Path_CellWasVisited = false;
 	bool Path_IsCurrentPath = false;  //marker for dfs recursion when dead end was found
-	bool Path_IsFrontier = false;
 	bool Path_IsFinishedPath = false;
 };
 

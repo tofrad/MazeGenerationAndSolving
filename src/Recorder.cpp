@@ -124,6 +124,15 @@ void Recorder::recordStep(const vector<Cell*>& modifiedCells)
 	history.push_back(std::move(temp));
 }
 
+void Recorder::recordStep(const vector<Cell*>& modifiedCells_first, const vector<Cell*>& modifiedCells_second)
+{
+	vector<Cell*> temp;
+	temp.reserve(modifiedCells_first.size() + modifiedCells_second.size());
+	temp.insert(temp.end(), modifiedCells_first.begin(), modifiedCells_first.end());
+	temp.insert(temp.end(), modifiedCells_second.begin(), modifiedCells_second.end());
+	recordStep(temp);
+}
+
 void Recorder::saveInitialFrame(const vector<Cell*>& FirstCells)
 {
 	vector<unique_ptr<Base_RecordCell>> temp;

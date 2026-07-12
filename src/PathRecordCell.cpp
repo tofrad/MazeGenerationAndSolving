@@ -68,9 +68,10 @@ void PathRecordCell::drawEmptyCell(const float cellsize) const
 
 Color PathRecordCell::getColorFromFlags(const PathFlags *flags)
 {
+	if (flags->Path_IsFrontier){return YELLOW;}
 	if (flags->Path_IsFinishedPath){ return SKYBLUE;}
 	if (flags->Path_IsCurrentPath){ return GOLD;}
-	if (flags->Path_CellWasVisited){ return MAROON;}
+	if (flags->Path_CellWasVisited){ return VIOLET;}
 
 	// Default
 	return LIGHTGRAY;

@@ -28,6 +28,10 @@ bool Pathsolver::solveMaze(Cell* start, const SolvingMethod method) const
 	switch (method) {
 
 		case SM_DFS:
+			//setup first cell
+			start->path_next_flags.Path_IsFrontier = true;
+			start->path_next_flags.Path_IsCurrentPath = true;
+			path_record->recordStep({start});
 			is_solved = DFS(start);
 			break;
 		case SM_BFS:
@@ -60,7 +64,9 @@ bool Pathsolver::DFS(Cell* start) const
 	if (start->maze_next_flags.isTarget) {
 
 		//record last path cell
+		start->path_next_flags.Path_CellWasVisited = true;
 		start->path_next_flags.Path_IsCurrentPath = true;
+		start->path_next_flags.Path_IsFrontier = false;
 		path_record->recordStep({start});
 		//turn around and record, true triggers recursion backprop
 		start->path_next_flags.Path_IsFinishedPath = true;
@@ -73,11 +79,6 @@ bool Pathsolver::DFS(Cell* start) const
 
 	//mark it as path, will be deleted in recursion
 	start->path_next_flags.Path_IsCurrentPath = true;
-
-	//set cell active and record it
-	start->maze_next_flags.isActive = true;
-	//record here#########################################################################################
-	path_record->recordStep({start});
 
 	//add all valid adjacent to list
 	vector<Cell*> adjCells;
@@ -102,13 +103,18 @@ bool Pathsolver::DFS(Cell* start) const
 
 	//go through all adj cells
 	while (!adjCells.empty()) {
-
 		//get next cell
 		Cell* next = adjCells.back();
 		//data saving #################################################
 
 		//set origin for path recording
 		next->setPathConnectFrom(start);
+
+		//switch frontier
+		start->path_next_flags.Path_IsFrontier = false;
+		next->path_next_flags.Path_IsFrontier = true;
+		//record here#########################################################################################
+		path_record->recordStep({start, next});
 
 		//end data saving #############################################
 		if (DFS(next)) {
@@ -127,7 +133,7 @@ bool Pathsolver::DFS(Cell* start) const
 	}
 
 	//cell is not on Path
-	start->maze_next_flags.isActive = false;
+	start->path_next_flags.Path_IsFrontier = false;
 	start->path_next_flags.Path_IsCurrentPath = false;
 	//record here#########################################################################################
 	path_record->recordStep({start});
@@ -189,12 +195,14 @@ bool Pathsolver::BFS(Cell* start) const
 						//end data saving #############################################
 						neighbor->setParent(cell);
 						neighbor->path_next_flags.Path_CellWasVisited = true;
+						neighbor->path_next_flags.Path_IsFrontier = true;
 						next_cells.push_back(neighbor);
 					}
 				}
+				cell->path_next_flags.Path_IsFrontier = false;
 			}
 			// record current cells here###############################################################
-			path_record->recordStep(current_cells);
+			path_record->recordStep(current_cells, next_cells);
 			tobevisited.push(next_cells);
 		}
 	}

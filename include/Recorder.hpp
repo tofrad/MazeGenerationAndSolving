@@ -43,6 +43,7 @@ public:
 	void stopRecording();
 
 	void recordStep(const vector<Cell*>& modifiedCells);
+	void recordStep(const vector<Cell*>& modifiedCells_first, const vector<Cell*>& modifiedCells_second);
 	void saveInitialFrame(const vector<Cell*>& FirstCells);
 	void saveLastFrame(const vector<Cell*>& LastList);
 
