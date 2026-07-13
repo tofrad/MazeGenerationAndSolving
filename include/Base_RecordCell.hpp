@@ -4,17 +4,17 @@
 #include "raylib.h"
 #include "State_Definitions.hpp"
 
-struct ConnectionData
+struct CellData
 {
-    int ConnectionWeight = 0;
-    Vector2  ConnectsFrom{-1.f,-1.f};
-    bool hasConnection = false;
+    int Weight = 0;
+    bool hasWeight = false;
+
 };
 
 class Base_RecordCell
 {
     public:
-        Base_RecordCell(Cell* cell);
+        Base_RecordCell(const Cell* cell);
         virtual ~Base_RecordCell() = default;
 
         virtual void draw(float cellsize, const Direction dir) const{};
@@ -26,5 +26,7 @@ class Base_RecordCell
         Color currentColor = LIGHTGRAY;
         Color nextColor = LIGHTGRAY;
         Point p;
+        CellData cellData;
+        void updateCellData(const Cell* cell);
 
 };

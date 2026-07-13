@@ -1,12 +1,8 @@
 #pragma once
 
-#include <cstdint>
 #include <memory>
-
 #include "Point.hpp"
 
-//TODO
-//setCellStart / Target to ensure setting current flags too for correct behav
 
 //states for maze generating
 struct MazeFlags
@@ -15,8 +11,10 @@ struct MazeFlags
 	bool isStart = false;
 	bool isTarget = false;
 	bool isWall = false;
-	bool Maze_CellWasVisited = false;
+	bool hasWeight = false;
+
 	bool isActive = false;
+	bool Maze_CellWasVisited = false;
 };
 
 //states for path solving
@@ -72,6 +70,9 @@ class Cell
 		void makeWall();
 		void breakWall();
 
+		int getWeight() const;
+		void addWeight(int w, Cell* parent);
+
 		uint64_t getCellID() const;
 
 	private:
@@ -91,7 +92,7 @@ class Cell
 
 		Cell*  PathConnectFrom = nullptr;
 
-		int weight{};
+		int weight = 0;
 
 		void setId();
 };

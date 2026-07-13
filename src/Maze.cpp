@@ -11,6 +11,10 @@
 #define MIN_HEIGHT 11
 #define MIN_WIDTH 11
 
+#define MAX_WEIGHT_AMOUNT 5
+#define MAX_WEIGHT_VAL 5
+#define MIN_WEIGHT_VAL 0
+
 int start_x;
 int start_y;
 
@@ -250,6 +254,8 @@ void Maze::generateMaze(const GenerationMethod method, Recorder* recorder)
 
 	}
 
+	setWeights(MAX_WEIGHT_VAL);
+
 	record->stopRecording();
 	record->saveLastFrame(Cell_List);
 
@@ -486,6 +492,36 @@ void Maze::HuntAndKill()
 		//no valid cell is left , abort
 		if (found_new_cell == false) {
 			break;
+		}
+	}
+}
+
+void Maze::setWeights(int weight_count)
+{
+	if (weight_count > MAX_WEIGHT_VAL)
+	{
+		weight_count = MAX_WEIGHT_VAL;
+	}
+
+	int cells_changed = 0;
+	std::uniform_int_distribution<> distribution(0, Cell_List.size() - 1);
+
+	std::vector<bool> used(Cell_List.size(), false);
+
+	while (cells_changed < weight_count)
+	{
+		const size_t pos = distribution(rand_gen);
+
+		//index was not used prior
+		if (not used[pos])
+		{
+			//add weight to cell via member
+			if (not Cell_List[pos]->getMazeFlags_Next()->isWall)
+			{
+				Cell_List[pos]->addWeight(MAX_WEIGHT_VAL, Cell_List[pos]);
+				cells_changed++;
+			}
+			used[pos] = true;
 		}
 	}
 }

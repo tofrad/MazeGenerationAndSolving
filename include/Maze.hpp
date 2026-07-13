@@ -48,20 +48,20 @@ class Maze
 
 		std::mt19937 rand_gen;
 
+
 		void generateMaze(GenerationMethod method, Recorder* recorder);
 
-		void deleteConnections() const;
-
 		void RecursiveBacktracking(Cell* cell, uint step);
-
 		void Kruskal();
-
 		void HuntAndKill();
+
+		void setWeights(const int weight_count);
 
 		vector<Cell*> getUnvisitedNeighbors(const Cell* cell) const;
 		vector<Cell*> getVisitedNeighbors(const Cell* cell) const;
 		vector<Cell*> getWalkableNeighborsFromWall(const Cell* cell) const;
 
 		Cell* connectCells(Cell* first, Cell* second) const;
+		void deleteConnections() const;
 };
 

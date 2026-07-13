@@ -1,5 +1,8 @@
 #include "Cell.hpp"
 
+#include <iostream>
+#include <vector>
+
 Cell::Cell()
 {
 	this->weight = 0;
@@ -199,6 +202,48 @@ void Cell::makeWall()
 void Cell::breakWall()
 {
 	this->maze_next_flags.isWall = false;
+}
+
+int Cell::getWeight() const
+{
+	return this->weight;
+}
+
+void Cell::addWeight(const int w, Cell* parent)
+{
+
+	std::cout << "Adding weight " << w << " to cell" << std::endl;
+	this->weight += w;
+	this->maze_next_flags.hasWeight = true;
+	this->maze_current_flags.hasWeight = true;
+
+	//TODO
+	//add global constraints config for maze params
+
+	int max = 5;
+	if (this->weight > max)
+	{
+		this->weight = max;
+	}
+
+	if (w > 1)
+	{
+		std::vector<Cell*> adjCells;
+
+		adjCells.push_back(this->getNorth());
+		adjCells.push_back(this->getEast());
+		adjCells.push_back(this->getSouth());
+		adjCells.push_back(this->getWest());
+
+		for (const auto cell: adjCells)
+		{
+			if (cell != nullptr && cell != parent)
+			{
+				cell->addWeight(w - 1, this);
+			}
+		}
+		int i = 0;
+	}
 }
 
 uint64_t Cell::getCellID() const

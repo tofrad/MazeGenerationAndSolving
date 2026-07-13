@@ -21,7 +21,6 @@ class MazeRecordCell : public Base_RecordCell
         void drawCell(float cellsize, const Direction dir) const;
         void drawPath(float cellsize, const Direction dir) const;
 
-        ConnectionData Data;
 };
 
 

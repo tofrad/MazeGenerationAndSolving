@@ -5,6 +5,14 @@
 #include "Base_RecordCell.hpp"
 #include "State_Definitions.hpp"
 
+struct ConnectionData
+{
+    int ConnectionWeight = 0;
+    Vector2  ConnectsFrom{-1.f,-1.f};
+    bool hasConnection = false;
+
+};
+
 class PathRecordCell : public Base_RecordCell
 {
 public:

@@ -36,6 +36,31 @@ void MazeRecordCell::drawCell(const float cellsize, const Direction dir) const
 	{
 		DrawRectangleV(topleft, size, this->getCurrentColor());
 	}
+
+	if (cellData.hasWeight)
+	{
+		switch (cellData.Weight)
+		{
+			case 1:
+				DrawRectangleV(topleft, size, GREEN);
+				break;
+			case 2:
+				DrawRectangleV(topleft, size, YELLOW);
+				break;
+			case 3:
+				DrawRectangleV(topleft, size, ORANGE);
+				break;
+			case 4:
+				DrawRectangleV(topleft, size, MAROON);
+				break;
+			case 5:
+				DrawRectangleV(topleft, size, PURPLE);
+				break;
+			default:
+				break;
+
+		}
+	}
 }
 
 void MazeRecordCell::drawPath(const float cellsize, const Direction dir) const
