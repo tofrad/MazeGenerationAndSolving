@@ -1,4 +1,5 @@
 #include "MazeRecordCell.hpp"
+#include "ColorConfig.hpp"
 
 MazeRecordCell::MazeRecordCell(Cell* cell) : Base_RecordCell(cell)
 {
@@ -36,31 +37,6 @@ void MazeRecordCell::drawCell(const float cellsize, const Direction dir) const
 	{
 		DrawRectangleV(topleft, size, this->getCurrentColor());
 	}
-
-	if (cellData.hasWeight)
-	{
-		switch (cellData.Weight)
-		{
-			case 1:
-				DrawRectangleV(topleft, size, GREEN);
-				break;
-			case 2:
-				DrawRectangleV(topleft, size, YELLOW);
-				break;
-			case 3:
-				DrawRectangleV(topleft, size, ORANGE);
-				break;
-			case 4:
-				DrawRectangleV(topleft, size, MAROON);
-				break;
-			case 5:
-				DrawRectangleV(topleft, size, PURPLE);
-				break;
-			default:
-				break;
-
-		}
-	}
 }
 
 void MazeRecordCell::drawPath(const float cellsize, const Direction dir) const
@@ -95,12 +71,43 @@ void MazeRecordCell::drawEmptyCell(const float cellsize) const
 
 }
 
-Color MazeRecordCell::getColorFromFlags(const MazeFlags* flags)
+Color MazeRecordCell::getColorFromFlags(const MazeFlags* flags) const
 {
 	if (flags->isStart){ return BLUE;}
 	if (flags->isTarget){ return RED;}
 	if (flags->isActive){ return LIME;}
 	if (flags->isWall){ return BLACK;}
+
+	if (flags->hasWeight)
+	{
+		switch (cellData.Weight)
+		{
+		case 1:
+			return LIGHT_BLUE;
+			break;
+		case 2:
+			return LIGHT_TURQUOISE;
+			break;
+		case 3:
+			return LIGHT_GREEN;
+			break;
+		case 4:
+			return LIGHT_LIMEGREEN;
+			break;
+		case 5:
+			return  LIGHT_YELLOW;
+			break;
+		case 6:
+			return  LIGHT_ORANGE;
+			break;
+		case 7:
+			return  LIGHT_RED;
+			break;
+		default:
+			break;
+
+		}
+	}
 
 	if (flags->Maze_CellWasVisited){ return DARKGRAY;}
 

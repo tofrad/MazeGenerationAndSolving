@@ -40,7 +40,7 @@ void PathRecordCell::drawPath(const float cellsize, const Direction dir) const
 		// DrawCircleLinesV(center, radius, BLACK);
 		if (Data.hasConnection)
 		{
-			DrawLineEx(origin, center,radius/2, this->getNextColor());
+			DrawLineEx(origin, center,radius, this->getNextColor());
 		}
 
 	}else
@@ -49,7 +49,7 @@ void PathRecordCell::drawPath(const float cellsize, const Direction dir) const
 		// DrawCircleLinesV(center, radius, BLACK);
 		if (Data.hasConnection)
 		{
-			DrawLineEx(origin, center,radius/2, this->getCurrentColor());
+			DrawLineEx(origin, center,radius, this->getCurrentColor());
 		}
 	}
 }
@@ -69,8 +69,8 @@ void PathRecordCell::drawEmptyCell(const float cellsize) const
 Color PathRecordCell::getColorFromFlags(const PathFlags *flags)
 {
 	if (flags->Path_IsFrontier){return GOLD;}
-	if (flags->Path_IsFinishedPath){ return PINK;}
-	if (flags->Path_IsCurrentPath){ return BLUE;}
+	if (flags->Path_IsFinishedPath){ return SKYBLUE;}
+	if (flags->Path_IsCurrentPath){ return PURPLE;}
 	if (flags->Path_CellWasVisited){ return BROWN;}
 
 	// Default

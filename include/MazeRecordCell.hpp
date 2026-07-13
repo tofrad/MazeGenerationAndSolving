@@ -15,7 +15,7 @@ class MazeRecordCell : public Base_RecordCell
         void drawEmptyCell(float cellsize) const;
 
     private:
-        static Color getColorFromFlags(const MazeFlags* flags);
+        Color getColorFromFlags(const MazeFlags* flags) const;
         // static Color getColorFromFlags(const PathFlags* flags);
 
         void drawCell(float cellsize, const Direction dir) const;
