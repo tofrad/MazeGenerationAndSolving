@@ -11,8 +11,8 @@
 #define MIN_HEIGHT 11
 #define MIN_WIDTH 11
 
-#define MAX_WEIGHT_AMOUNT 5
-#define MAX_WEIGHT_VAL 5
+#define MAX_WEIGHT_AMOUNT 25
+#define MAX_WEIGHT_VAL 7
 #define MIN_WEIGHT_VAL 0
 
 int start_x;
@@ -150,7 +150,6 @@ void Maze::createConnectedMaze()
 
 			currentCell->setEast((x < width-1) ? Cell_Grid[x+1][y] : nullptr);
 			currentCell->setSouth((y < height-1) ? Cell_Grid[x][y+1] : nullptr);
-
 		}
 	}
 }
@@ -165,6 +164,8 @@ void Maze::createEmptyMaze()
 		for (int y = 0; y < height; y++) {
 
 			Cell* C = new Cell(Point(x, y));
+			C->setId(cell_id_cnt);
+			cell_id_cnt++;
 
 			if (x % 2 != 0 || y % 2 != 0) {
 				C->makeWall();
@@ -187,6 +188,9 @@ void Maze::createNoWallMaze()
 		for (int y = 0; y < height; y++) {
 
 			Cell* C = new Cell(Point(x, y));
+			C->setId(cell_id_cnt);
+			cell_id_cnt++;
+
 
 			C->setParent(C);
 			Cell_List.push_back(C);
@@ -254,7 +258,7 @@ void Maze::generateMaze(const GenerationMethod method, Recorder* recorder)
 
 	}
 
-	setWeights(MAX_WEIGHT_VAL);
+	setWeights(25);
 
 	record->stopRecording();
 	record->saveLastFrame(Cell_List);
@@ -498,9 +502,9 @@ void Maze::HuntAndKill()
 
 void Maze::setWeights(int weight_count)
 {
-	if (weight_count > MAX_WEIGHT_VAL)
+	if (weight_count > MAX_WEIGHT_AMOUNT)
 	{
-		weight_count = MAX_WEIGHT_VAL;
+		weight_count = MAX_WEIGHT_AMOUNT;
 	}
 
 	int cells_changed = 0;
@@ -518,12 +522,65 @@ void Maze::setWeights(int weight_count)
 			//add weight to cell via member
 			if (not Cell_List[pos]->getMazeFlags_Next()->isWall)
 			{
-				Cell_List[pos]->addWeight(MAX_WEIGHT_VAL, Cell_List[pos]);
+				const auto current_cell = Cell_List[pos];
+
+				current_cell->addWeight(MAX_WEIGHT_VAL);
+
+				//helper to check neighboring cells already visited THIS iteration
+				std::vector<bool> recursion_used(Cell_List.size(), false);
+				recursion_used[pos] = true;
+
+				//get initial neighbors of first cell
+				std::vector<Cell*> adjCells;
+
+				adjCells.push_back(current_cell->getNorth());
+				adjCells.push_back(current_cell->getEast());
+				adjCells.push_back(current_cell->getSouth());
+				adjCells.push_back(current_cell->getWest());
+
+				//advance through neighbors till weight is 0, decreasing it every distance
+				for (int w = MAX_WEIGHT_VAL - 1; w > 0; --w)
+				{
+					//save last adjCells in helper to iterate trough
+					std::vector<Cell*> temp_adjCells = adjCells;
+
+					//clear for next iteration
+					adjCells.clear();
+
+					//get through every neighbor add weight and get its neighbors
+					for (const auto cell: temp_adjCells)
+					{
+						//if real and not called during this iteration, handle it
+						if (Cell_isVisitable(cell) && not recursion_used[cell->getCellID()])
+						{
+							cell->addWeight(w);
+							recursion_used[cell->getCellID()] = true;
+
+							adjCells.push_back(cell->getNorth());
+							adjCells.push_back(cell->getEast());
+							adjCells.push_back(cell->getSouth());
+							adjCells.push_back(cell->getWest());
+						}
+					}
+				}
+
+				//save original cell as already added
+				used[pos] = true;
 				cells_changed++;
+
 			}
+			//pos cell was wall, add it to used to save effort
 			used[pos] = true;
 		}
 	}
+}
+
+bool Maze::Cell_isVisitable(const Cell* cell)
+{
+	if (cell != nullptr && !cell->maze_next_flags.isWall) {
+		return true;
+	}
+	return false;
 }
 
 vector<Cell*> Maze::getUnvisitedNeighbors(const Cell* cell) const

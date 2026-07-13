@@ -5,24 +5,21 @@
 
 Cell::Cell()
 {
-	this->weight = 0;
+
 }
 
 Cell::Cell(const Point& p1)
 {
 	this->p = p1;
-	this->weight = 0;
-	setId();
 }
 
 Cell::Cell(const Point& p1, const int weight) : Cell(p1)
 {
 	this->weight = weight;
-	setId();
 }
 
 Cell::~Cell() {
-
+	delete this;
 }
 
 Point Cell::getPosition() const
@@ -209,10 +206,8 @@ int Cell::getWeight() const
 	return this->weight;
 }
 
-void Cell::addWeight(const int w, Cell* parent)
+void Cell::addWeight(const int w)
 {
-
-	std::cout << "Adding weight " << w << " to cell" << std::endl;
 	this->weight += w;
 	this->maze_next_flags.hasWeight = true;
 	this->maze_current_flags.hasWeight = true;
@@ -220,38 +215,19 @@ void Cell::addWeight(const int w, Cell* parent)
 	//TODO
 	//add global constraints config for maze params
 
-	int max = 5;
+	int max = 7;
 	if (this->weight > max)
 	{
 		this->weight = max;
 	}
-
-	if (w > 1)
-	{
-		std::vector<Cell*> adjCells;
-
-		adjCells.push_back(this->getNorth());
-		adjCells.push_back(this->getEast());
-		adjCells.push_back(this->getSouth());
-		adjCells.push_back(this->getWest());
-
-		for (const auto cell: adjCells)
-		{
-			if (cell != nullptr && cell != parent)
-			{
-				cell->addWeight(w - 1, this);
-			}
-		}
-		int i = 0;
-	}
 }
 
-uint64_t Cell::getCellID() const
+int Cell::getCellID() const
 {
 	return cell_id;
 }
 
-void Cell::setId()
+void Cell::setId(const int id)
 {
-	cell_id = (static_cast<uint64_t>(p.getX())	<< 32) | static_cast<uint64_t>(p.getY());
+	cell_id = id;
 }

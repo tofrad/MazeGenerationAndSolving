@@ -37,6 +37,8 @@ class Maze
 		int height = 10;
 		int width = 10;
 
+		int cell_id_cnt = 0;
+
 		vector<vector<Cell*>> Cell_Grid;
 
 		vector<Cell*> Cell_List;
@@ -56,6 +58,7 @@ class Maze
 		void HuntAndKill();
 
 		void setWeights(const int weight_count);
+		static bool Cell_isVisitable(const Cell* cell);
 
 		vector<Cell*> getUnvisitedNeighbors(const Cell* cell) const;
 		vector<Cell*> getVisitedNeighbors(const Cell* cell) const;

@@ -51,7 +51,7 @@ Recorder* Pathsolver::getRecording() const
 
 bool Pathsolver::isVisitable(const Cell* cell)
 {
-	if (cell != nullptr && !cell->path_next_flags.Path_CellWasVisited) {
+	if (cell != nullptr && !cell->getPathFlags_Current()->Path_CellWasVisited && !cell->getPathFlags_Next()->Path_CellWasVisited) {
 		return true;
 	}else{
 		return false;
@@ -115,7 +115,7 @@ bool Pathsolver::DFS(Cell* start) const
 		next->path_next_flags.Path_IsFrontier = true;
 		//record here#########################################################################################
 		path_record->recordStep({start, next});
-
+		next->path_next_flags.Path_CellWasVisited = true;
 		//end data saving #############################################
 		if (DFS(next)) {
 

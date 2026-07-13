@@ -71,9 +71,10 @@ class Cell
 		void breakWall();
 
 		int getWeight() const;
-		void addWeight(int w, Cell* parent);
+		void addWeight(int w);
 
-		uint64_t getCellID() const;
+		int getCellID() const;
+		void setId(const int id);
 
 	private:
 		Point p;
@@ -88,7 +89,7 @@ class Cell
 
 		Cell* Parent = this;
 
-		uint64_t cell_id = 0;
+		int cell_id = 0;
 
 		Cell*  PathConnectFrom = nullptr;
 
