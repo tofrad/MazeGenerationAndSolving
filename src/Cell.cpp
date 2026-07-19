@@ -3,6 +3,8 @@
 #include <iostream>
 #include <vector>
 
+#include "Global_Config.hpp"
+
 Cell::Cell()
 {
 
@@ -206,19 +208,35 @@ int Cell::getWeight() const
 	return this->weight;
 }
 
+void Cell::setWeight(const int w)
+{
+	this->weight = w;
+
+	if (this->weight > MAX_WEIGHT)
+	{
+		this->weight = MAX_WEIGHT;
+	}
+	if (this->weight < MIN_WEIGHT)
+	{
+		this->weight = MIN_WEIGHT;
+	}
+
+	if (this->weight > 0)
+	{
+		this->maze_next_flags.hasWeight = true;
+		this->maze_current_flags.hasWeight = true;
+	}
+}
+
 void Cell::addWeight(const int w)
 {
 	this->weight += w;
 	this->maze_next_flags.hasWeight = true;
 	this->maze_current_flags.hasWeight = true;
 
-	//TODO
-	//add global constraints config for maze params
-
-	int max = 7;
-	if (this->weight > max)
+	if (this->weight > MAX_WEIGHT)
 	{
-		this->weight = max;
+		this->weight = MAX_WEIGHT;
 	}
 }
 

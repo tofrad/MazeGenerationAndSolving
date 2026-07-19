@@ -4,6 +4,7 @@
 #include <random>
 
 #include <memory>
+#include "Global_Config.hpp"
 
 #define MAX_HEIGHT 249
 #define MAX_WIDTH 249
@@ -54,25 +55,34 @@ Maze::Maze(const TileMap* custom_maze, Recorder* recorder)
 				//cell clear
 				break;
 
-			case 1:
+			case WALL_CHAR:
 				//cell wall
 				Cell_Grid[x][y]->makeWall();
 				break;
 
-			case 2:
+			case START_CHAR:
 				//cell start
 				Cell_Grid[x][y]->setStart();
 				Start = Cell_Grid[x][y];
 				break;
 
-			case 3:
+			case TARGET_CHAR:
 				//cell target
 				Cell_Grid[x][y]->setTarget();
 				Target = Cell_Grid[x][y];
 				break;
 
 			default:
-				//cell clear
+				//cell with weight
+				//weight in same char array, with offset to 3 bc of 3 cases start,target, wall
+				const int weight = custom_maze->TileArray[x][y];
+				// TODO
+				// add global params
+				if (weight >= 0 && weight <= 100)
+				{
+					Cell_Grid[x][y]->setWeight(weight);
+				}
+
 				break;
 			}
 		}
@@ -93,17 +103,17 @@ void Maze::GetTileMapFromMaze(TileMap& custom) const
 			if (flags->isStart )
 			{
 				//set start
-				custom.TileArray[x][y] = 2;
+				custom.TileArray[x][y] = START_CHAR;
 				custom.Start = {x,y};
 			}else if (flags->isTarget )
 			{
 				//set target
-				custom.TileArray[x][y] = 3;
+				custom.TileArray[x][y] = TARGET_CHAR;
 				custom.Target = {x,y};
 			}else if (flags->isWall )
 			{
 				//set wall
-				custom.TileArray[x][y] = 1;
+				custom.TileArray[x][y] = WALL_CHAR;
 			}else
 			{
 				//normal cell
