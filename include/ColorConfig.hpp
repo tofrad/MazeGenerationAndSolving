@@ -1,9 +1,12 @@
 #pragma once
 
+#define HALF_RED { 255, 102, 102, 255 }
 #define LIGHT_RED { 255, 153, 153, 255 }
 #define LIGHT_ORANGE { 255, 204, 153, 255 }
 #define LIGHT_YELLOW { 255, 255, 153, 255 }
 #define LIGHT_LIMEGREEN { 153, 255, 153, 255 }
 #define LIGHT_GREEN { 204, 255, 153, 255 }
 #define LIGHT_TURQUOISE { 204, 255, 153, 255 }
-#define LIGHT_BLUE { 153, 255, 255, 255 }
+#define LIGHT_BLUE { 153, 255, 255, 255}
+#define FAINT_BLUE { 153, 204, 255, 255 }
+#define LIGHT_PURPLE { 204, 153, 255, 255 }

@@ -1,5 +1,5 @@
 #include "MazeRecordCell.hpp"
-#include "ColorConfig.hpp"
+#include "UI_Config.hpp"
 
 MazeRecordCell::MazeRecordCell(Cell* cell) : Base_RecordCell(cell)
 {
@@ -73,35 +73,46 @@ void MazeRecordCell::drawEmptyCell(const float cellsize) const
 
 Color MazeRecordCell::getColorFromFlags(const MazeFlags* flags) const
 {
-	if (flags->isStart){ return BLUE;}
-	if (flags->isTarget){ return RED;}
-	if (flags->isActive){ return LIME;}
-	if (flags->isWall){ return BLACK;}
+	if (flags->isStart){ return UI_Config::START_COLOR;}
+	if (flags->isTarget){ return UI_Config::TARGET_COLOR;}
+	if (flags->isActive){ return UI_Config::MAZE_ACTIVE_COLOR;}
+	if (flags->isWall){ return UI_Config::WALL_COLOR;}
 
 	if (flags->hasWeight)
 	{
-		switch (cellData.Weight)
+		const int weight_case = cellData.Weight / 10;
+
+		switch (weight_case)
 		{
+		case 0:
+			return UI_Config::WEIGHT_00_COLOR;
+			break;
 		case 1:
-			return LIGHT_BLUE;
+			return UI_Config::WEIGHT_10_COLOR;
 			break;
 		case 2:
-			return LIGHT_TURQUOISE;
+			return UI_Config::WEIGHT_20_COLOR;
 			break;
 		case 3:
-			return LIGHT_GREEN;
+			return UI_Config::WEIGHT_30_COLOR;
 			break;
 		case 4:
-			return LIGHT_LIMEGREEN;
+			return  UI_Config::WEIGHT_40_COLOR;
 			break;
 		case 5:
-			return  LIGHT_YELLOW;
+			return  UI_Config::WEIGHT_50_COLOR;
 			break;
 		case 6:
-			return  LIGHT_ORANGE;
+			return  UI_Config::WEIGHT_60_COLOR;
 			break;
 		case 7:
-			return  LIGHT_RED;
+			return  UI_Config::WEIGHT_70_COLOR;
+			break;
+		case 8:
+			return  UI_Config::WEIGHT_80_COLOR;
+			break;
+		case 9:
+			return  UI_Config::WEIGHT_90_COLOR;
 			break;
 		default:
 			break;
