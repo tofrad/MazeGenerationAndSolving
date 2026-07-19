@@ -2,10 +2,9 @@
 
 #include <string>
 #include <vector>
-#include "../lib/raylib/include/raylib.h"
+#include "raylib.h"
 #include "ProgramCallbacks.hpp"
 #include "LayoutManager.hpp"
-#include "Maze_Config.hpp"
 
 using namespace std;
 
@@ -115,6 +114,8 @@ private:
 	//helping functions for ui values
 	void clamp_sizes_to_uneven();
 
+	void handleWeightAdd(int x, int y, int weight);
+
 	// Define colors
 	Color greenColor = GREEN;
 	Color redColor = RED;
@@ -126,7 +127,7 @@ private:
 	int slider_value_int = static_cast<int>(slider_value_float);
 	int old_slider_value_int = static_cast<int>(slider_value_float);
 	//weights
-	int weight_spinner_val = 1;
+	int weight_spinner_val = 0;
 	bool is_with_neighbors = false;
 	bool is_with_colors = false;
 	//generator

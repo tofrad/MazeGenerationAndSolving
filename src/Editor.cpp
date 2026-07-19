@@ -2,7 +2,9 @@
 #include <iostream>
 #include "raygui.h"
 #include "Maze_Config.hpp"
+#include "Global_Config.hpp"
 
+#include "UI_Config.hpp"
 
 Editor::Editor()
 {
@@ -180,7 +182,7 @@ void Editor::displayEditor()
                 }
                 CustomMaze.Start.setX(temp_x);
                 CustomMaze.Start.setY(temp_y);
-                CustomMaze.TileArray[temp_x][temp_y] = 2;
+                CustomMaze.TileArray[temp_x][temp_y] = START_CHAR;
                 break;
 
             case 1: //set target
@@ -197,7 +199,7 @@ void Editor::displayEditor()
                 }
                 CustomMaze.Target.setX(temp_x);
                 CustomMaze.Target.setY(temp_y);
-                CustomMaze.TileArray[temp_x][temp_y] = 3;
+                CustomMaze.TileArray[temp_x][temp_y] = TARGET_CHAR;
 
                 break;
             case 2: // set wall
@@ -210,7 +212,7 @@ void Editor::displayEditor()
                     CustomMaze.Target = Point(-1, -1);
                 }
 
-                CustomMaze.TileArray[temp_x][temp_y] = 1;
+                CustomMaze.TileArray[temp_x][temp_y] = WALL_CHAR;
                 break;
 
             case 3: // clear cell
@@ -226,8 +228,18 @@ void Editor::displayEditor()
                 break;
 
             case 4: // add weights
-
+                if (Mouse_Tile == CustomMaze.Start)
+                {
+                    //no weight to start
+                }
+                else if (Mouse_Tile == CustomMaze.Target)
+                {
+                    //no weight to target
+                }
+                //add weight logic here
+                handleWeightAdd(temp_x, temp_y, weight_spinner_val);
                 break;
+
             default:
                 break;
             }
@@ -268,7 +280,7 @@ TileMap* Editor::getCustomMaze()
 
 void Editor::drawGrid(const int tile_size, const int x_tile_offset, const int y_tile_offset) const
 {
-    Color GridColor = BLACK;
+    constexpr Color GridColor = BLACK;
     //draw full grid
     for (int x = 0; x < CustomMaze.TileArray.size(); x++)
     {
@@ -276,16 +288,16 @@ void Editor::drawGrid(const int tile_size, const int x_tile_offset, const int y_
         {
             const Rectangle draw_rec = (Rectangle(x_tile_offset + x * tile_size, y_tile_offset + y * tile_size, tile_size,
                                            tile_size));
-            if (CustomMaze.TileArray[x][y] == 1) {
-                DrawRectangleRec(draw_rec, BLACK);
+            if (CustomMaze.TileArray[x][y] == WALL_CHAR) {
+                DrawRectangleRec(draw_rec, UI_Config::WALL_COLOR);
                 DrawRectangleLinesEx(draw_rec, 1, GridColor);
             }
-            else if (CustomMaze.TileArray[x][y] == 2)
+            else if (CustomMaze.TileArray[x][y] == START_CHAR)
             {
                 DrawRectangleRec(draw_rec, BLUE);
                 DrawRectangleLinesEx(draw_rec, 1, GridColor);
             }
-            else if (CustomMaze.TileArray[x][y] == 3)
+            else if (CustomMaze.TileArray[x][y] == TARGET_CHAR)
             {
                 DrawRectangleRec(draw_rec, ORANGE);
                 DrawRectangleLinesEx(draw_rec, 1, GridColor);
@@ -305,33 +317,29 @@ void Editor::syncToProgram()
 
 void Editor::UpdateRectValues()
 {
-         Scaled_Canvas = layout_manager.ScaleRect(Canvas);
-         Scaled_SideRect = layout_manager.ScaleRect(SideRect);
-         Scaled_Button_Save = layout_manager.ScaleRect(Button_Save);
-         Scaled_ButtonSaveAndGen = layout_manager.ScaleRect(ButtonSaveAndGen);
-         Scaled_SizeSlider = layout_manager.ScaleRect(SizeSlider);
-        Scaled_TextBoxSize = layout_manager.ScaleRect(TextBoxSize);
-
-         Scaled_ButtonSetStart = layout_manager.ScaleRect(ButtonSetStart);
-         Scaled_ButtonSetTarget = layout_manager.ScaleRect(ButtonSetTarget);
-         Scaled_ButtonSetWall = layout_manager.ScaleRect(ButtonSetWall);
-         Scaled_ButtonClear = layout_manager.ScaleRect(ButtonClear);
-         Scaled_ButtonWeightMode = layout_manager.ScaleRect(ButtonWeightMode);
-         Scaled_DividerLineWeights = layout_manager.ScaleRect(DividerLineWeights);
-         Scaled_TextBoxWeights = layout_manager.ScaleRect(TextBoxWeights);
-         Scaled_SpinnerWeightAmount = layout_manager.ScaleRect(SpinnerWeightAmount);
-         Scaled_CheckBoxWithNeighbor = layout_manager.ScaleRect(CheckBoxWithNeighbor);
-
-         Scaled_CheckBoxWithColor = layout_manager.ScaleRect(CheckBoxWithColor);
-
-         Scaled_DividerLineListView = layout_manager.ScaleRect(DividerLineListView);
-         Scaled_ListViewMazeGen = layout_manager.ScaleRect(ListViewMazeGen);
-         Scaled_ButtonGenerate = layout_manager.ScaleRect(ButtonGenerate);
-         Scaled_ButtonClearMaze = layout_manager.ScaleRect(ButtonClearMaze);
-         Scaled_DividerLineGen = layout_manager.ScaleRect(DividerLineGen);
-         Scaled_ButtonMenu = layout_manager.ScaleRect(ButtonMenu);
-
-         Scaled_StatusBarValidMaze = layout_manager.ScaleRect(StatusBarValidMaze);
+    Scaled_Canvas = layout_manager.ScaleRect(Canvas);
+    Scaled_SideRect = layout_manager.ScaleRect(SideRect);
+    Scaled_Button_Save = layout_manager.ScaleRect(Button_Save);
+    Scaled_ButtonSaveAndGen = layout_manager.ScaleRect(ButtonSaveAndGen);
+    Scaled_SizeSlider = layout_manager.ScaleRect(SizeSlider);
+    Scaled_TextBoxSize = layout_manager.ScaleRect(TextBoxSize);
+    Scaled_ButtonSetStart = layout_manager.ScaleRect(ButtonSetStart);
+    Scaled_ButtonSetTarget = layout_manager.ScaleRect(ButtonSetTarget);
+    Scaled_ButtonSetWall = layout_manager.ScaleRect(ButtonSetWall);
+    Scaled_ButtonClear = layout_manager.ScaleRect(ButtonClear);
+    Scaled_ButtonWeightMode = layout_manager.ScaleRect(ButtonWeightMode);
+    Scaled_DividerLineWeights = layout_manager.ScaleRect(DividerLineWeights);
+    Scaled_TextBoxWeights = layout_manager.ScaleRect(TextBoxWeights);
+    Scaled_SpinnerWeightAmount = layout_manager.ScaleRect(SpinnerWeightAmount);
+    Scaled_CheckBoxWithNeighbor = layout_manager.ScaleRect(CheckBoxWithNeighbor);
+    Scaled_CheckBoxWithColor = layout_manager.ScaleRect(CheckBoxWithColor);
+    Scaled_DividerLineListView = layout_manager.ScaleRect(DividerLineListView);
+    Scaled_ListViewMazeGen = layout_manager.ScaleRect(ListViewMazeGen);
+    Scaled_ButtonGenerate = layout_manager.ScaleRect(ButtonGenerate);
+    Scaled_ButtonClearMaze = layout_manager.ScaleRect(ButtonClearMaze);
+    Scaled_DividerLineGen = layout_manager.ScaleRect(DividerLineGen);
+    Scaled_ButtonMenu = layout_manager.ScaleRect(ButtonMenu);
+    Scaled_StatusBarValidMaze = layout_manager.ScaleRect(StatusBarValidMaze);
 
 }
 //pre-check maze constraints
@@ -359,6 +367,26 @@ void Editor::clamp_sizes_to_uneven()
     tile_map_width_str = std::to_string(tile_map_width);
 }
 
+void Editor::handleWeightAdd(const int x, const int y, const int weight)
+{
+    CustomMaze.TileArray[x][y] = weight;
+
+    //TODO
+    // add progressive weight decrease
+    //
+    // if (is_with_neighbors)
+    // {
+    //     int max_y = CustomMaze.TileArray.size();
+    //     int max_x = CustomMaze.TileArray[0].size();
+    //
+    //     //how often decrease by ten to get to 0
+    //     int number_of_iterations = weight / 10;
+    //
+    //     vector<tuple<int, int>> temp{};
+    //
+    // }
+}
+
 void Editor::createTileMap()
 {
     clamp_sizes_to_uneven();
@@ -377,7 +405,6 @@ void Editor::createTileMap()
         
         CustomMaze.TileArray.push_back(temp);
     }
-    int k = 0;
 }
 
 void Editor::isValid()
