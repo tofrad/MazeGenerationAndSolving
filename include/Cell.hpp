@@ -71,6 +71,7 @@ class Cell
 		void breakWall();
 
 		int getWeight() const;
+		void setWeight(int w);
 		void addWeight(int w);
 
 		int getCellID() const;

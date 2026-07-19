@@ -170,7 +170,7 @@ void Recorder::saveLastFrame(const vector<Cell*>& LastList)
 	{
 		for (auto cell : LastList) {
 			// record cells here
-			 if (cell->getMazeFlags_Current()->isWall)
+			 if (cell->getMazeFlags_Current()->isWall || not cell->getPathFlags_Current()->Path_CellWasVisited )
 			 {
 			 	temp.push_back(std::make_unique<MazeRecordCell>(cell));
 			 }else
