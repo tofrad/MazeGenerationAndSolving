@@ -1,12 +1,12 @@
 #pragma once
 
+#include <random>
 #include <unordered_map>
 
 #include "Cell.hpp"
 #include "Recorder.hpp"
 
 #include "State_Definitions.hpp"
-
 
 class Pathsolver
 {
@@ -18,6 +18,7 @@ class Pathsolver
 		Recorder* getRecording() const;
 
 	private:
+		std::mt19937 rand_gen;
 
 		Cell* startNode = nullptr;
 
@@ -29,11 +30,11 @@ class Pathsolver
 
 		static bool isVisitable(const Cell* cell);
 
-		bool solveMaze(Cell* start, SolvingMethod method) const;
+		bool solveMaze(Cell* start, SolvingMethod method) ;
 
-		bool DFS(Cell* start) const;
+		bool DFS(Cell* start);
 
-		bool BFS(Cell* start) const;
+		bool BFS(Cell* start);
 
 		
 

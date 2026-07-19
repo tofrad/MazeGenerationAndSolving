@@ -1,4 +1,7 @@
 #include "Pathsolver.hpp"
+
+#include <algorithm>
+#include <chrono>
 #include <queue>
 
 Pathsolver::Pathsolver()
@@ -8,6 +11,9 @@ Pathsolver::Pathsolver()
 
 Pathsolver::Pathsolver(Cell* start, const SolvingMethod method, Recorder* recorder)
 {
+	const auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+	rand_gen.seed(static_cast<unsigned int>(ms));
+
 	path_record = recorder;
 	solveMaze(start, method);
 }
@@ -17,7 +23,7 @@ Pathsolver::~Pathsolver()
 
 }
 
-bool Pathsolver::solveMaze(Cell* start, const SolvingMethod method) const
+bool Pathsolver::solveMaze(Cell* start, const SolvingMethod method)
 {
 	//start recording
 	path_record->startRecording();
@@ -51,14 +57,14 @@ Recorder* Pathsolver::getRecording() const
 
 bool Pathsolver::isVisitable(const Cell* cell)
 {
-	if (cell != nullptr && !cell->getPathFlags_Current()->Path_CellWasVisited && !cell->getPathFlags_Next()->Path_CellWasVisited) {
-		return true;
-	}else{
+	if (cell == nullptr || cell->path_next_flags.Path_CellWasVisited) {
 		return false;
+	}else{
+		return true;
 	}
 }
 
-bool Pathsolver::DFS(Cell* start) const
+bool Pathsolver::DFS(Cell* start)
 {
 	//abort if target is found
 	if (start->maze_next_flags.isTarget) {
@@ -101,32 +107,40 @@ bool Pathsolver::DFS(Cell* start) const
 		adjCells.push_back(West);
 	}
 
+	ranges::shuffle(adjCells, rand_gen);
+
 	//go through all adj cells
 	while (!adjCells.empty()) {
 		//get next cell
 		Cell* next = adjCells.back();
-		//data saving #################################################
+		//check visitable again as it could have visited by recursion elsewhere
+		if (isVisitable(next))
+		{
+			//data saving #################################################
 
-		//set origin for path recording
-		next->setPathConnectFrom(start);
+			//set origin for path recording
+			next->setPathConnectFrom(start);
 
-		//switch frontier
-		start->path_next_flags.Path_IsFrontier = false;
-		next->path_next_flags.Path_IsFrontier = true;
-		//record here#########################################################################################
-		path_record->recordStep({start, next});
-		next->path_next_flags.Path_CellWasVisited = true;
-		//end data saving #############################################
-		if (DFS(next)) {
+			//switch frontier
+			start->path_next_flags.Path_IsFrontier = false;
+			next->path_next_flags.Path_IsFrontier = true;
+			//record here#########################################################################################
+			path_record->recordStep({start, next});
 
-			//recursion animation?
-			start->path_next_flags.Path_IsFinishedPath = true;
-			//next node is on path to target or is the target
+			//end data saving #############################################
 
-			//record path cell
-			path_record->recordStep({start});
+			next->path_next_flags.Path_CellWasVisited = true;
+			if (DFS(next)) {
 
-			return true;
+				//recursion animation?
+				start->path_next_flags.Path_IsFinishedPath = true;
+				//next node is on path to target or is the target
+
+				//record path cell
+				path_record->recordStep({start});
+
+				return true;
+			}
 		}
 		//delete cell from list
 		adjCells.pop_back();
@@ -144,7 +158,7 @@ bool Pathsolver::DFS(Cell* start) const
 //TODO
 // Update BFS
 //add leading edges to frontier cells
-bool Pathsolver::BFS(Cell* start) const
+bool Pathsolver::BFS(Cell* start)
 {
 	queue<vector<Cell*>> tobevisited;
 
