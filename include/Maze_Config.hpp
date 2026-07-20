@@ -16,6 +16,6 @@ namespace Maze_Config
 
     //Algorithm inputs
     inline const char* GEN_INPUT = "Recursive Backtracking\nKruskal\nHunt&Kill\nCustom";
-    inline const char* SOLVE_INPUT = "BFS\nDFS";
+    inline const char* SOLVE_INPUT = "Breadth-First\nDepth-First";
 
 }

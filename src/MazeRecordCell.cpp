@@ -78,6 +78,8 @@ Color MazeRecordCell::getColorFromFlags(const MazeFlags* flags) const
 	if (flags->isActive){ return UI_Config::MAZE_ACTIVE_COLOR;}
 	if (flags->isWall){ return UI_Config::WALL_COLOR;}
 
+	Color ret = DARKGRAY;
+
 	if (flags->hasWeight)
 	{
 		const int weight_case = cellData.Weight / 10;
@@ -85,43 +87,44 @@ Color MazeRecordCell::getColorFromFlags(const MazeFlags* flags) const
 		switch (weight_case)
 		{
 		case 0:
-			return UI_Config::WEIGHT_00_COLOR;
+			ret = UI_Config::WEIGHT_00_COLOR;
 			break;
 		case 1:
-			return UI_Config::WEIGHT_10_COLOR;
+			ret = UI_Config::WEIGHT_10_COLOR;
 			break;
 		case 2:
-			return UI_Config::WEIGHT_20_COLOR;
+			ret = UI_Config::WEIGHT_20_COLOR;
 			break;
 		case 3:
-			return UI_Config::WEIGHT_30_COLOR;
+			ret = UI_Config::WEIGHT_30_COLOR;
 			break;
 		case 4:
-			return  UI_Config::WEIGHT_40_COLOR;
+			ret =  UI_Config::WEIGHT_40_COLOR;
 			break;
 		case 5:
-			return  UI_Config::WEIGHT_50_COLOR;
+			ret =  UI_Config::WEIGHT_50_COLOR;
 			break;
 		case 6:
-			return  UI_Config::WEIGHT_60_COLOR;
+			ret =  UI_Config::WEIGHT_60_COLOR;
 			break;
 		case 7:
-			return  UI_Config::WEIGHT_70_COLOR;
+			ret =  UI_Config::WEIGHT_70_COLOR;
 			break;
 		case 8:
-			return  UI_Config::WEIGHT_80_COLOR;
+			ret =  UI_Config::WEIGHT_80_COLOR;
 			break;
 		case 9:
-			return  UI_Config::WEIGHT_90_COLOR;
+			ret =  UI_Config::WEIGHT_90_COLOR;
 			break;
 		default:
+			ret = DARKGRAY;
 			break;
 
 		}
 	}
-
-	if (flags->Maze_CellWasVisited){ return DARKGRAY;}
-
-	// Default
-	return LIGHTGRAY;
+	return ColorBrightness(ret, 0.1f);
+	// if (flags->Maze_CellWasVisited){ return DARKGRAY;}
+	//
+	// // Default
+	// return ret;
 }

@@ -206,7 +206,7 @@ void Player::displayPlayerGUI()
               Vector2{0,0},
               0,
               WHITE);
-        DrawRectangleLinesEx(dest, 4,  BLACK);
+        DrawRectangleLinesEx(dest, 2,  BLACK);
         //Debug Circle
         //DrawCircle(x, y, 10, RED);
 

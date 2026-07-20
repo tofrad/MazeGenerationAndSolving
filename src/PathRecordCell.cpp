@@ -1,5 +1,7 @@
 #include "PathRecordCell.hpp"
 
+#include "UI_Config.hpp"
+
 
 PathRecordCell::PathRecordCell(Cell* cell) : Base_RecordCell(cell)
 {
@@ -68,10 +70,10 @@ void PathRecordCell::drawEmptyCell(const float cellsize) const
 
 Color PathRecordCell::getColorFromFlags(const PathFlags *flags)
 {
-	if (flags->Path_IsFrontier){return GOLD;}
-	if (flags->Path_IsFinishedPath){ return SKYBLUE;}
-	if (flags->Path_IsCurrentPath){ return PURPLE;}
-	if (flags->Path_CellWasVisited){ return BROWN;}
+	if (flags->Path_IsFrontier){return UI_Config::PATH_FRONT_COLOR;}
+	if (flags->Path_IsFinishedPath){ return UI_Config::PATH_FIN_COLOR;}
+	if (flags->Path_IsCurrentPath){ return UI_Config::PATH_CUR_COLOR;}
+	if (flags->Path_CellWasVisited){ return UI_Config::PATH_VISITED_COLOR;}
 
 	// Default
 	return LIGHTGRAY;

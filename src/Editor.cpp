@@ -60,9 +60,9 @@ void Editor::displayEditor()
     //bug in raygui only limits constraints in false
     GuiSpinner(Scaled_SpinnerWeightAmount, "", &weight_spinner_val, MIN_WEIGHT, MAX_WEIGHT, false);
 
-    GuiCheckBox(Scaled_CheckBoxWithNeighbor, "neighbor degr.", &is_with_neighbors);
-
-    GuiCheckBox(Scaled_CheckBoxWithColor, "show colors", &is_with_colors);
+    // GuiCheckBox(Scaled_CheckBoxWithNeighbor, "neighbor degr.", &is_with_neighbors);
+    //
+    // GuiCheckBox(Scaled_CheckBoxWithColor, "show colors", &is_with_colors);
 
     GuiLine(Scaled_DividerLineListView,"Maze Gen");
 
