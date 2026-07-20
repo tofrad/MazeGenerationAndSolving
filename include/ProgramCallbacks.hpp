@@ -5,7 +5,7 @@
 class Recorder;
 
 using ProgramstateCallback = std::function<void(ProgramState)>;
-using GenerateCallback = std::function<void(int, GenerationMethod)>;
+using GenerateCallback = std::function<void(int, GenerationMethod,int ,int)>;
 using SolveCallback = std::function<void(SolvingMethod)>;
 using CustomGenerateCallback = std::function<void(TileMap&, GenerationMethod)>;
 

@@ -1,6 +1,7 @@
 #include "Menu.hpp"
 #include "Program.hpp"
 #include "Maze_Config.hpp"
+#include "Global_Config.hpp"
 
 #include "raygui.h"
 
@@ -65,12 +66,12 @@ void Menu::displayGUI()
     GuiSpinner(Scaled_SpinnerWeightCnt, "", &SpinnerWeightCntValue, 1, 50, false);
     GuiTextBox(Scaled_TextBoxWeightCnt, nmb_weights_text, DEFAULT, false);
 
-    char min_weights_text[] = "min weights val";
-    GuiSpinner(Scaled_SpinnerMinWeight, "", &SpinnerMinWeightValue, 1, 50, false);
-    GuiTextBox(Scaled_TextBoxMinWeight, min_weights_text, DEFAULT, false);
+    // char min_weights_text[] = "min weights val";
+    // GuiSpinner(Scaled_SpinnerMinWeight, "", &SpinnerMinWeightValue, 1, 50, false);
+    // GuiTextBox(Scaled_TextBoxMinWeight, min_weights_text, DEFAULT, false);
 
     char max_weights_text[] = "max weights val";
-    GuiSpinner(Scaled_SpinnerMaxWeight, "", &SpinnerMaxWeightValue, 1, 50, false);
+    GuiSpinner(Scaled_SpinnerMaxWeight, "", &SpinnerMaxWeightValue, MIN_WEIGHT , MAX_WEIGHT, false);
     GuiTextBox(Scaled_TextBoxMaxWeight, max_weights_text, DEFAULT, false);
 
     GuiLine(Scaled_LineWeightsSeparate, "");
@@ -121,7 +122,14 @@ void Menu::displayGUI()
         //Resolve Actions here
         if (Generate_Button_pressed) {
             MazeMethod = static_cast<GenerationMethod>(Maze_GUI);
-            menu_callbacks.onGenerateRequest(MazeSize, MazeMethod);
+
+            if (CheckBoxWeightsChecked)
+            {
+                menu_callbacks.onGenerateRequest(MazeSize, MazeMethod, SpinnerWeightCntValue, SpinnerMaxWeightValue);
+            }else
+            {
+                menu_callbacks.onGenerateRequest(MazeSize, MazeMethod, 0, 0);
+            }
 
             last_maze_rec_step = *menu_callbacks.getGeneratorRecording()->getStep();
             menu_callbacks.getGeneratorRecording()->playLastFrame();

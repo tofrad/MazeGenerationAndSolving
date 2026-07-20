@@ -22,7 +22,7 @@ class Program
 
 		void handleStateRequest(ProgramState state);
 
-		void handleGeneratorRequest(int size, GenerationMethod method);
+		void handleGeneratorRequest(int size, GenerationMethod method, int weight_cnt, int max_weight);
 		void handleSolveRequest(SolvingMethod method);
 		static void handleCustomGenerateRequest(TileMap& custom, GenerationMethod GenMethod);
 

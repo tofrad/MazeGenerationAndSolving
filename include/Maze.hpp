@@ -12,7 +12,7 @@ class Maze
 {
 	public:
 		Maze();
-		Maze(const int w, const int h, GenerationMethod method, Recorder* recorder);
+		Maze(const int w, const int h, GenerationMethod method, Recorder* recorder, int weight_cnt, int max_weight);
 		~Maze();
 
 		explicit Maze(const TileMap* custom_maze, Recorder* recorder);
@@ -50,14 +50,13 @@ class Maze
 
 		std::mt19937 rand_gen;
 
-
-		void generateMaze(GenerationMethod method, Recorder* recorder);
+		void generateMaze(GenerationMethod method, Recorder* recorder, int weight_cnt, int max_weight);
 
 		void RecursiveBacktracking(Cell* cell, uint step);
 		void Kruskal();
 		void HuntAndKill();
 
-		void setWeights(const int weight_count);
+		void setWeights(int weight_count, int max_weight);
 		static bool Cell_isVisitable(const Cell* cell);
 
 		vector<Cell*> getUnvisitedNeighbors(const Cell* cell) const;

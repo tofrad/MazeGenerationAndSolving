@@ -84,7 +84,7 @@ void Editor::displayEditor()
         //check valid maze
         if (CustomMaze.isValid)
         {
-            editor_callbacks.onGenerateRequest(slider_value_int, GenerationMethod::CUSTOM);
+            editor_callbacks.onGenerateRequest(slider_value_int, GenerationMethod::CUSTOM, 0, 0);
         }
 
     }

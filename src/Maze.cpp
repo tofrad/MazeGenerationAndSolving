@@ -12,9 +12,6 @@
 #define MIN_HEIGHT 11
 #define MIN_WIDTH 11
 
-#define MAX_WEIGHT_AMOUNT 25
-#define MAX_WEIGHT_VAL 7
-#define MIN_WEIGHT_VAL 0
 
 int start_x;
 int start_y;
@@ -24,7 +21,7 @@ Maze::Maze()
 
 }
 
-Maze::Maze(const int w, const int h, const GenerationMethod method, Recorder* recorder)
+Maze::Maze(const int w, const int h, const GenerationMethod method, Recorder* recorder, const int weight_cnt, const int max_weight )
 {
 	this->height = h;
 	this->width = w;
@@ -32,7 +29,7 @@ Maze::Maze(const int w, const int h, const GenerationMethod method, Recorder* re
 	const auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 	rand_gen.seed(static_cast<unsigned int>(ms));
 
-	generateMaze(method, recorder);
+	generateMaze(method, recorder, weight_cnt, max_weight);
 }
 
 Maze::~Maze()
@@ -216,7 +213,7 @@ void Maze::resetMaze() const
 	}
 }
 
-void Maze::generateMaze(const GenerationMethod method, Recorder* recorder)
+void Maze::generateMaze(const GenerationMethod method, Recorder* recorder, const int weight_cnt, const int max_weight)
 {
 	createEmptyMaze();
 
@@ -268,7 +265,10 @@ void Maze::generateMaze(const GenerationMethod method, Recorder* recorder)
 
 	}
 
-	setWeights(25);
+	if (weight_cnt > 0)
+	{
+		setWeights(weight_cnt, max_weight);
+	}
 
 	record->stopRecording();
 	record->saveLastFrame(Cell_List);
@@ -510,13 +510,8 @@ void Maze::HuntAndKill()
 	}
 }
 
-void Maze::setWeights(int weight_count)
+void Maze::setWeights(const int weight_count, const int max_weight)
 {
-	if (weight_count > MAX_WEIGHT_AMOUNT)
-	{
-		weight_count = MAX_WEIGHT_AMOUNT;
-	}
-
 	int cells_changed = 0;
 	std::uniform_int_distribution<> distribution(0, Cell_List.size() - 1);
 
@@ -534,7 +529,7 @@ void Maze::setWeights(int weight_count)
 			{
 				const auto current_cell = Cell_List[pos];
 
-				current_cell->addWeight(MAX_WEIGHT_VAL);
+				current_cell->addWeight(max_weight);
 
 				//helper to check neighboring cells already visited THIS iteration
 				std::vector<bool> recursion_used(Cell_List.size(), false);
@@ -549,7 +544,7 @@ void Maze::setWeights(int weight_count)
 				adjCells.push_back(current_cell->getWest());
 
 				//advance through neighbors till weight is 0, decreasing it every distance
-				for (int w = MAX_WEIGHT_VAL - 1; w > 0; --w)
+				for (int w = max_weight - 1; w > 0; --w)
 				{
 					//save last adjCells in helper to iterate trough
 					std::vector<Cell*> temp_adjCells = adjCells;

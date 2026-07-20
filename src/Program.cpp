@@ -55,7 +55,7 @@ void Program::InitProgram()
     // GuiSetStyle("Dark");
 
     //-------------------------------------------------------------------------------------
-    handleGeneratorRequest(MazeWidth, Generator);
+    handleGeneratorRequest(MazeWidth, Generator, 0, 0);
 
     //--------------------------------------------------------------------------------------
 }
@@ -135,7 +135,7 @@ void Program::handleStateRequest(const ProgramState state)
     setState(state);
 }
 
-void Program::handleGeneratorRequest(const int size, const GenerationMethod method)
+void Program::handleGeneratorRequest(const int size, const GenerationMethod method, const int weight_cnt, const int max_weight)
 {
     CalculateMazeParams(size);
 
@@ -157,7 +157,7 @@ void Program::handleGeneratorRequest(const int size, const GenerationMethod meth
     }
     else{
         Gen_Recorder.init(MazeHeight,MazeWidth, RecordType::MAZE);
-        M = Maze(MazeWidth, MazeHeight, Generator, &Gen_Recorder);
+        M = Maze(MazeWidth, MazeHeight, Generator, &Gen_Recorder, weight_cnt, max_weight);
         handleSolveRequest(Solver);
     }
 }
@@ -179,9 +179,9 @@ void Program::handleCustomGenerateRequest(TileMap& custom, const GenerationMetho
     const int maze_size = custom.size;
     const int maze_height = custom.height;
 
-    const Maze temp_maze = Maze(maze_size, maze_height, GenMethod, nullptr);
+    const Maze temp_maze = Maze(maze_size, maze_height, GenMethod, nullptr, 0, 0);
     temp_maze.GetTileMapFromMaze(custom);
-    auto end = std::chrono::system_clock::now();
+    const auto end = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsed_seconds = end-start;
     std::cout << "Elapsed time: " << elapsed_seconds.count() << " seconds" << std::endl;
 }
@@ -232,9 +232,9 @@ ProgramCallbacks Program::createCallbacks()
 {
     ProgramCallbacks callbacks;
 
-    callbacks.onGenerateRequest = [this](const int size, const GenerationMethod method) {
+    callbacks.onGenerateRequest = [this](const int size, const GenerationMethod method, const int weight_cnt,const int max_weight) {
 
-        this->handleGeneratorRequest(size, method);
+        this->handleGeneratorRequest(size, method, weight_cnt, max_weight);
     };
 
     callbacks.onSolveRequest = [this](const SolvingMethod method) {
@@ -245,7 +245,7 @@ ProgramCallbacks Program::createCallbacks()
         this->handleStateRequest(state);
     };
 
-    callbacks.onCustomGenerateRequest = [this](TileMap& Custom, GenerationMethod GenMethod){
+    callbacks.onCustomGenerateRequest = [this](TileMap& Custom, const GenerationMethod GenMethod){
         this->handleCustomGenerateRequest(Custom, GenMethod);
     };
 
