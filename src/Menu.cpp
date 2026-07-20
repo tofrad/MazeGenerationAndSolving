@@ -85,33 +85,40 @@ void Menu::displayGUI()
     if (GuiButton(Scaled_ButtonPlayer, "Player")){Player_Button_pressed = true;};
     GuiLine(Scaled_LinePlayerEditor, "");
 
-    const auto gen_frame = menu_callbacks.getGeneratorRecording()->getFrameTexture();
-    const auto solve_frame = menu_callbacks.getSolveRecording()->getFrameTexture();
+    const auto gen_frame = menu_callbacks.getGeneratorRecording()->getFrameTexture().texture;
+    const auto solve_frame = menu_callbacks.getSolveRecording()->getFrameTexture().texture;
     // Calculate scale to fit canvas
-    const float scaleX = (float)Scaled_GeneratorCanvas.width / gen_frame.texture.width;
-    const float scaleY = (float)Scaled_GeneratorCanvas.height / gen_frame.texture.height;
+    const float scaleX = (float)Scaled_GeneratorCanvas.width / gen_frame.width;
+    const float scaleY = (float)Scaled_GeneratorCanvas.height / gen_frame.height;
     const float scale = min(scaleX, scaleY);  // Maintain aspect ratio
 
-    const auto source = Rectangle{ 0, static_cast<float>(gen_frame.texture.height), static_cast<float>(gen_frame.texture.width), -static_cast<float>(gen_frame.texture.height)};
+    const auto source = Rectangle{ 0, static_cast<float>(gen_frame.height), static_cast<float>(gen_frame.width), -static_cast<float>(gen_frame.height)};
 
+    const float gen_x = Scaled_GeneratorCanvas.x + (Scaled_GeneratorCanvas.width - gen_frame.width * scale) / 2;
+    const float gen_y = Scaled_GeneratorCanvas.y + (Scaled_GeneratorCanvas.height - gen_frame.height * scale) / 2;
+    const auto gen_dest = Rectangle{ gen_x, gen_y, gen_frame.width * scale,gen_frame.height * scale};
+
+    const float solve_x = Scaled_SolvingCanvas.x + (Scaled_SolvingCanvas.width - solve_frame.width * scale) / 2;
+    const float solve_y = Scaled_SolvingCanvas.y + (Scaled_SolvingCanvas.height - solve_frame.height * scale) / 2;
+    const auto solve_dest = Rectangle{ solve_x, solve_y, solve_frame.width * scale,solve_frame.height * scale};
     // draw frame texture to canvas
     DrawTexturePro(
-          gen_frame.texture,
+          gen_frame,
           source,
-          Scaled_GeneratorCanvas,
+          gen_dest,
           Vector2{0,0},
           0,
           WHITE);
-    DrawRectangleLinesEx(Scaled_GeneratorCanvas, 2,  BLACK);
+    DrawRectangleLinesEx(gen_dest, 2,  BLACK);
 
     DrawTexturePro(
-      solve_frame.texture,
+      solve_frame,
       source,
-      Scaled_SolvingCanvas,
+      solve_dest,
       Vector2{0,0},
       0,
       WHITE);
-    DrawRectangleLinesEx(Scaled_SolvingCanvas, 2,  BLACK);
+    DrawRectangleLinesEx(solve_dest, 2,  BLACK);
 
     // DrawRectangleRec(Scaled_GeneratorCanvas, SKYBLUE);
     // DrawRectangleRec(Scaled_SolvingCanvas, BROWN);
