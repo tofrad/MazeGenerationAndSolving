@@ -58,7 +58,7 @@ void Editor::displayEditor()
     GuiTextBox(Scaled_TextBoxWeights, "weight amount",DEFAULT, false);
 
     //bug in raygui only limits constraints in false
-    GuiSpinner(Scaled_SpinnerWeightAmount, "", &weight_spinner_val, 1, 20, false);
+    GuiSpinner(Scaled_SpinnerWeightAmount, "", &weight_spinner_val, MIN_WEIGHT, MAX_WEIGHT, false);
 
     GuiCheckBox(Scaled_CheckBoxWithNeighbor, "neighbor degr.", &is_with_neighbors);
 
@@ -235,9 +235,11 @@ void Editor::displayEditor()
                 else if (Mouse_Tile == CustomMaze.Target)
                 {
                     //no weight to target
+                }else
+                {
+                    //add weight logic here
+                    handleWeightAdd(temp_x, temp_y, weight_spinner_val);
                 }
-                //add weight logic here
-                handleWeightAdd(temp_x, temp_y, weight_spinner_val);
                 break;
 
             default:
@@ -288,27 +290,78 @@ void Editor::drawGrid(const int tile_size, const int x_tile_offset, const int y_
         {
             const Rectangle draw_rec = (Rectangle(x_tile_offset + x * tile_size, y_tile_offset + y * tile_size, tile_size,
                                            tile_size));
-            if (CustomMaze.TileArray[x][y] == WALL_CHAR) {
+            const char tile_char_val = CustomMaze.TileArray[x][y];
+            if (tile_char_val == WALL_CHAR) {
                 DrawRectangleRec(draw_rec, UI_Config::WALL_COLOR);
                 DrawRectangleLinesEx(draw_rec, 1, GridColor);
             }
-            else if (CustomMaze.TileArray[x][y] == START_CHAR)
+            else if (tile_char_val == START_CHAR)
             {
                 DrawRectangleRec(draw_rec, BLUE);
                 DrawRectangleLinesEx(draw_rec, 1, GridColor);
             }
-            else if (CustomMaze.TileArray[x][y] == TARGET_CHAR)
+            else if (tile_char_val == TARGET_CHAR)
             {
                 DrawRectangleRec(draw_rec, ORANGE);
                 DrawRectangleLinesEx(draw_rec, 1, GridColor);
             }
-            else
+            else if (tile_char_val >= 1 && tile_char_val <= 99)
+            {
+                DrawRectangleRec(draw_rec, getWeightColor(static_cast<int>(tile_char_val)));
+                DrawRectangleLinesEx(draw_rec, 1, GridColor);
+            }else
             {
                 DrawRectangleLinesEx(draw_rec, 1, GridColor);
             }
         }
     }
 }
+
+Color Editor::getWeightColor(const int weight)
+{
+    {
+        const int weight_case = weight / 10;
+
+        switch (weight_case)
+        {
+        case 0:
+            return UI_Config::WEIGHT_00_COLOR;
+            break;
+        case 1:
+            return UI_Config::WEIGHT_10_COLOR;
+            break;
+        case 2:
+            return UI_Config::WEIGHT_20_COLOR;
+            break;
+        case 3:
+            return UI_Config::WEIGHT_30_COLOR;
+            break;
+        case 4:
+            return  UI_Config::WEIGHT_40_COLOR;
+            break;
+        case 5:
+            return  UI_Config::WEIGHT_50_COLOR;
+            break;
+        case 6:
+            return  UI_Config::WEIGHT_60_COLOR;
+            break;
+        case 7:
+            return  UI_Config::WEIGHT_70_COLOR;
+            break;
+        case 8:
+            return  UI_Config::WEIGHT_80_COLOR;
+            break;
+        case 9:
+            return  UI_Config::WEIGHT_90_COLOR;
+            break;
+        default:
+            return LIGHTGRAY;
+            break;
+
+        }
+    }
+}
+
 
 void Editor::syncToProgram() 
 {

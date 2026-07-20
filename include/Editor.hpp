@@ -36,7 +36,8 @@ private:
 	void isValid();
 
 	void drawGrid(int tile_size, int x_tile_offset, int y_tile_offset) const;
-	
+	static Color getWeightColor(int weight);
+
 	ProgramCallbacks editor_callbacks;
 	static void syncToProgram();
 
