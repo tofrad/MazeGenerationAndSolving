@@ -54,7 +54,7 @@ void Menu::displayGUI()
     //Path List View
     GuiListView(Scaled_ListViewSolving, Maze_Config::SOLVE_INPUT, &ListViewSolvingScrollIndex, &Path_GUI);
 
-    GuiCheckBox(Scaled_CheckBoxWeights, "with weights", &CheckBoxWeightsChecked);
+    //GuiCheckBox(Scaled_CheckBoxWeights, "with weights", &CheckBoxWeightsChecked);
 
     GuiSlider(Scaled_SliderSize,Maze_Config::MIN_W_STR.c_str(), Maze_Config::MAX_W_STR.c_str(), &SliderSizeValue, Maze_Config::MIN_WIDTH,Maze_Config::MAX_WIDTH);
     clamp_to_uneven();
@@ -63,16 +63,16 @@ void Menu::displayGUI()
     GuiTextBox(Scaled_TextBoxSize, TextBoxSizeText, DEFAULT, false);
 
     char nmb_weights_text[] = "number of weights";
-    GuiSpinner(Scaled_SpinnerWeightCnt, "", &SpinnerWeightCntValue, 1, 50, false);
-    GuiTextBox(Scaled_TextBoxWeightCnt, nmb_weights_text, DEFAULT, false);
+    // GuiSpinner(Scaled_SpinnerWeightCnt, "", &SpinnerWeightCntValue, 1, 50, false);
+    // GuiTextBox(Scaled_TextBoxWeightCnt, nmb_weights_text, DEFAULT, false);
 
     // char min_weights_text[] = "min weights val";
     // GuiSpinner(Scaled_SpinnerMinWeight, "", &SpinnerMinWeightValue, 1, 50, false);
     // GuiTextBox(Scaled_TextBoxMinWeight, min_weights_text, DEFAULT, false);
 
     char max_weights_text[] = "max weights val";
-    GuiSpinner(Scaled_SpinnerMaxWeight, "", &SpinnerMaxWeightValue, MIN_WEIGHT , MAX_WEIGHT, false);
-    GuiTextBox(Scaled_TextBoxMaxWeight, max_weights_text, DEFAULT, false);
+    // GuiSpinner(Scaled_SpinnerMaxWeight, "", &SpinnerMaxWeightValue, MIN_WEIGHT , MAX_WEIGHT, false);
+    // GuiTextBox(Scaled_TextBoxMaxWeight, max_weights_text, DEFAULT, false);
 
     GuiLine(Scaled_LineWeightsSeparate, "");
 
@@ -196,18 +196,18 @@ void Menu::UpdateRectValues()
 {
     Scaled_ListViewGeneration = layout_manager.ScaleRect(ListViewGeneration);
     Scaled_ListViewSolving = layout_manager.ScaleRect(ListViewSolving);
-    Scaled_CheckBoxWeights = layout_manager.ScaleRect(CheckBoxWeights);
+    // Scaled_CheckBoxWeights = layout_manager.ScaleRect(CheckBoxWeights);
     Scaled_SliderSize = layout_manager.ScaleRect(SliderSize);
     Scaled_GeneratorCanvas = layout_manager.ScaleRect(GeneratorCanvas);
     Scaled_SolvingCanvas = layout_manager.ScaleRect(SolvingCanvas);
-    Scaled_SpinnerWeightCnt = layout_manager.ScaleRect(SpinnerWeightCnt);
-    Scaled_SpinnerMinWeight = layout_manager.ScaleRect(SpinnerMinWeight);
-    Scaled_TextBoxWeightCnt = layout_manager.ScaleRect(TextBoxWeightCnt);
-    Scaled_TextBoxMinWeight = layout_manager.ScaleRect(TextBoxMinWeight);
+    // Scaled_SpinnerWeightCnt = layout_manager.ScaleRect(SpinnerWeightCnt);
+    // Scaled_SpinnerMinWeight = layout_manager.ScaleRect(SpinnerMinWeight);
+    // Scaled_TextBoxWeightCnt = layout_manager.ScaleRect(TextBoxWeightCnt);
+    // Scaled_TextBoxMinWeight = layout_manager.ScaleRect(TextBoxMinWeight);
     Scaled_LineWeightsSeparate = layout_manager.ScaleRect(LineWeightsSeparate);
     Scaled_TextBoxSize = layout_manager.ScaleRect(TextBoxSize);
-    Scaled_TextBoxMaxWeight = layout_manager.ScaleRect(TextBoxMaxWeight);
-    Scaled_SpinnerMaxWeight = layout_manager.ScaleRect(SpinnerMaxWeight);
+    // Scaled_TextBoxMaxWeight = layout_manager.ScaleRect(TextBoxMaxWeight);
+    // Scaled_SpinnerMaxWeight = layout_manager.ScaleRect(SpinnerMaxWeight);
     Scaled_GenerateButton = layout_manager.ScaleRect(GenerateButton);
     Scaled_SolveGenButton = layout_manager.ScaleRect(SolveGenButton);
     Scaled_ButtonExit = layout_manager.ScaleRect(ButtonExit);

@@ -50,15 +50,15 @@ void Editor::displayEditor()
     }
 
     //0 = Start, 1 = Target, 2 = Set Wall, 3 = clear Wall 4 change to weight mode
-    GuiToggleGroup(Scaled_ButtonSetStart, "Start\nTarget\nSet Wall\nClear\nWeights", &toggle_group);
+    GuiToggleGroup(Scaled_ButtonSetStart, "Start\nTarget\nSet Wall\nClear", &toggle_group); //\nWeights
     //Bottom right ###########################################################################################################################################################################
 
     GuiLine(Scaled_DividerLineWeights,"weights");
 
-    GuiTextBox(Scaled_TextBoxWeights, "weight amount",DEFAULT, false);
+    // GuiTextBox(Scaled_TextBoxWeights, "weight amount",DEFAULT, false);
 
     //bug in raygui only limits constraints in false
-    GuiSpinner(Scaled_SpinnerWeightAmount, "", &weight_spinner_val, MIN_WEIGHT, MAX_WEIGHT, false);
+    // GuiSpinner(Scaled_SpinnerWeightAmount, "", &weight_spinner_val, MIN_WEIGHT, MAX_WEIGHT, false);
 
     // GuiCheckBox(Scaled_CheckBoxWithNeighbor, "neighbor degr.", &is_with_neighbors);
     //
@@ -380,12 +380,12 @@ void Editor::UpdateRectValues()
     Scaled_ButtonSetTarget = layout_manager.ScaleRect(ButtonSetTarget);
     Scaled_ButtonSetWall = layout_manager.ScaleRect(ButtonSetWall);
     Scaled_ButtonClear = layout_manager.ScaleRect(ButtonClear);
-    Scaled_ButtonWeightMode = layout_manager.ScaleRect(ButtonWeightMode);
+    // Scaled_ButtonWeightMode = layout_manager.ScaleRect(ButtonWeightMode);
     Scaled_DividerLineWeights = layout_manager.ScaleRect(DividerLineWeights);
-    Scaled_TextBoxWeights = layout_manager.ScaleRect(TextBoxWeights);
-    Scaled_SpinnerWeightAmount = layout_manager.ScaleRect(SpinnerWeightAmount);
-    Scaled_CheckBoxWithNeighbor = layout_manager.ScaleRect(CheckBoxWithNeighbor);
-    Scaled_CheckBoxWithColor = layout_manager.ScaleRect(CheckBoxWithColor);
+    // Scaled_TextBoxWeights = layout_manager.ScaleRect(TextBoxWeights);
+    // Scaled_SpinnerWeightAmount = layout_manager.ScaleRect(SpinnerWeightAmount);
+    // Scaled_CheckBoxWithNeighbor = layout_manager.ScaleRect(CheckBoxWithNeighbor);
+    // Scaled_CheckBoxWithColor = layout_manager.ScaleRect(CheckBoxWithColor);
     Scaled_DividerLineListView = layout_manager.ScaleRect(DividerLineListView);
     Scaled_ListViewMazeGen = layout_manager.ScaleRect(ListViewMazeGen);
     Scaled_ButtonGenerate = layout_manager.ScaleRect(ButtonGenerate);

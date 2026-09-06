@@ -91,14 +91,14 @@ private:
 	Rectangle Scaled_ButtonSetTarget = layout_manager.ScaleRect(ButtonSetTarget);
 	Rectangle Scaled_ButtonSetWall = layout_manager.ScaleRect(ButtonSetWall);
 	Rectangle Scaled_ButtonClear = layout_manager.ScaleRect(ButtonClear);
-	Rectangle Scaled_ButtonWeightMode = layout_manager.ScaleRect(ButtonWeightMode);
+	// Rectangle Scaled_ButtonWeightMode = layout_manager.ScaleRect(ButtonWeightMode);
 
 	Rectangle Scaled_DividerLineWeights = layout_manager.ScaleRect(DividerLineWeights);
-	Rectangle Scaled_TextBoxWeights = layout_manager.ScaleRect(TextBoxWeights);
-	Rectangle Scaled_SpinnerWeightAmount = layout_manager.ScaleRect(SpinnerWeightAmount);
-	Rectangle Scaled_CheckBoxWithNeighbor = layout_manager.ScaleRect(CheckBoxWithNeighbor);
+	// Rectangle Scaled_TextBoxWeights = layout_manager.ScaleRect(TextBoxWeights);
+	// Rectangle Scaled_SpinnerWeightAmount = layout_manager.ScaleRect(SpinnerWeightAmount);
+	// Rectangle Scaled_CheckBoxWithNeighbor = layout_manager.ScaleRect(CheckBoxWithNeighbor);
 	//TextBox needed??
-	Rectangle Scaled_CheckBoxWithColor = layout_manager.ScaleRect(CheckBoxWithColor);
+	// Rectangle Scaled_CheckBoxWithColor = layout_manager.ScaleRect(CheckBoxWithColor);
 	//Textbox needed?
 	Rectangle Scaled_DividerLineListView = layout_manager.ScaleRect(DividerLineListView);
 	Rectangle Scaled_ListViewMazeGen = layout_manager.ScaleRect(ListViewMazeGen);

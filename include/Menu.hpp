@@ -65,18 +65,18 @@ class Menu
 
 		Rectangle Scaled_ListViewGeneration = layout_manager.ScaleRect(ListViewGeneration);
 		Rectangle Scaled_ListViewSolving = layout_manager.ScaleRect(ListViewSolving);
-		Rectangle Scaled_CheckBoxWeights = layout_manager.ScaleRect(CheckBoxWeights);
+		// Rectangle Scaled_CheckBoxWeights = layout_manager.ScaleRect(CheckBoxWeights);
 		Rectangle Scaled_SliderSize = layout_manager.ScaleRect(SliderSize);
 		Rectangle Scaled_GeneratorCanvas = layout_manager.ScaleRect(GeneratorCanvas);
 		Rectangle Scaled_SolvingCanvas = layout_manager.ScaleRect(SolvingCanvas);
-		Rectangle Scaled_SpinnerWeightCnt = layout_manager.ScaleRect(SpinnerWeightCnt);
-		Rectangle Scaled_SpinnerMinWeight = layout_manager.ScaleRect(SpinnerMinWeight);
-		Rectangle Scaled_TextBoxWeightCnt = layout_manager.ScaleRect(TextBoxWeightCnt);
-		Rectangle Scaled_TextBoxMinWeight = layout_manager.ScaleRect(TextBoxMinWeight);
+		// Rectangle Scaled_SpinnerWeightCnt = layout_manager.ScaleRect(SpinnerWeightCnt);
+		// Rectangle Scaled_SpinnerMinWeight = layout_manager.ScaleRect(SpinnerMinWeight);
+		// Rectangle Scaled_TextBoxWeightCnt = layout_manager.ScaleRect(TextBoxWeightCnt);
+		// Rectangle Scaled_TextBoxMinWeight = layout_manager.ScaleRect(TextBoxMinWeight);
 		Rectangle Scaled_LineWeightsSeparate = layout_manager.ScaleRect(LineWeightsSeparate);
 		Rectangle Scaled_TextBoxSize = layout_manager.ScaleRect(TextBoxSize);
-		Rectangle Scaled_TextBoxMaxWeight = layout_manager.ScaleRect(TextBoxMaxWeight);
-		Rectangle Scaled_SpinnerMaxWeight = layout_manager.ScaleRect(SpinnerMaxWeight);
+		// Rectangle Scaled_TextBoxMaxWeight = layout_manager.ScaleRect(TextBoxMaxWeight);
+		// Rectangle Scaled_SpinnerMaxWeight = layout_manager.ScaleRect(SpinnerMaxWeight);
 		Rectangle Scaled_GenerateButton = layout_manager.ScaleRect(GenerateButton);
 		Rectangle Scaled_SolveGenButton = layout_manager.ScaleRect(SolveGenButton);
 		Rectangle Scaled_ButtonExit = layout_manager.ScaleRect(ButtonExit);
